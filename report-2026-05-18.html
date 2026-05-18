@@ -6,51 +6,164 @@
 <title>Warren レポート 2026年05月18日</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, sans-serif; background: #0f1117; color: #e8e8e8; padding: 16px; }
-  header { text-align: center; padding: 20px 0 24px; }
-  header h1 { font-size: 20px; font-weight: 700; color: #fff; }
-  header p { font-size: 13px; color: #888; margin-top: 4px; }
-  .card { background: #1a1d27; border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; border-left: 4px solid; }
-  .card.watch { border-color: #3b82f6; }
-  .card.holdings { border-color: #10b981; }
-  .card.news { border-color: #f59e0b; }
-  .card h2 { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 10px; }
-  .card.watch h2 { color: #3b82f6; }
-  .card.holdings h2 { color: #10b981; }
-  .card.news h2 { color: #f59e0b; }
-  ul { list-style: none; }
-  li { font-size: 14px; line-height: 1.6; padding: 6px 0; border-bottom: 1px solid #2a2d3a; }
-  li:last-child { border-bottom: none; }
-  footer { text-align: center; font-size: 11px; color: #555; margin-top: 20px; }
+  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #0b0e1a; color: #e2e8f0; padding: 16px; max-width: 680px; margin: 0 auto; }
+
+  header { text-align: center; padding: 24px 0 20px; border-bottom: 1px solid #1e2535; margin-bottom: 20px; }
+  header h1 { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 0.05em; }
+  header p { font-size: 12px; color: #64748b; margin-top: 6px; }
+
+  .section { margin-bottom: 20px; }
+  .section-title { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: #64748b; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #1e2535; }
+
+  .market-box { background: #111827; border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #cbd5e1; }
+
+  .watchlist-item { padding: 10px 0; border-bottom: 1px solid #1e2535; }
+  .watchlist-item:last-child { border-bottom: none; }
+  .wl-name { font-size: 14px; font-weight: 600; color: #3b82f6; }
+  .wl-reason { font-size: 13px; color: #94a3b8; margin-top: 4px; line-height: 1.5; }
+
+  .signal-card { background: #111827; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; border-left: 3px solid; }
+  .signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+  .signal-code { font-size: 14px; font-weight: 700; color: #f1f5f9; }
+  .signal-badge { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .signal-reason { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 10px; }
+  .signal-detail { font-size: 12px; color: #64748b; line-height: 1.6; }
+  .signal-detail div { margin-bottom: 4px; }
+  .label { color: #475569; font-weight: 600; margin-right: 6px; }
+  .news-link { display: block; margin-top: 10px; font-size: 12px; color: #3b82f6; text-decoration: none; padding: 6px 10px; background: #0f172a; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .news-item { display: block; padding: 12px 0; border-bottom: 1px solid #1e2535; text-decoration: none; }
+  .news-item:last-child { border-bottom: none; }
+  .news-headline { display: block; font-size: 14px; color: #3b82f6; line-height: 1.5; margin-bottom: 4px; }
+  .news-item:hover .news-headline { text-decoration: underline; }
+  .news-impact { display: block; font-size: 12px; color: #64748b; line-height: 1.4; }
+
+  footer { text-align: center; font-size: 11px; color: #334155; margin-top: 24px; padding-top: 16px; border-top: 1px solid #1e2535; }
 </style>
 </head>
 <body>
+
 <header>
   <h1>📊 Warren モーニングレポート</h1>
-  <p>2026年05月18日</p>
+  <p>2026年05月18日　|　投資判断は自己責任でお願いします</p>
 </header>
-<div class="card watch">
-  <h2>🔍 注目銘柄</h2>
-  <ul><li>7203 トヨタ自動車：米国関税交渉の進展期待と円安メリットで自動車セクター全体に注目が集まっている。EV戦略の進捗も株価の催促材料となりやすい局面。</li>
-<li>6758 ソニーグループ：エンタメ・半導体・金融分野の多角化が評価され、ディフェンシブ成長株として海外機関投資家の買いが継続しやすい環境にある。</li>
-<li>4063 信越化学工業：半導体シリコンウエハーの需要回復期待が高まっており、AI関連投資拡大を背景に中長期的な受注増が見込まれる。</li>
-<li>9984 ソフトバンクグループ：AI・データセンター投資ブームの恩恵を受けるポートフォリオ企業が多く、NAV拡大局面での株価上昇余地に注目。</li>
-<li>8035 東京エレクトロン：半導体製造装置の受注回復トレンドが続いており、次世代半導体向け設備投資の拡大がカタリストとなる可能性が高い。</li></ul>
+
+<div class="section">
+  <div class="section-title">市場概況</div>
+  <div class="market-box">2026年5月18日の東京市場は、米国市場の動向や円相場を注視しながら、宇宙・防衛・グリーンエネルギー関連テーマ株が個人投資家の注目を集める展開。グロース市場を中心に材料株への物色が続いており、中小型テーマ株のボラティリティが高い状態が継続している。</div>
 </div>
-<div class="card holdings">
-  <h2>📁 保有銘柄ニュース</h2>
-  <ul><li>保有銘柄が未設定のため、主要セクター動向をお伝えします。半導体・AI関連セクターは引き続き世界的な設備投資拡大を背景に強いモメンタムを維持しており、国内では関連株への資金流入が続きやすい地合いです。</li>
-<li>自動車セクターは日米関税交渉の行方が最大の注目点であり、交渉進展ニュースに対して敏感に反応しやすい状況です。為替動向（ドル円）とあわせて注視が必要です。</li>
-<li>内需・ディフェンシブセクター（食品・薬品・通信）は地政学リスクや景気不透明感を背景にした逃避買いの受け皿として機能しやすく、下値リスクが限定的な点が魅力です。</li></ul>
+
+<div class="section">
+  <div class="section-title">注目銘柄</div>
+  
+        <div class="watchlist-item">
+          <span class="wl-name">186A アストロスケールHD</span>
+          <p class="wl-reason">「日伊宇宙開発協力」報道で連想買いが入り株価急伸。宇宙デブリ除去ビジネスへの国際的な追い風が強まっており、短期・中期ともに注目度が高い。</p>
+        </div>
+        <div class="watchlist-item">
+          <span class="wl-name">1436 グリーンエナジー&カンパニー</span>
+          <p class="wl-reason">3Q累計経常利益が3.3倍増益、直近11-1月期も103倍増益という驚異的な業績改善が確認され、ファンダメンタルズ面での評価が急速に高まっている。</p>
+        </div>
+        <div class="watchlist-item">
+          <span class="wl-name">6232 ACSL</span>
+          <p class="wl-reason">防衛・物流向けドローン需要拡大の文脈でAIが値動き背景を解説するほど注目を集めており、政策支援テーマとの親和性が高い局面。</p>
+        </div>
+        <div class="watchlist-item">
+          <span class="wl-name">464A QPSホールディングス</span>
+          <p class="wl-reason">小型SAR衛星コンステレーションの商業化進展が期待される中、株価の値動きにAI分析が注目するほど活発な売買が発生しており、宇宙関連テーマ相場の中核候補。</p>
+        </div>
 </div>
-<div class="card news">
-  <h2>📰 最新注目ニュース</h2>
-  <ul><li>米国では連邦準備制度（FRB）の利下げ時期を巡る思惑が依然として市場の焦点であり、経済指標の強弱によってリスクオン・オフが切り替わりやすい不安定な相場環境が続いています。</li>
-<li>日本の2026年3月期決算発表シーズンが概ね終了し、業績上方修正銘柄と下方修正銘柄の株価格差が鮮明になっています。今後は次期業績予想の信頼性と株主還元方針が物色の軸となります。</li>
-<li>中国経済の回復ペース鈍化懸念が再浮上しており、中国向け輸出比率の高い素材・機械・化学セクターには引き続き慎重なスタンスが求められる局面です。</li>
-<li>生成AIとデータセンター向け電力需要の急増を背景に、国内外で電力インフラ・再生可能エネルギー関連株への関心が高まっており、新たなテーマ投資の柱として注目されています。</li>
-<li>円相場は1ドル145〜150円レンジでの推移が続いており、輸出企業にとっては引き続き追い風となる一方、輸入コスト上昇による内需企業の収益圧迫リスクにも目配りが必要です。</li></ul>
+
+<div class="section">
+  <div class="section-title">保有銘柄 売買シグナル</div>
+  
+        <div class="signal-card" style="border-color:#10b981">
+          <div class="signal-header">
+            <span class="signal-code">1436 グリーンエナジー&カンパニー</span>
+            <span class="signal-badge" style="background:#0d3320;color:#10b981">🟢 買い増し</span>
+          </div>
+          <p class="signal-reason">3Q累計で経常利益3.3倍増、直近四半期に至っては103倍増益という圧倒的な業績加速が確認された。再生可能エネルギー政策の追い風も継続しており、ファンダメンタルズ・テーマ両面から強気スタンスを維持できる。</p>
+          <div class="signal-detail">
+            <div><span class="label">リスク</span>業績急拡大の持続性への疑念や、電力・エネルギー関連規制変更による事業環境の急変が下押し要因となりうる。</div>
+            <div><span class="label">注目ポイント</span>好決算を受けた寄り付きの株価反応を確認し、急騰時は分割買いで対応。前日終値比+5%超の窓開けがあれば一部利確も視野に入れる。</div>
+          </div>
+          <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFAzZERxQkFkN014M1hsWlpRSEtMT0R3VzRDaGhpNGI3WkZtM0Rva0ktLWh0RXJUQWF2dVJqS19melc1SGZab1dQVWQwTm9lLVB6WHc?oc=5" target="_blank" class="news-link">📰 グリーンエナ、5-1月期(3Q累計)経常が3.3倍増益で着地・11-1月期も103倍増益</a>
+        </div>
+        <div class="signal-card" style="border-color:#f59e0b">
+          <div class="signal-header">
+            <span class="signal-code">186A アストロスケールHD</span>
+            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 様子見・保有継続</span>
+          </div>
+          <p class="signal-reason">「日伊宇宙開発協力」報道による連想買いで急伸しているが、あくまで報道ベースの連想材料であり契約等の具体的な業績貢献は未確定。保有継続としつつ追加買いは慎重に。</p>
+          <div class="signal-detail">
+            <div><span class="label">リスク</span>報道内容の具体化が進まない場合、連想買いの剥落による急反落リスクが高い。宇宙ビジネス全般の資金調達環境悪化も要警戒。</div>
+            <div><span class="label">注目ポイント</span>急伸後の値動きを観察し、報道の続報や政府発表の有無を確認。出来高を伴った上昇継続なら保有維持、出来高急減で失速なら利確を検討する。</div>
+          </div>
+          <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE5HbGVFM19JZzdiN0M2S3pfQWV3NlBCRFN4bkJaS3ctQjZZVlZlMFlhRV9oMXJoc3lCNzlOVXcyaHJVMkQ0YXcyWmJJdWxPQWpsS3Z3UnFlOU9kZ0NrbjZBQ3hwQU9QdkpoMm5WSA?oc=5" target="_blank" class="news-link">📰 アストロスケールHD株価急伸 「日伊が宇宙開発協力」報道で連想</a>
+        </div>
+        <div class="signal-card" style="border-color:#f59e0b">
+          <div class="signal-header">
+            <span class="signal-code">464A QPSホールディングス</span>
+            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 様子見・保有継続</span>
+          </div>
+          <p class="signal-reason">AI解説が注目するほど活発な値動きが続いており、宇宙関連テーマの中で引き続き個人投資家の関心を集めている。ただし業績の具体的な進捗確認が必要な段階。</p>
+          <div class="signal-detail">
+            <div><span class="label">リスク</span>衛星打ち上げスケジュールの遅延や資金調達懸念が顕在化した場合、株価の大幅調整が起こりうる。グロース市場全体のリスクオフにも敏感。</div>
+            <div><span class="label">注目ポイント</span>本日のグロース市場全体の地合いを確認しつつ、アストロスケールHDの動向と連動しやすいため宇宙セクター全体の資金流入を観察する。</div>
+          </div>
+          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBWSFdzQ1YxMXBra2ZOM1o5eDZZSmJ5WmhBSlhsS3BwQlc2Y0txb3NpakNKQkFUMy1jaHFMZE0wd0dValFveUZjRUpETmZfM0FxZV9iRVFCZ1gybm5ua0FB?oc=5" target="_blank" class="news-link">📰 (株)ＱＰＳホールディングス【464A】：今の株価の理由は？値動きの背景をAIが解説</a>
+        </div>
+        <div class="signal-card" style="border-color:#f59e0b">
+          <div class="signal-header">
+            <span class="signal-code">6232 ACSL</span>
+            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 様子見・保有継続</span>
+          </div>
+          <p class="signal-reason">ドローン・防衛関連の政策支援テーマが継続する中、AIが値動き背景を解説するほど注目度が上昇している。短期的な材料株物色の対象になっており、値動きが活発化している可能性がある。</p>
+          <div class="signal-detail">
+            <div><span class="label">リスク</span>防衛予算の執行遅延や競合他社の台頭、ドローン規制強化が業績に影響しうる。テーマ株としての過熱感にも注意が必要。</div>
+            <div><span class="label">注目ポイント</span>本日の出来高と価格帯を確認し、直近高値を明確に上抜けるかどうかを判断基準とする。失速する場合は損切りラインを再確認しておく。</div>
+          </div>
+          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE4tMmZsNEFOMXNzVG1ld2huUENWTUhtUnZNbU5PMUNQMk9RM2FyY3J4UGJ4RDRCQ2Rlb0xPZG5EVHRMSVNObEhuMVhlSDhIbF9aQVFuU09ocmYwZHo1SWpV?oc=5" target="_blank" class="news-link">📰 (株)ＡＣＳＬ【6232】：今の株価の理由は？値動きの背景をAIが解説</a>
+        </div>
+        <div class="signal-card" style="border-color:#f59e0b">
+          <div class="signal-header">
+            <span class="signal-code">6613 QDレーザ</span>
+            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 様子見・保有継続</span>
+          </div>
+          <p class="signal-reason">AI解説による注目はあるものの、具体的な業績カタリストや大型受注等の材料が乏しい状況。眼科・AR向けレーザー事業の商業化ペースを引き続き見守る段階。</p>
+          <div class="signal-detail">
+            <div><span class="label">リスク</span>商業化・量産化の遅れが続く場合、成長ストーリーへの信頼が揺らぎ株価の低迷が長期化するリスクがある。</div>
+            <div><span class="label">注目ポイント</span>他の保有銘柄と比較してカタリストが弱い状況のため、本日は値動きの確認に留め、次の決算や受注発表まで追加投資は控える方針を維持する。</div>
+          </div>
+          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBqUk9DUF9WaHpWdWUwTVJGRnFzNUxWeUJ5YjZhSkhfWVBibjZoZzVncVJDZGg3bXczbGdRUlNZeW9SQy1FNkhfZmx0dEREdWh2NUxhSlNTcHZQWmVSeDRF?oc=5" target="_blank" class="news-link">📰 (株)ＱＤレーザ【6613】：今の株価の理由は？値動きの背景をAIが解説</a>
+        </div>
 </div>
-<footer>Warren (Claude) · 2026-05-18 · 投資判断は自己責任でお願いします</footer>
+
+<div class="section">
+  <div class="section-title">最新マーケットニュース</div>
+  
+        <a href="#" class="news-item">
+          <span class="news-headline">グリーンエナジー&カンパニー、3Q累計経常利益3.3倍増・直近四半期103倍増益の大幅好決算</span>
+          <span class="news-impact">業績の急加速が確認され、再生可能エネルギーセクター全体への注目度が高まり、関連銘柄への買い波及が期待される。</span>
+        </a>
+        <a href="#" class="news-item">
+          <span class="news-headline">アストロスケールHD株価急伸、「日伊宇宙開発協力」報道で連想買い集中</span>
+          <span class="news-impact">宇宙デブリ除去・宇宙インフラ整備への国際的な関心の高まりが再確認され、宇宙関連株全体への資金流入を促す可能性がある。</span>
+        </a>
+        <a href="#" class="news-item">
+          <span class="news-headline">QPSホールディングス、AIが株価の値動き背景を解説するほど活発な売買</span>
+          <span class="news-impact">小型宇宙衛星テーマへの個人投資家の関心が持続しており、グロース市場におけるテーマ株物色が継続していることを示唆する。</span>
+        </a>
+        <a href="#" class="news-item">
+          <span class="news-headline">ACSL、ドローン関連テーマとしてAI株価解説の対象に浮上</span>
+          <span class="news-impact">防衛・物流ドローン関連の政策期待が根強く、同セクターへの断続的な資金流入が続く可能性を示している。</span>
+        </a>
+        <a href="#" class="news-item">
+          <span class="news-headline">QDレーザ、AI株価解説の注目銘柄としてピックアップ</span>
+          <span class="news-impact">AR・眼科向けレーザー技術への関心は維持されているものの、具体的な業績貢献の確認が株価上昇の鍵となる局面が続く。</span>
+        </a>
+</div>
+
+<footer>Warren (Claude) · 2026-05-18 · Powered by Anthropic</footer>
 </body>
 </html>
