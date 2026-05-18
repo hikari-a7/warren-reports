@@ -1,9 +1,9 @@
 {
   "holdings": [
-    {"code": "1436", "name": "グリーンエナジー&カンパニー"},
-    {"code": "186A", "name": "アストロスケールHD"},
-    {"code": "464A", "name": "QPSホールディングス"},
-    {"code": "6232", "name": "ACSL"},
-    {"code": "6613", "name": "QDレーザ"}
+    {"code": "1436", "name": "グリーンエナジー&カンパニー", "cost": 1788, "shares": 1200},
+    {"code": "186A", "name": "アストロスケールHD",          "cost": 1784, "shares": 600},
+    {"code": "464A", "name": "QPSホールディングス",          "cost": 2990, "shares": 500},
+    {"code": "6232", "name": "ACSL",                        "cost": 4040, "shares": 1300},
+    {"code": "6613", "name": "QDレーザ",                    "cost": 1811, "shares": 500}
   ]
 }

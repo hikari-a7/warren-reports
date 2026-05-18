@@ -69,6 +69,12 @@ def fetch_stock_data(holdings):
             loss = float((-delta.clip(upper=0)).tail(14).mean())
             rsi = 100 - (100 / (1 + gain / loss)) if loss > 0 else 100.0
 
+            cost = h.get("cost")
+            shares = h.get("shares", 0)
+            pnl_per = round(latest - cost, 1) if cost else None
+            pnl_pct = round((latest - cost) / cost * 100, 2) if cost else None
+            pnl_total = round(pnl_per * shares) if pnl_per is not None else None
+
             result[code] = {
                 "price": round(latest, 1),
                 "change_pct": round(change_pct, 2),
@@ -80,9 +86,15 @@ def fetch_stock_data(holdings):
                 "vs_ma5": round((latest - ma5) / ma5 * 100, 1) if ma5 else None,
                 "vs_ma25": round((latest - ma25) / ma25 * 100, 1) if ma25 else None,
                 "vs_ma75": round((latest - ma75) / ma75 * 100, 1) if ma75 else None,
+                "cost": cost,
+                "shares": shares,
+                "pnl_per": pnl_per,
+                "pnl_pct": pnl_pct,
+                "pnl_total": pnl_total,
             }
             d = result[code]
-            print(f"株価取得: {code} ¥{d['price']} 前日比{d['change_pct']:+.2f}% RSI={d['rsi']}")
+            pnl_str = f" 含み{'+' if (d['pnl_pct'] or 0) >= 0 else ''}{d['pnl_pct']}%" if d['pnl_pct'] is not None else ""
+            print(f"株価取得: {code} ¥{d['price']} 前日比{d['change_pct']:+.2f}% RSI={d['rsi']}{pnl_str}")
         except Exception as e:
             print(f"株価取得エラー {code}: {e}")
             result[code] = None
@@ -98,9 +110,12 @@ def stock_data_str(holdings, stock_data):
             sign = "+" if d["change_pct"] >= 0 else ""
             vs25 = f"MA25比{'+' if (d.get('vs_ma25') or 0) >= 0 else ''}{d.get('vs_ma25', 'N/A')}%" \
                    if d.get("vs_ma25") is not None else "MA25:N/A"
+            pnl_str = ""
+            if d.get("pnl_pct") is not None:
+                pnl_str = f" | 含み{'+' if d['pnl_pct'] >= 0 else ''}{d['pnl_pct']}%({'+' if (d['pnl_total'] or 0) >= 0 else ''}{d['pnl_total']:,}円)"
             lines.append(
                 f"- {h['code']} {h['name']}: ¥{d['price']} ({sign}{d['change_pct']}%) "
-                f"| RSI={d['rsi']} | {vs25} | 出来高比{d['volume_ratio']}x"
+                f"| RSI={d['rsi']} | {vs25} | 出来高比{d['volume_ratio']}x{pnl_str}"
             )
         else:
             lines.append(f"- {h['code']} {h['name']}: データ取得不可")
@@ -349,6 +364,28 @@ footer { font-size: 11px; color: #999; text-align: center; margin-top: 24px; pad
 """
 
 
+def build_portfolio_summary(holdings, stock_data):
+    total_cost = total_val = total_pnl = 0
+    has_data = False
+    for h in holdings:
+        d = stock_data.get(h["code"])
+        if d and d.get("cost") and d.get("shares"):
+            total_cost += d["cost"] * d["shares"]
+            total_val += d["price"] * d["shares"]
+            total_pnl += (d["pnl_total"] or 0)
+            has_data = True
+    if not has_data:
+        return ""
+    pnl_color = "#1a6b3a" if total_pnl >= 0 else "#c0392b"
+    pnl_sign = "+" if total_pnl >= 0 else ""
+    pnl_pct = round(total_pnl / total_cost * 100, 2) if total_cost else 0
+    return f"""<div style="background:#f9f9f9;border:1px solid #ddd;border-radius:4px;padding:12px 16px;margin-bottom:16px;display:flex;gap:24px;flex-wrap:wrap;">
+  <div><span style="font-size:11px;color:#888">評価額合計</span><br><strong style="font-size:16px">¥{total_val:,.0f}</strong></div>
+  <div><span style="font-size:11px;color:#888">取得金額合計</span><br><strong style="font-size:16px">¥{total_cost:,.0f}</strong></div>
+  <div><span style="font-size:11px;color:#888">含み損益</span><br><strong style="font-size:16px;color:{pnl_color}">{pnl_sign}¥{total_pnl:,} ({pnl_sign}{pnl_pct}%)</strong></div>
+</div>"""
+
+
 def build_price_table(holdings, stock_data):
     rows = ""
     for h in holdings:
@@ -356,7 +393,7 @@ def build_price_table(holdings, stock_data):
         if not d:
             rows += f"""<tr>
               <td><strong>{h['code']}</strong><br><small>{h['name']}</small></td>
-              <td colspan="5" style="color:#999;text-align:center;font-size:12px">データ取得不可</td>
+              <td colspan="7" style="color:#999;text-align:center;font-size:12px">データ取得不可</td>
             </tr>"""
             continue
 
@@ -382,17 +419,31 @@ def build_price_table(holdings, stock_data):
         vol = d["volume_ratio"]
         vol_color = "#c47a00" if vol >= 1.5 else "#333"
 
+        pnl_pct = d.get("pnl_pct")
+        pnl_total = d.get("pnl_total")
+        cost = d.get("cost")
+        if pnl_pct is not None and pnl_total is not None:
+            pnl_color = "#1a6b3a" if pnl_pct >= 0 else "#c0392b"
+            pnl_sign = "+" if pnl_pct >= 0 else ""
+            pnl_cell = f'<span style="color:{pnl_color};font-weight:700">{pnl_sign}{pnl_pct}%</span><br><small style="color:{pnl_color}">{pnl_sign}¥{pnl_total:,}</small>'
+            cost_cell = f"¥{cost:,}"
+        else:
+            pnl_cell = '<span style="color:#999">N/A</span>'
+            cost_cell = "N/A"
+
         rows += f"""<tr>
           <td><strong>{h['code']}</strong><br><small>{h['name']}</small></td>
           <td style="font-weight:700">¥{d['price']:,.1f}</td>
           <td style="color:{chg_color};font-weight:700">{chg_str}</td>
+          <td>{cost_cell}</td>
+          <td>{pnl_cell}</td>
           <td style="color:{rsi_color};font-weight:600">{rsi}{rsi_note}</td>
           <td style="color:{ma25_color}">{ma25_str}</td>
           <td style="color:{vol_color}">{vol}x</td>
         </tr>"""
 
     return f"""<table><thead><tr>
-      <th>銘柄</th><th>株価</th><th>前日比</th><th>RSI(14)</th><th>MA25比</th><th>出来高比</th>
+      <th>銘柄</th><th>現在値</th><th>前日比</th><th>取得単価</th><th>含み損益</th><th>RSI(14)</th><th>MA25比</th><th>出来高比</th>
     </tr></thead><tbody>{rows}</tbody></table>
     <p class="tech-note">RSI★=売られすぎ(30以下)　RSI⚠=買われすぎ(70以上)　MA25比=25日移動平均との乖離　出来高比=当日/直近20日平均</p>"""
 
@@ -494,7 +545,8 @@ def generate_html_morning(data, market_news, holding_news, today_str, date_id, h
     hn_map = {h["code"]: h for h in holding_news}
     bullets = "".join(f"<li>{b}</li>" for b in data.get("market_bullets", []))
     body = f"""
-<h2>株価テクニカル指標</h2>
+{build_portfolio_summary(holdings, stock_data)}
+<h2>保有銘柄　株価・損益・テクニカル</h2>
 {build_price_table(holdings, stock_data)}
 
 <h2>市場環境（朝の概況）</h2>
@@ -515,7 +567,8 @@ def generate_html_midday(data, market_news, holding_news, today_str, date_id, ho
     hn_map = {h["code"]: h for h in holding_news}
     bullets = "".join(f"<li>{b}</li>" for b in data.get("zenba_bullets", []))
     body = f"""
-<h2>株価テクニカル指標（前場終了時点）</h2>
+{build_portfolio_summary(holdings, stock_data)}
+<h2>保有銘柄　株価・損益・テクニカル（前場終了時点）</h2>
 {build_price_table(holdings, stock_data)}
 
 <h2>前場まとめ</h2>
@@ -536,7 +589,8 @@ def generate_html_evening(data, market_news, holding_news, today_str, date_id, h
     hn_map = {h["code"]: h for h in holding_news}
     bullets = "".join(f"<li>{b}</li>" for b in data.get("today_bullets", []))
     body = f"""
-<h2>株価テクニカル指標（引け後）</h2>
+{build_portfolio_summary(holdings, stock_data)}
+<h2>保有銘柄　株価・損益・テクニカル（引け後）</h2>
 {build_price_table(holdings, stock_data)}
 
 <h2>本日の相場まとめ</h2>
