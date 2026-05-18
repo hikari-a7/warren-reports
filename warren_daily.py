@@ -633,137 +633,146 @@ def build_portfolio_summary(holdings, stock_data):
 
 
 def build_price_table(holdings, stock_data):
-    rows = ""
+    cards = ""
     for h in holdings:
         d = stock_data.get(h["code"])
         if not d:
-            rows += f"""<tr><td><strong>{h['code']}</strong><br><small>{h['name']}</small></td>
-              <td colspan="7" style="color:#999;text-align:center;font-size:12px">データ取得不可</td></tr>"""
+            cards += f'<div style="border:1px solid #ddd;border-radius:4px;padding:10px 12px;background:#fff;"><strong style="font-size:13px;color:#1a4a8a">{h["code"]}</strong> <span style="font-size:11px;color:#888">{h["name"]}</span><div style="font-size:12px;color:#999;margin-top:6px">データ取得不可</div></div>'
             continue
 
+        price = d["price"]
         chg = d["change_pct"]
         chg_color = "#1a6b3a" if chg >= 0 else "#c0392b"
         rsi = d["rsi"]
-        rsi_color = "#c0392b" if rsi > 70 else ("#1a4a8a" if rsi < 30 else "#333")
-        rsi_note = " ⚠" if rsi > 70 else (" ★" if rsi < 30 else "")
+        rsi_color = "#c0392b" if rsi > 70 else ("#1a4a8a" if rsi < 30 else "#555")
+        rsi_note = "⚠" if rsi > 70 else ("★" if rsi < 30 else "")
         vs25 = d.get("vs_ma25")
-        ma25_str = f"{'+' if (vs25 or 0) >= 0 else ''}{vs25}%" if vs25 is not None else "N/A"
+        ma25_str = f"{'+' if (vs25 or 0) >= 0 else ''}{vs25}%" if vs25 is not None else "—"
         ma25_color = "#1a6b3a" if (vs25 or 0) >= 0 else "#c0392b"
-        vol_color = "#c47a00" if d["volume_ratio"] >= 1.5 else "#333"
+        vol = d["volume_ratio"]
+        vol_color = "#c47a00" if vol >= 1.5 else "#555"
         pnl_pct = d.get("pnl_pct")
         pnl_total = d.get("pnl_total")
         cost = d.get("cost")
+
         if pnl_pct is not None:
             pc = "#1a6b3a" if pnl_pct >= 0 else "#c0392b"
             ps = "+" if pnl_pct >= 0 else ""
-            pnl_cell = f'<span style="color:{pc};font-weight:700">{ps}{pnl_pct}%</span><br><small style="color:{pc}">{ps}¥{pnl_total:,}</small>'
+            pnl_html = f'<span style="color:{pc};font-weight:700">{ps}{pnl_pct}%</span> <span style="color:{pc};font-size:11px">({ps}¥{pnl_total:,})</span>'
         else:
-            pnl_cell = '<span style="color:#999">N/A</span>'
+            pnl_html = '<span style="color:#999">—</span>'
 
-        # 目標・損切セル
         target = h.get("target")
         stop = h.get("stop_loss")
-        price = d["price"]
-        target_cell = ""
+        ts_parts = []
         if target:
             t_dist = round((target - price) / price * 100, 1)
-            t_color = "#1a6b3a" if t_dist >= 0 else "#888"
-            t_sign = "+" if t_dist >= 0 else ""
-            target_cell += f'<span style="color:{t_color}">↑¥{target:,}({t_sign}{t_dist}%)</span>'
+            t_col = "#1a6b3a" if t_dist >= 0 else "#888"
+            ts_parts.append(f'<span style="color:{t_col}">↑{target:,}({t_dist:+.1f}%)</span>')
         if stop:
             s_dist = round((stop - price) / price * 100, 1)
-            s_color = "#c0392b" if s_dist < 0 else "#888"
-            target_cell += f'<br><span style="color:{s_color}">↓¥{stop:,}({s_dist:+.1f}%)</span>'
+            s_col = "#c0392b" if s_dist < 0 else "#888"
+            ts_parts.append(f'<span style="color:{s_col}">↓{stop:,}({s_dist:+.1f}%)</span>')
+        ts_html = '<span style="font-size:11px;color:#666">' + "　".join(ts_parts) + "</span>" if ts_parts else ""
 
-        rows += f"""<tr>
-          <td><strong>{h['code']}</strong><br><small>{h['name']}</small></td>
-          <td style="font-weight:700">¥{price:,.1f}</td>
-          <td style="color:{chg_color};font-weight:700">{'+' if chg >= 0 else ''}{chg}%</td>
-          <td>{'¥'+f"{cost:,}" if cost else 'N/A'}</td>
-          <td>{pnl_cell}</td>
-          <td style="font-size:12px">{target_cell or 'N/A'}</td>
-          <td style="color:{rsi_color};font-weight:600">{rsi}{rsi_note}</td>
-          <td style="color:{ma25_color}">{ma25_str}</td>
-          <td style="color:{vol_color}">{d['volume_ratio']}x</td>
-        </tr>"""
+        cards += f'''<div style="border:1px solid #ddd;border-radius:4px;padding:10px 12px;background:#fff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+    <strong style="font-size:13px;color:#1a4a8a">{h['code']}</strong>
+    <span style="font-size:11px;color:#777;text-align:right;max-width:55%">{h['name']}</span>
+  </div>
+  <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+    <span style="font-size:17px;font-weight:700">¥{price:,.0f}</span>
+    <span style="font-size:13px;font-weight:700;color:{chg_color}">{'+' if chg >= 0 else ''}{chg}%</span>
+  </div>
+  <div style="font-size:12px;margin-bottom:4px;">{pnl_html}</div>
+  {f'<div style="margin-bottom:5px;">{ts_html}</div>' if ts_html else ""}
+  <div style="display:flex;gap:10px;font-size:11px;color:#555;border-top:1px solid #f0f0f0;padding-top:5px;">
+    <span>RSI <strong style="color:{rsi_color}">{rsi}{rsi_note}</strong></span>
+    <span>MA25 <strong style="color:{ma25_color}">{ma25_str}</strong></span>
+    <span>出来高 <strong style="color:{vol_color}">{vol}x</strong></span>
+  </div>
+</div>'''
 
-    return f"""<table><thead><tr>
-      <th>銘柄</th><th>現在値</th><th>前日比</th><th>取得単価</th><th>含み損益</th><th>目標↑/損切↓</th><th>RSI(14)</th><th>MA25比</th><th>出来高比</th>
-    </tr></thead><tbody>{rows}</tbody></table>
-    <p class="tech-note">RSI★=売られすぎ(30以下)　RSI⚠=買われすぎ(70以上)　目標/損切は現在値からの距離</p>"""
+    return f'''<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">{cards}</div>
+<p class="tech-note">RSI★=売られすぎ(30以下)　RSI⚠=買われすぎ(70以上)　↑目標/↓損切は現在値からの距離</p>'''
 
 
 def build_holdings_table_morning(signals, hn_map):
-    rows = ""
+    html = ""
     for s in signals:
         hn = hn_map.get(s["code"], {})
         news_html = ""
         for n in hn.get("news", [])[:1]:
             if n.get("url"):
-                news_html = f'<div class="holding-news"><a href="{n["url"]}" target="_blank">📰 {n["title"][:40]}...</a></div>'
-        rows += f"""<tr>
-          <td><strong>{s['code']}</strong><br>{s['name']}</td>
-          <td>{signal_badge(s['signal'], s['signal_label'])}</td>
-          <td>{s.get('move','')}</td>
-          <td>{s.get('reason','')}<br><small style="color:#888">リスク：{s.get('risk','')}</small></td>
-          <td>{s.get('action','')}{news_html}</td></tr>"""
-    return f"""<table><thead><tr>
-      <th>銘柄</th><th>判断</th><th>直近動向</th><th>根拠・リスク</th><th>注目ポイント</th>
-    </tr></thead><tbody>{rows}</tbody></table>"""
+                news_html = f'<div class="holding-news" style="margin-top:5px"><a href="{n["url"]}" target="_blank">📰 {n["title"][:45]}...</a></div>'
+        html += f'''<div style="border:1px solid #ddd;border-radius:4px;padding:10px 12px;background:#fff;margin-bottom:8px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+    <strong style="font-size:13px">{s['code']} {s['name']}</strong>
+    {signal_badge(s['signal'], s['signal_label'])}
+  </div>
+  <div style="font-size:12px;color:#444;margin-bottom:3px;line-height:1.6"><span style="font-weight:600;color:#888">動向</span>　{s.get('move','')}</div>
+  <div style="font-size:12px;color:#444;margin-bottom:3px;line-height:1.6"><span style="font-weight:600;color:#888">根拠</span>　{s.get('reason','')}</div>
+  <div style="font-size:11px;color:#999;margin-bottom:4px"><span style="font-weight:600">リスク</span>　{s.get('risk','')}</div>
+  <div style="font-size:12px;color:#1a4a8a;border-top:1px solid #f0f0f0;padding-top:6px">{s.get('action','')}{news_html}</div>
+</div>'''
+    return html
 
 
 def build_holdings_table_midday(signals, hn_map):
-    rows = ""
+    html = ""
     for s in signals:
         hn = hn_map.get(s["code"], {})
         news_html = ""
         for n in hn.get("news", [])[:1]:
             if n.get("url"):
-                news_html = f'<div class="holding-news"><a href="{n["url"]}" target="_blank">📰 {n["title"][:40]}...</a></div>'
-        rows += f"""<tr>
-          <td><strong>{s['code']}</strong><br>{s['name']}</td>
-          <td>{signal_badge(s['signal'], s['signal_label'])}</td>
-          <td>{s.get('reason','')}</td>
-          <td>{s.get('price_point','')}{news_html}</td></tr>"""
-    return f"""<table><thead><tr>
-      <th>銘柄</th><th>後場判断</th><th>根拠</th><th>価格帯・注目ライン</th>
-    </tr></thead><tbody>{rows}</tbody></table>"""
+                news_html = f'<div class="holding-news" style="margin-top:5px"><a href="{n["url"]}" target="_blank">📰 {n["title"][:45]}...</a></div>'
+        html += f'''<div style="border:1px solid #ddd;border-radius:4px;padding:10px 12px;background:#fff;margin-bottom:8px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+    <strong style="font-size:13px">{s['code']} {s['name']}</strong>
+    {signal_badge(s['signal'], s['signal_label'])}
+  </div>
+  <div style="font-size:12px;color:#444;margin-bottom:4px;line-height:1.6"><span style="font-weight:600;color:#888">根拠</span>　{s.get('reason','')}</div>
+  <div style="font-size:12px;color:#1a4a8a;border-top:1px solid #f0f0f0;padding-top:6px">{s.get('price_point','')}{news_html}</div>
+</div>'''
+    return html
 
 
 def build_holdings_table_evening(signals, hn_map):
-    rows = ""
+    html = ""
     for s in signals:
         hn = hn_map.get(s["code"], {})
         news_html = ""
         for n in hn.get("news", [])[:1]:
             if n.get("url"):
-                news_html = f'<div class="holding-news"><a href="{n["url"]}" target="_blank">📰 {n["title"][:40]}...</a></div>'
-        rows += f"""<tr>
-          <td><strong>{s['code']}</strong><br>{s['name']}</td>
-          <td>{s.get('today_move','')}</td>
-          <td>{signal_badge(s['signal'], s['signal_label'])}</td>
-          <td>{s.get('strategy','')}{news_html}</td></tr>"""
-    return f"""<table><thead><tr>
-      <th>銘柄</th><th>本日動向</th><th>明日判断</th><th>明日以降の戦略</th>
-    </tr></thead><tbody>{rows}</tbody></table>"""
+                news_html = f'<div class="holding-news" style="margin-top:5px"><a href="{n["url"]}" target="_blank">📰 {n["title"][:45]}...</a></div>'
+        html += f'''<div style="border:1px solid #ddd;border-radius:4px;padding:10px 12px;background:#fff;margin-bottom:8px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+    <strong style="font-size:13px">{s['code']} {s['name']}</strong>
+    {signal_badge(s['signal'], s['signal_label'])}
+  </div>
+  <div style="font-size:12px;color:#444;margin-bottom:4px;line-height:1.6"><span style="font-weight:600;color:#888">本日</span>　{s.get('today_move','')}</div>
+  <div style="font-size:12px;color:#1a4a8a;border-top:1px solid #f0f0f0;padding-top:6px">{s.get('strategy','')}{news_html}</div>
+</div>'''
+    return html
 
 
 def build_holdings_table_weekly(signals, hn_map):
-    rows = ""
+    html = ""
     for s in signals:
         hn = hn_map.get(s["code"], {})
         news_html = ""
         for n in hn.get("news", [])[:1]:
             if n.get("url"):
-                news_html = f'<div class="holding-news"><a href="{n["url"]}" target="_blank">📰 {n["title"][:40]}...</a></div>'
-        rows += f"""<tr>
-          <td><strong>{s['code']}</strong><br>{s['name']}</td>
-          <td>{s.get('week_review','')}</td>
-          <td>{signal_badge(s['signal'], s['signal_label'])}</td>
-          <td>{s.get('next_week_strategy','')}{news_html}</td></tr>"""
-    return f"""<table><thead><tr>
-      <th>銘柄</th><th>今週の動き</th><th>来週判断</th><th>来週の戦略</th>
-    </tr></thead><tbody>{rows}</tbody></table>"""
+                news_html = f'<div class="holding-news" style="margin-top:5px"><a href="{n["url"]}" target="_blank">📰 {n["title"][:45]}...</a></div>'
+        html += f'''<div style="border:1px solid #ddd;border-radius:4px;padding:10px 12px;background:#fff;margin-bottom:8px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+    <strong style="font-size:13px">{s['code']} {s['name']}</strong>
+    {signal_badge(s['signal'], s['signal_label'])}
+  </div>
+  <div style="font-size:12px;color:#444;margin-bottom:4px;line-height:1.6"><span style="font-weight:600;color:#888">今週</span>　{s.get('week_review','')}</div>
+  <div style="font-size:12px;color:#1a4a8a;border-top:1px solid #f0f0f0;padding-top:6px">{s.get('next_week_strategy','')}{news_html}</div>
+</div>'''
+    return html
 
 
 def build_news_links(news_items, market_news):
