@@ -35,3 +35,25 @@ jobs:
           git add -A
           git diff --staged --quiet || git commit -m "report: $(date +%Y-%m-%d)"
           git push
+
+      - name: Notify failure via LINE
+        if: failure()
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        run: |
+          python3 - <<'EOF'
+          import os, json, urllib.request
+          token = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
+          user_id = os.environ["LINE_USER_ID"]
+          msg = "⚠️ Warren レポート送信に失敗しました\n\nAPIクレジット不足または設定エラーの可能性があります。\nhttps://github.com/hikari-a7/warren-reports/actions"
+          payload = json.dumps({"to": user_id, "messages": [{"type": "text", "text": msg}]}).encode()
+          req = urllib.request.Request(
+              "https://api.line.me/v2/bot/message/push",
+              data=payload,
+              headers={"Content-Type": "application/json", "Authorization": f"Bearer {token}"},
+              method="POST"
+          )
+          urllib.request.urlopen(req)
+          print("失敗通知送信完了")
+          EOF
