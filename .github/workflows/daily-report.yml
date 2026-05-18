@@ -2,8 +2,15 @@ name: Warren Daily Report
 
 on:
   schedule:
-    - cron: '0 23 * * 0-4'  # 平日8時JST（UTC 23:00 前日）
-  workflow_dispatch:          # 手動実行ボタン
+    - cron: '0 23 * * 0-4'   # 朝8:00 JST（UTC前日23:00）
+    - cron: '15 3 * * 1-5'   # 前場引け12:15 JST（UTC 3:15）
+    - cron: '0 9 * * 1-5'    # 引け後18:00 JST（UTC 9:00）
+  workflow_dispatch:
+    inputs:
+      report_type:
+        description: 'レポートタイプ (morning / midday / evening)'
+        required: false
+        default: 'morning'
 
 permissions:
   contents: write
@@ -21,11 +28,29 @@ jobs:
       - name: Install dependencies
         run: pip install anthropic
 
+      - name: Determine report type
+        id: report_type
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ github.event.inputs.report_type }}" >> $GITHUB_OUTPUT
+          else
+            HOUR=$(date -u +%H)
+            MIN=$(date -u +%M)
+            if [ "$HOUR" = "23" ]; then
+              echo "type=morning" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" = "03" ]; then
+              echo "type=midday" >> $GITHUB_OUTPUT
+            else
+              echo "type=evening" >> $GITHUB_OUTPUT
+            fi
+          fi
+
       - name: Generate and send report
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+          REPORT_TYPE: ${{ steps.report_type.outputs.type }}
         run: python warren_daily.py
 
       - name: Commit report
@@ -33,7 +58,7 @@ jobs:
           git config user.name "Warren"
           git config user.email "warren@claude.local"
           git add -A
-          git diff --staged --quiet || git commit -m "report: $(date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "report: $(date +%Y-%m-%d-%H%M)"
           git push
 
       - name: Notify failure via LINE
@@ -46,7 +71,7 @@ jobs:
           import os, json, urllib.request
           token = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
           user_id = os.environ["LINE_USER_ID"]
-          msg = "⚠️ Warren レポート送信に失敗しました\n\nAPIクレジット不足または設定エラーの可能性があります。\nhttps://github.com/hikari-a7/warren-reports/actions"
+          msg = "⚠️ Warren レポート送信に失敗しました\n\nhttps://github.com/hikari-a7/warren-reports/actions"
           payload = json.dumps({"to": user_id, "messages": [{"type": "text", "text": msg}]}).encode()
           req = urllib.request.Request(
               "https://api.line.me/v2/bot/message/push",
@@ -55,5 +80,4 @@ jobs:
               method="POST"
           )
           urllib.request.urlopen(req)
-          print("失敗通知送信完了")
           EOF
