@@ -1,101 +1,96 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Warren 引けレポート 2026年05月18日</title><style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #0b0e1a; color: #e2e8f0; padding: 16px; max-width: 680px; margin: 0 auto; }
-  header { text-align: center; padding: 24px 0 20px; border-bottom: 1px solid #1e2535; margin-bottom: 20px; }
-  header h1 { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 0.05em; }
-  header p { font-size: 12px; color: #64748b; margin-top: 6px; }
-  .section { margin-bottom: 20px; }
-  .section-title { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: #64748b; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #1e2535; }
-  .summary-box { background: #111827; border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #cbd5e1; }
-  .watchlist-item { padding: 10px 0; border-bottom: 1px solid #1e2535; }
-  .watchlist-item:last-child { border-bottom: none; }
-  .wl-name { font-size: 14px; font-weight: 600; color: #3b82f6; }
-  .wl-reason { font-size: 13px; color: #94a3b8; margin-top: 4px; line-height: 1.5; }
-  .signal-card { background: #111827; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; border-left: 3px solid; }
-  .signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
-  .signal-code { font-size: 14px; font-weight: 700; color: #f1f5f9; }
-  .signal-badge { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-  .signal-text { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 8px; }
-  .signal-detail { font-size: 12px; color: #64748b; line-height: 1.6; }
-  .signal-detail div { margin-bottom: 4px; }
-  .label { color: #475569; font-weight: 600; margin-right: 6px; }
-  .news-link { display: block; margin-top: 10px; font-size: 12px; color: #3b82f6; text-decoration: none; padding: 6px 10px; background: #0f172a; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .news-item { display: block; padding: 12px 0; border-bottom: 1px solid #1e2535; text-decoration: none; }
-  .news-item:last-child { border-bottom: none; }
-  .news-headline { display: block; font-size: 14px; color: #3b82f6; line-height: 1.5; margin-bottom: 4px; }
-  .news-item:hover .news-headline { text-decoration: underline; }
-  .news-impact { display: block; font-size: 12px; color: #64748b; line-height: 1.4; }
-  footer { text-align: center; font-size: 11px; color: #334155; margin-top: 24px; padding-top: 16px; border-top: 1px solid #1e2535; }
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>引けレポート（2026年05月18日）</title><style>
+body { font-family: -apple-system, 'Hiragino Sans', 'Yu Gothic', sans-serif; background: #f5f5f5; color: #222; margin: 0; padding: 16px; }
+.container { max-width: 720px; margin: 0 auto; background: #fff; border: 1px solid #ddd; padding: 24px 28px; }
+h1 { font-size: 20px; font-weight: 700; color: #111; border-bottom: 2px solid #222; padding-bottom: 10px; margin-bottom: 6px; }
+.meta { font-size: 12px; color: #666; margin-bottom: 20px; line-height: 1.8; }
+h2 { font-size: 15px; font-weight: 700; color: #111; border-left: 4px solid #1a6b3a; padding-left: 10px; margin: 24px 0 10px; }
+ul.bullets { list-style: disc; padding-left: 20px; margin: 0 0 8px; }
+ul.bullets li { font-size: 14px; line-height: 1.8; color: #333; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 8px; }
+th { background: #f0f0f0; border: 1px solid #ccc; padding: 7px 10px; text-align: left; font-weight: 600; color: #444; }
+td { border: 1px solid #ddd; padding: 7px 10px; vertical-align: top; line-height: 1.5; }
+tr:nth-child(even) td { background: #fafafa; }
+.watchlist-item { padding: 10px 0; border-bottom: 1px solid #eee; }
+.watchlist-item:last-child { border-bottom: none; }
+.wl-code { font-size: 13px; font-weight: 700; color: #1a4a8a; }
+.wl-reason { font-size: 13px; color: #555; margin-top: 3px; }
+.news-link { display: block; padding: 8px 0; border-bottom: 1px solid #eee; text-decoration: none; }
+.news-link:last-child { border-bottom: none; }
+.news-headline { font-size: 14px; color: #1a4a8a; }
+.news-link:hover .news-headline { text-decoration: underline; }
+.news-impact { font-size: 12px; color: #777; margin-top: 2px; }
+.holding-news { font-size: 11px; margin-top: 4px; }
+.holding-news a { color: #1a4a8a; text-decoration: none; }
+footer { font-size: 11px; color: #999; text-align: center; margin-top: 24px; padding-top: 12px; border-top: 1px solid #eee; }
 </style></head><body>
-<header><h1>📊 Warren 引けレポート</h1><p>2026年05月18日 18:00　|　投資判断は自己責任で</p></header>
-<div class="section"><div class="section-title">本日の相場まとめ</div><div class="summary-box">日経平均は史上初めて終値で6万円の大台を突破し、戦闘終結期待や半導体株の上昇が市場を牽引した。前場から続伸基調を維持し、好決算銘柄への買いが全体相場を下支えした一方、シカゴ先物は大阪日中比1220円安の61825円と引け後に軟化しており、明日以降の展開には注意が必要。丸井Gなど今期業績見通しが市場予想を下回った銘柄は大幅反落となり、個別格差が鮮明な一日となった。</div></div>
-<div class="section"><div class="section-title">保有銘柄 本日動向・明日戦略</div>
-        <div class="signal-card" style="border-color:#f59e0b">
-          <div class="signal-header">
-            <span class="signal-code">1436 グリーンエナジー&カンパニー</span>
-            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 明日以降買い増し</span>
-          </div>
-          <p class="signal-text">3Q累計経常利益が3.3倍増益、直近四半期も103倍増益と極めて強い業績モメンタムが確認され、材料株として注目度が高まった。</p>
-          <div class="signal-detail"><div><span class="label">戦略</span>業績の大幅改善が確認されたため、押し目があれば積極的に買い増しを検討。ただし小型株ゆえ出来高・流動性を確認しながら分割買いで対応し、直近高値更新を確認してから追加するのが安全策。</div></div>
-          <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFAzZERxQkFkN014M1hsWlpRSEtMT0R3VzRDaGhpNGI3WkZtM0Rva0ktLWh0RXJUQWF2dVJqS19melc1SGZab1dQVWQwTm9lLVB6WHc?oc=5" target="_blank" class="news-link">📰 グリーンエナ、5-1月期(3Q累計)経常が3.3倍増益で着地・11-1月期も103倍増益</a>
+<div class="container">
+<h1>引けレポート（2026年05月18日）</h1>
+<div class="meta">対象：保有5銘柄　|　基準日：2026年05月18日 18:00　|　作成：Warren<br>
+本レポートは投資助言ではありません。売買は必ず自己責任で行ってください。</div>
+
+<h2>本日の相場まとめ</h2>
+<ul class="bullets"><li>東京株式市場：日経平均が初の終値6万円超えを達成、戦闘終結期待による大幅上昇（前日比2,878円高）が牽引</li><li>好決算銘柄を中心に買いが広がり、前引けから続伸基調を維持して全体相場を下支え</li><li>半導体セクター（東京エレクトロン・キオクシア・ディスコ等）が引き続き日本株の中心として機能、ADR市場では買い優勢も引け後シカゴ先物は大阪比1,220円安と急反落</li><li>丸井Gが今期純利益見通しの下振れで大幅反落・約1年ぶり安値圏、決算ギャップリスクを改めて示す局面</li></ul>
+
+<h2>保有銘柄　本日動向・明日戦略</h2>
+<table><thead><tr>
+      <th>銘柄</th><th>本日動向</th><th>明日判断</th><th>明日以降の戦略</th>
+    </tr></thead><tbody><tr>
+          <td><strong>1436</strong><br>グリーンエナジー&カンパニー</td>
+          <td>3Q累計経常利益が3.3倍増益・直近四半期(11-1月期)も103倍増益と超強力な決算内容が開示され、好業績を材料に買い注目が集まる動き。</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:#1a6b3a;color:#d4edda;border:1px solid #d4edda">◎ 明日買い増し</span></td>
+          <td>103倍増益という驚異的な数字は短期筋の仕掛け買いを呼び込みやすい。ただし急騰後の出来高・板状況を確認しながら分割買い増しを検討し、直近高値を明確に上抜けた局面でポジション拡大を優先する。<div class="holding-news"><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFAzZERxQkFkN014M1hsWlpRSEtMT0R3VzRDaGhpNGI3WkZtM0Rva0ktLWh0RXJUQWF2dVJqS19melc1SGZab1dQVWQwTm9lLVB6WHc?oc=5" target="_blank">📰 グリーンエナ、5-1月期(3Q累計)経常が3.3倍増益で着地・11-1月期も10...</a></div></td>
+        </tr><tr>
+          <td><strong>186A</strong><br>アストロスケールHD</td>
+          <td>AIによる値動き解説が注目される中、宇宙デブリ除去という防衛・宇宙開発テーマの関心度が持続しており、全体相場高に連動した堅調な動き。</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:#1a4a8a;color:#d0e4f7;border:1px solid #d0e4f7">○ 明日様子見</span></td>
+          <td>シカゴ先物の急落（大阪比1,220円安）を受け、明日の寄り付きは全体が軟調に始まる可能性が高い。アストロスケールは値動きが荒いグロース銘柄のため、寄り付き後の値動きを確認してから判断し、現状のポジションを維持しつつ急落局面は拾い場と捉える。<div class="holding-news"><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9NdHJDQ1ZLTG94QnNwVTBOQWlkdmpkYW5EVDR2U1dMaFVFeVVKdzhUR0ZKU3dnZkRlMVNpVFZXaHhGd3ZMaEZaSEx3ZU9SUWpiZGx3elpSVHk4cTdENTFF?oc=5" target="_blank">📰 (株)アストロスケールホールディングス【186A】：今の株価の理由は？値動きの背...</a></div></td>
+        </tr><tr>
+          <td><strong>464A</strong><br>QPSホールディングス</td>
+          <td>小型宇宙・SAR衛星テーマとして注目継続、AI解説でも値動き背景が言及されており、個人投資家の関心が集まる銘柄として本日も値動きが活発。</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:#1a4a8a;color:#d0e4f7;border:1px solid #d0e4f7">○ 明日様子見</span></td>
+          <td>宇宙・防衛テーマは中長期的に有望だが、来週月曜の「月曜日の波乱」パターンと先物急落を警戒し、短期的な押し目を待つスタンスが賢明。下値支持線を確認しながら、押し目買いのターゲット価格を事前に設定しておく。<div class="holding-news"><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBWSFdzQ1YxMXBra2ZOM1o5eDZZSmJ5WmhBSlhsS3BwQlc2Y0txb3NpakNKQkFUMy1jaHFMZE0wd0dValFveUZjRUpETmZfM0FxZV9iRVFCZ1gybm5ua0FB?oc=5" target="_blank">📰 (株)ＱＰＳホールディングス【464A】：今の株価の理由は？値動きの背景をAIが...</a></div></td>
+        </tr><tr>
+          <td><strong>6232</strong><br>ACSL</td>
+          <td>防衛省・自衛隊向けドローン需要テーマとして引き続き市場の関心を集めており、AI解説でも注目度が高く、全体相場上昇の波に乗った動き。</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:#1a4a8a;color:#d0e4f7;border:1px solid #d0e4f7">○ 明日様子見</span></td>
+          <td>米・イラン停戦協議が楽観視できないとの野村レポートも踏まえると、防衛・セキュリティ関連銘柄としてのACSLは地政学リスクが支援材料になり得る。ただしシカゴ先物急落を受けた明日の全体下落リスクを考慮し、保有継続・買い増しは寄り付き後1時間の値動きを見てから判断する。<div class="holding-news"><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE4tMmZsNEFOMXNzVG1ld2huUENWTUhtUnZNbU5PMUNQMk9RM2FyY3J4UGJ4RDRCQ2Rlb0xPZG5EVHRMSVNObEhuMVhlSDhIbF9aQVFuU09ocmYwZHo1SWpV?oc=5" target="_blank">📰 (株)ＡＣＳＬ【6232】：今の株価の理由は？値動きの背景をAIが解説...</a></div></td>
+        </tr><tr>
+          <td><strong>6613</strong><br>QDレーザ</td>
+          <td>レーザー・網膜投影技術という独自テーマで値動きが注目されており、AI解説で値動き背景が取り上げられるなど個人投資家の情報収集が活発化している動き。</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:#8a5a00;color:#fff3cd;border:1px solid #fff3cd">△ 明日利確検討</span></td>
+          <td>シカゴ先物の大幅安を受け、明日の小型グロース株全般は売り圧力が強まりやすい。QDレーザは出来高が薄く下落時のダメージが大きいため、含み益がある場合は一部利確でリスク軽減を優先し、再び押し目で拾い直す戦略を検討。<div class="holding-news"><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBqUk9DUF9WaHpWdWUwTVJGRnFzNUxWeUJ5YjZhSkhfWVBibjZoZzVncVJDZGg3bXczbGdRUlNZeW9SQy1FNkhfZmx0dEREdWh2NUxhSlNTcHZQWmVSeDRF?oc=5" target="_blank">📰 (株)ＱＤレーザ【6613】：今の株価の理由は？値動きの背景をAIが解説...</a></div></td>
+        </tr></tbody></table>
+
+<h2>明日の注目銘柄</h2>
+<div class="watchlist-item">
+          <span class="wl-code">6857 アドバンテスト</span>
+          <div class="wl-reason">半導体セクターが日本株の中心であり続けるかの議論が活発化する中、エヌビディア決算（今週）の内容次第で半導体検査装置最大手のアドバンテストに再評価買いが入る可能性。来週の市場分散・AI分散の文脈でも最注目銘柄の一つ。</div>
+        </div><div class="watchlist-item">
+          <span class="wl-code">8252 丸井グループ</span>
+          <div class="wl-reason">本日今期純利益見通しの下振れで約1年ぶり安値圏まで大幅反落。売られすぎ感が出た場合の自律反発と、引き続き下押しするシナリオの両方を見極める観点から、明日の値動きが市場のセンチメント確認として重要。</div>
+        </div><div class="watchlist-item">
+          <span class="wl-code">6920 レーザーテック</span>
+          <div class="wl-reason">半導体セクターの主役交代説・序列変化が議論される中、EUV関連最高峰のレーザーテックは引き続き機関投資家の売買動向に注目。シカゴ先物急落の影響を受けつつも、どの価格帯で下げ止まるかが翌日の半導体セクター全体の方向性を左右する。</div>
         </div>
-        <div class="signal-card" style="border-color:#f59e0b">
-          <div class="signal-header">
-            <span class="signal-code">186A アストロスケールHD</span>
-            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 明日以降様子見</span>
-          </div>
-          <p class="signal-text">AIによる株価背景解説が注目される中、宇宙デブリ除去関連テーマとして市場の関心は継続しているが、具体的な業績カタリストに乏しく値動きは不安定。</p>
-          <div class="signal-detail"><div><span class="label">戦略</span>テーマ性は高いが業績の黒字化道筋が不透明なため、新規の政府契約や受注ニュースが出るまで追加購入は控え、現保有分は損切りラインを明確に設定して保有継続。</div></div>
-          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9NdHJDQ1ZLTG94QnNwVTBOQWlkdmpkYW5EVDR2U1dMaFVFeVVKdzhUR0ZKU3dnZkRlMVNpVFZXaHhGd3ZMaEZaSEx3ZU9SUWpiZGx3elpSVHk4cTdENTFF?oc=5" target="_blank" class="news-link">📰 (株)アストロスケールホールディングス【186A】：今の株価の理由は？値動きの背景をAIが解説</a>
-        </div>
-        <div class="signal-card" style="border-color:#f59e0b">
-          <div class="signal-header">
-            <span class="signal-code">464A QPSホールディングス</span>
-            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 明日以降様子見</span>
-          </div>
-          <p class="signal-text">小型宇宙・SAR衛星関連として関心を集めているが、本日はAIによる値動き解説止まりで明確な株価上昇トリガーは見当たらず、市場全体の高揚感に乗じた動き。</p>
-          <div class="signal-detail"><div><span class="label">戦略</span>衛星コンステレーション拡充に向けた続報や政府・防衛関連の受注ニュースを待ちたい。日経平均6万円突破で投資家心理は改善しているが、単独材料なき追加買いは避け、週明けの動向を見極める。</div></div>
-          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBWSFdzQ1YxMXBra2ZOM1o5eDZZSmJ5WmhBSlhsS3BwQlc2Y0txb3NpakNKQkFUMy1jaHFMZE0wd0dValFveUZjRUpETmZfM0FxZV9iRVFCZ1gybm5ua0FB?oc=5" target="_blank" class="news-link">📰 (株)ＱＰＳホールディングス【464A】：今の株価の理由は？値動きの背景をAIが解説</a>
-        </div>
-        <div class="signal-card" style="border-color:#f59e0b">
-          <div class="signal-header">
-            <span class="signal-code">6232 ACSL</span>
-            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 明日以降様子見</span>
-          </div>
-          <p class="signal-text">国産ドローン・防衛関連テーマとして継続注目を受けているが、本日もAI解説止まりで株価の方向性が定まりにくい状況。</p>
-          <div class="signal-detail"><div><span class="label">戦略</span>防衛省・官公庁向け案件の受注発表や量産移行ニュースが出れば大きな上昇トリガーになり得るため、情報収集を徹底。現時点では追加買いより既存ポジションの維持を優先し、5日移動平均線割れで損切りを検討。</div></div>
-          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE4tMmZsNEFOMXNzVG1ld2huUENWTUhtUnZNbU5PMUNQMk9RM2FyY3J4UGJ4RDRCQ2Rlb0xPZG5EVHRMSVNObEhuMVhlSDhIbF9aQVFuU09ocmYwZHo1SWpV?oc=5" target="_blank" class="news-link">📰 (株)ＡＣＳＬ【6232】：今の株価の理由は？値動きの背景をAIが解説</a>
-        </div>
-        <div class="signal-card" style="border-color:#f59e0b">
-          <div class="signal-header">
-            <span class="signal-code">6613 QDレーザ</span>
-            <span class="signal-badge" style="background:#3b2a0d;color:#f59e0b">🟡 明日以降様子見</span>
-          </div>
-          <p class="signal-text">網膜投影AR・医療用レーザー関連として引き続きAIによる解説注目が続いているが、出来高・値動き共に明確なトレンド形成には至っていない。</p>
-          <div class="signal-detail"><div><span class="label">戦略</span>新製品採用実績や大口顧客との契約ニュースが出るまでは追加投資を見送り、既存保有分は保有継続しつつ直近安値を割り込んだ場合は損切りを徹底してリスク管理を優先する。</div></div>
-          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBqUk9DUF9WaHpWdWUwTVJGRnFzNUxWeUJ5YjZhSkhfWVBibjZoZzVncVJDZGg3bXczbGdRUlNZeW9SQy1FNkhfZmx0dEREdWh2NUxhSlNTcHZQWmVSeDRF?oc=5" target="_blank" class="news-link">📰 (株)ＱＤレーザ【6613】：今の株価の理由は？値動きの背景をAIが解説</a>
-        </div></div>
-<div class="section"><div class="section-title">明日の注目銘柄</div><div class="watchlist-item"><span class="wl-name">6857 アドバンテスト</span><p class="wl-reason">日経平均6万円突破の立役者である半導体セクターの中核銘柄であり、エヌビディア決算翌日のナスダック動向を受けた反応が最も直接的に出やすい。シカゴ先物の急落を受けた売り圧力と半導体強気シナリオのせめぎ合いを確認し、押し目買いの好機を探る。</p></div><div class="watchlist-item"><span class="wl-name">8252 丸井グループ</span><p class="wl-reason">本日今期純利益見通しが市場予想を下回り約1年ぶり安値圏まで売られた。売られすぎの反動買いが入るか、さらなる下落継続かの分岐点となり、業績下方修正銘柄のリバウンド狙いシナリオを検証する材料として注目。</p></div><div class="watchlist-item"><span class="wl-name">285A NVIDIA（米国・参考）/ 6954 ファナック</span><p class="wl-reason">来週の日本株相場の行方を左右するエヌビディア決算への注目が高まる中、その影響を最も受けやすいFA・ロボット分野のファナックを監視。エヌビディアがAIインフラ需要拡大を示す好決算なら工場自動化・AI活用銘柄として連想買いが期待できる。</p></div></div>
-<div class="section"><div class="section-title">注目ニュース</div>
-        <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBHNDhJR2Y4ZkFQeVlKblF3cFdVdng5T2QyMkpIU1pKSUF3T2VrQU5RLVVUZHlUVjN3czhiY2VTTU5DNjMtcGdJX25vM194eWJSLUJsYmgzbGZnNl9JU2FZ?oc=5" target="_blank" class="news-item">
-          <span class="news-headline">日経平均、史上初の終値6万円超え達成——戦闘終結期待と半導体株主導で大台突破</span>
-          <span class="news-impact">歴史的節目突破による投資家心理の改善で明日も買い優勢のムードが続く可能性があるが、シカゴ先物の1220円安が示すように利益確定売りと高値警戒感が交錯し、明日は上下に荒れやすい展開に注意が必要。</span>
+
+<h2>注目ニュース</h2>
+<a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE8wbVQwNlAtZG1scDFqYkZMY2dpbDdYazNYZ3MtYVFYOVFJal83aFZXTGdScllYYlhhY0g4SkkxMXFyX3poRTB0Nmhmam92MW1CbGRZOVliVUdSdEJPaFpFeC1yQm8tY19kQld3YQ?oc=5" target="_blank" class="news-link">
+          <div class="news-headline">▶ 東京株、初の終値6万円超え達成――戦闘終結期待が大台突破を後押し</div>
+          <div class="news-impact">歴史的節目を突破したことで達成感と高値警戒感が同時に台頭しやすく、明日は利益確定売りが出やすい需給環境となる可能性が高い。</div>
+        </a><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBHNDhJR2Y4ZkFQeVlKblF3cFdVdng5T2QyMkpIU1pKSUF3T2VrQU5RLVVUZHlUVjN3czhiY2VTTU5DNjMtcGdJX25vM194eWJSLUJsYmgzbGZnNl9JU2FZ?oc=5" target="_blank" class="news-link">
+          <div class="news-headline">▶ シカゴ先物が大阪日中比1,220円安の61,825円――引け後に急速に上昇分を削る動き</div>
+          <div class="news-impact">引け後の急落は米国市場での何らかの悪材料を示唆しており、明日の東京市場は6万円を挟んだ激しい値動きとなる可能性が高く、寄り付き後の動向を慎重に見極める必要がある。</div>
+        </a><a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE1udUt5SS1fU3RyZjlURDJqNDFHVzlKWWxMcFhKOU1RX0hIUGdHSHRmSzNuYk1lSmQwT3BwTmZTb3dpLWc3TzYtYU5XZjM1UmV1NlBGbjExUWJYZDZfQzhfUA?oc=5" target="_blank" class="news-link">
+          <div class="news-headline">▶ 米・イラン停戦協議、楽観視できない二つの理由を野村證券が指摘</div>
+          <div class="news-impact">地政学リスクが再燃した場合、防衛・エネルギー関連株には追い風となる一方、リスクオフムードが全体相場の上値を抑える要因となり得る。</div>
+        </a><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE1uSTllVDlhTjFRTzFvWkV3dFh1ME5fZGhBYnE2ZGpuSUdYeDE4ZlVwejhScHNCbUdnUkNpakdRNWxJM2xodndvM01LcnBJRlozSzJvdF9FU3BBN1lwaWRZ?oc=5" target="_blank" class="news-link">
+          <div class="news-headline">▶ 来週の焦点はエヌビディア決算――「市場分散」か「AI分散」かが問われる局面</div>
+          <div class="news-impact">エヌビディアの決算結果が予想を大きく上回れば東京市場の半導体・AI関連株に連鎖高が期待されるが、ガイダンスが慎重だった場合は東エレク・アドバンテスト等に大幅調整リスクが生じる。</div>
+        </a><a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTFB5dFBxUFp1R3cxSUZTcWN2S212V3ZhVGVvMFFKY1VSUWI5ZzZ6Wk9uV2IxUEs0aF9jMkVHRDUxQUR5YXE1ckZadlB5SzXSAU9BVV95cUxOc0poN0xOM2xrZ0FnaUR1cFNBYVp0ZERiXzhwTGlTYmJvTlhnbUhkSTdNSUFUNGlkbVloaHZEYzltb1lHZVN6SEFsNld6VzFj?oc=5" target="_blank" class="news-link">
+          <div class="news-headline">▶ グリーンエナジー&カンパニー、11-1月期経常103倍増益の超サプライズ決算を開示</div>
+          <div class="news-impact">翌日の寄り付きで値幅制限いっぱいのストップ高を試す展開も視野に入り、同社株保有者は買い増し水準と利確ラインの事前設定が急務となる。</div>
         </a>
-        <a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxPOEFJcGN4N1EzbXZHRFkzNjN6SGJhbFhVQ0JiTDhoYzB0ZUVyanYxTlpQOVFaVUtubGhIc2szazNUM2oxU3BXX0FPTkRfdEgxVHBBRExaMlhGQkNjdk12b3BjYmt3NmEwLTgyOU9kd2hCNnFnMFFWQlRONERfaUQxTVJIMzlEajUzT1c3T0sxcVhSdGp0NExuQzRuMDdCVG45Z3AxS1dMejk?oc=5" target="_blank" class="news-item">
-          <span class="news-headline">シカゴ日経先物が大阪日中比1220円安の61825円——引け後に急反落</span>
-          <span class="news-impact">現地時間の地政学・経済指標動向次第では明日の東京市場が大幅下落で始まるリスクがあり、保有銘柄の損切りラインを事前に再確認しておくことが重要。</span>
-        </a>
-        <a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE1udUt5SS1fU3RyZjlURDJqNDFHVzlKWWxMcFhKOU1RX0hIUGdHSHRmSzNuYk1lSmQwT3BwTmZTb3dpLWc3TzYtYU5XZjM1UmV1NlBGbjExUWJYZDZfQzhfUA?oc=5" target="_blank" class="news-item">
-          <span class="news-headline">エヌビディア決算に市場の焦点——「AIか市場分散か」来週の日本株相場のカギを握る</span>
-          <span class="news-impact">エヌビディアが市場予想を上回る好決算を発表すれば東京エレクトロン・アドバンテスト等の半導体株を中心に来週の日本株は一段高となり得る一方、サプライズ不足なら利益確定売りが加速するリスクがある。</span>
-        </a>
-        <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RTlNWOU5GdWVuOXlTbkkzeXdISXAyeTZZMTJCZGtFNS00Z3pIWFI1NkdqMFhzTTYtNXItdW5uWHJuaWVaME53ckZSSVdiN293ZWtIRldIX3NWQXhqSmk4?oc=5" target="_blank" class="news-item">
-          <span class="news-headline">グリーンエナジー&カンパニー、3Q累計経常利益3.3倍増・直近四半期103倍増益の好決算</span>
-          <span class="news-impact">再生可能エネルギーセクターの業績急回復を示す数字であり、明日は材料株として短期資金が集中する可能性があるが、小型株特有の流動性リスクには注意が必要。</span>
-        </a>
-        <a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTFB5dFBxUFp1R3cxSUZTcWN2S212V3ZhVGVvMFFKY1VSUWI5ZzZ6Wk9uV2IxUEs0aF9jMkVHRDUxQUR5YXE1ckZadlB5SzXSAU9BVV95cUxOc0poN0xOM2xrZ0FnaUR1cFNBYVp0ZERiXzhwTGlTYmJvTlhnbUhkSTdNSUFUNGlkbVloaHZEYzltb1lHZVN6SEFsNld6VzFj?oc=5" target="_blank" class="news-item">
-          <span class="news-headline">丸井グループ株価が今期純利益見通し未達で大幅反落——約1年ぶり安値圏</span>
-          <span class="news-impact">好決算一色の中で業績ガイダンス未達銘柄への売りが苛烈であることが改めて示され、決算シーズン終盤に保有銘柄の業績進捗率と来期見通しの精査が急務であることを示唆している。</span>
-        </a></div>
-<footer>Warren (Claude) · 2026-05-18 · Powered by Anthropic</footer></body></html>
+<footer>Warren (Claude) · 2026-05-18 · Powered by Anthropic</footer>
+</div></body></html>
