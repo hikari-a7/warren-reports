@@ -68,11 +68,7 @@ def fetch_holding_news(holdings):
         query = urllib.parse.quote(f"{h['name']} 株価 {h['code']}")
         url = f"https://news.google.com/rss/search?q={query}&hl=ja&gl=JP&ceid=JP:ja"
         items = fetch_rss(url, 2)
-        result.append({
-            "code": h["code"],
-            "name": h["name"],
-            "news": items[:2]
-        })
+        result.append({"code": h["code"], "name": h["name"], "news": items[:2]})
     return result
 
 
@@ -111,22 +107,24 @@ def generate_morning(market_news, holding_news, holdings, today_str):
 
 以下のJSON形式のみで出力：
 {{
-  "market_overview": "本日の市場概況2〜3文（日経平均方向感・主要テーマ・為替）",
+  "market_bullets": ["市場概況の箇条書き（3〜4項目、日経平均・テーマ・為替・注意点）"],
   "watchlist": [
-    {{"name": "銘柄コード 銘柄名", "reason": "注目理由1〜2文"}}
+    {{"code": "コード", "name": "銘柄名", "reason": "注目理由1〜2文"}}
   ],
   "holdings_signals": [
     {{
       "code": "銘柄コード",
       "name": "銘柄名",
-      "signal": "買い増し|様子見・保有継続|利確検討",
-      "signal_reason": "シグナル根拠1〜2文",
+      "signal": "◎|○|△",
+      "signal_label": "買い増し|保有継続|利確検討",
+      "move": "直近動向1文",
+      "reason": "判断根拠1〜2文",
       "risk": "リスク1文",
-      "action": "今日の具体的注目ポイント1〜2文"
+      "action": "今日の注目ポイント1〜2文"
     }}
   ],
   "news_summary": [
-    {{"headline": "ニュース要約", "impact": "株式市場への影響1文"}}
+    {{"headline": "ニュース要約", "impact": "市場への影響1文"}}
   ]
 }}
 watchlist3〜4件、holdings_signals全銘柄分、news_summary4〜5件。JSONのみ。"""
@@ -153,19 +151,20 @@ def generate_midday(market_news, holding_news, holdings, today_str):
 
 以下のJSON形式のみで出力：
 {{
-  "zenba_summary": "前場の相場まとめ2〜3文（日経平均・セクター・出来高感）",
-  "koba_strategy": "後場に向けた全体戦略1〜2文（注意点・方向感）",
+  "zenba_bullets": ["前場まとめ箇条書き（3〜4項目：日経平均・出来高・セクター動向）"],
+  "koba_strategy": "後場全体戦略1〜2文",
   "holdings_koba": [
     {{
       "code": "銘柄コード",
       "name": "銘柄名",
-      "signal": "後場買い|後場売り・利確|後場様子見",
-      "reason": "後場戦略の根拠1〜2文",
-      "price_point": "具体的な価格帯や注目ポイント1文"
+      "signal": "◎|○|△",
+      "signal_label": "後場買い|後場様子見|後場利確",
+      "reason": "後場戦略根拠1〜2文",
+      "price_point": "具体的な価格帯・注目ライン1文"
     }}
   ],
   "koba_news": [
-    {{"headline": "後場に影響するニュース要約", "impact": "後場への影響1文"}}
+    {{"headline": "後場に影響するニュース", "impact": "後場への影響1文"}}
   ]
 }}
 holdings_koba全銘柄分、koba_news3〜4件。JSONのみ。"""
@@ -192,164 +191,209 @@ def generate_evening(market_news, holding_news, holdings, today_str):
 
 以下のJSON形式のみで出力：
 {{
-  "today_summary": "本日相場まとめ2〜3文（日経平均終値・主要動向）",
+  "today_bullets": ["本日相場まとめ箇条書き（3〜4項目：終値・主要動向・セクター）"],
   "holdings_today": [
     {{
       "code": "銘柄コード",
       "name": "銘柄名",
-      "today_move": "本日の動き・評価1文",
-      "tomorrow_signal": "明日以降買い増し|明日以降利確検討|明日以降様子見",
-      "strategy": "明日以降の具体的戦略1〜2文"
+      "today_move": "本日の動き1文",
+      "signal": "◎|○|△",
+      "signal_label": "明日買い増し|明日様子見|明日利確検討",
+      "strategy": "明日以降の戦略1〜2文"
     }}
   ],
   "tomorrow_watchlist": [
-    {{"name": "銘柄コード 銘柄名", "reason": "明日注目する理由1〜2文"}}
+    {{"code": "コード", "name": "銘柄名", "reason": "明日注目理由1〜2文"}}
   ],
   "evening_news": [
-    {{"headline": "注目ニュース要約", "impact": "明日の株式市場への影響1文"}}
+    {{"headline": "注目ニュース", "impact": "明日の市場への影響1文"}}
   ]
 }}
 holdings_today全銘柄分、tomorrow_watchlist3件、evening_news4〜5件。JSONのみ。"""
     return call_claude(prompt)
 
 
-def signal_style(signal):
-    if "買い" in signal:
-        return ("🟢", "#10b981", "#0d3320")
-    elif "売り" in signal or "利確" in signal:
-        return ("🔴", "#ef4444", "#3b0d0d")
-    else:
-        return ("🟡", "#f59e0b", "#3b2a0d")
+def signal_badge(signal, label):
+    colors = {"◎": ("#1a6b3a", "#d4edda", "◎"), "○": ("#1a4a8a", "#d0e4f7", "○"), "△": ("#8a5a00", "#fff3cd", "△")}
+    bg, fg, mark = "#f0f0f0", "#555", signal
+    if signal in colors:
+        bg_c, fg_c, mark = colors[signal]
+        fg, bg = fg_c, bg_c
+    return f'<span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:{bg};color:{fg};border:1px solid {fg}">{mark} {label}</span>'
 
 
 CSS = """
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #0b0e1a; color: #e2e8f0; padding: 16px; max-width: 680px; margin: 0 auto; }
-  header { text-align: center; padding: 24px 0 20px; border-bottom: 1px solid #1e2535; margin-bottom: 20px; }
-  header h1 { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 0.05em; }
-  header p { font-size: 12px; color: #64748b; margin-top: 6px; }
-  .section { margin-bottom: 20px; }
-  .section-title { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: #64748b; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #1e2535; }
-  .summary-box { background: #111827; border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #cbd5e1; }
-  .watchlist-item { padding: 10px 0; border-bottom: 1px solid #1e2535; }
-  .watchlist-item:last-child { border-bottom: none; }
-  .wl-name { font-size: 14px; font-weight: 600; color: #3b82f6; }
-  .wl-reason { font-size: 13px; color: #94a3b8; margin-top: 4px; line-height: 1.5; }
-  .signal-card { background: #111827; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; border-left: 3px solid; }
-  .signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
-  .signal-code { font-size: 14px; font-weight: 700; color: #f1f5f9; }
-  .signal-badge { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-  .signal-text { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 8px; }
-  .signal-detail { font-size: 12px; color: #64748b; line-height: 1.6; }
-  .signal-detail div { margin-bottom: 4px; }
-  .label { color: #475569; font-weight: 600; margin-right: 6px; }
-  .news-link { display: block; margin-top: 10px; font-size: 12px; color: #3b82f6; text-decoration: none; padding: 6px 10px; background: #0f172a; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .news-item { display: block; padding: 12px 0; border-bottom: 1px solid #1e2535; text-decoration: none; }
-  .news-item:last-child { border-bottom: none; }
-  .news-headline { display: block; font-size: 14px; color: #3b82f6; line-height: 1.5; margin-bottom: 4px; }
-  .news-item:hover .news-headline { text-decoration: underline; }
-  .news-impact { display: block; font-size: 12px; color: #64748b; line-height: 1.4; }
-  footer { text-align: center; font-size: 11px; color: #334155; margin-top: 24px; padding-top: 16px; border-top: 1px solid #1e2535; }
+body { font-family: -apple-system, 'Hiragino Sans', 'Yu Gothic', sans-serif; background: #f5f5f5; color: #222; margin: 0; padding: 16px; }
+.container { max-width: 720px; margin: 0 auto; background: #fff; border: 1px solid #ddd; padding: 24px 28px; }
+h1 { font-size: 20px; font-weight: 700; color: #111; border-bottom: 2px solid #222; padding-bottom: 10px; margin-bottom: 6px; }
+.meta { font-size: 12px; color: #666; margin-bottom: 20px; line-height: 1.8; }
+h2 { font-size: 15px; font-weight: 700; color: #111; border-left: 4px solid #1a6b3a; padding-left: 10px; margin: 24px 0 10px; }
+ul.bullets { list-style: disc; padding-left: 20px; margin: 0 0 8px; }
+ul.bullets li { font-size: 14px; line-height: 1.8; color: #333; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 8px; }
+th { background: #f0f0f0; border: 1px solid #ccc; padding: 7px 10px; text-align: left; font-weight: 600; color: #444; }
+td { border: 1px solid #ddd; padding: 7px 10px; vertical-align: top; line-height: 1.5; }
+tr:nth-child(even) td { background: #fafafa; }
+.watchlist-item { padding: 10px 0; border-bottom: 1px solid #eee; }
+.watchlist-item:last-child { border-bottom: none; }
+.wl-code { font-size: 13px; font-weight: 700; color: #1a4a8a; }
+.wl-reason { font-size: 13px; color: #555; margin-top: 3px; }
+.news-link { display: block; padding: 8px 0; border-bottom: 1px solid #eee; text-decoration: none; }
+.news-link:last-child { border-bottom: none; }
+.news-headline { font-size: 14px; color: #1a4a8a; }
+.news-link:hover .news-headline { text-decoration: underline; }
+.news-impact { font-size: 12px; color: #777; margin-top: 2px; }
+.holding-news { font-size: 11px; margin-top: 4px; }
+.holding-news a { color: #1a4a8a; text-decoration: none; }
+footer { font-size: 11px; color: #999; text-align: center; margin-top: 24px; padding-top: 12px; border-top: 1px solid #eee; }
 """
 
 
-def build_signal_cards(signals, holding_news_map):
-    html = ""
+def build_holdings_table_morning(signals, hn_map):
+    rows = ""
     for s in signals:
-        emoji, color, bg = signal_style(s.get("signal", ""))
-        hn = holding_news_map.get(s["code"], {})
-        news_links = ""
+        hn = hn_map.get(s["code"], {})
+        news_html = ""
         for n in hn.get("news", [])[:1]:
             if n.get("url"):
-                news_links += f'<a href="{n["url"]}" target="_blank" class="news-link">📰 {n["title"]}</a>'
-        detail = ""
-        if s.get("risk"):
-            detail += f'<div><span class="label">リスク</span>{s["risk"]}</div>'
-        if s.get("action"):
-            detail += f'<div><span class="label">注目</span>{s["action"]}</div>'
-        if s.get("price_point"):
-            detail += f'<div><span class="label">価格帯</span>{s["price_point"]}</div>'
-        if s.get("strategy"):
-            detail += f'<div><span class="label">戦略</span>{s["strategy"]}</div>'
-        reason = s.get("signal_reason") or s.get("reason") or s.get("today_move", "")
-        html += f"""
-        <div class="signal-card" style="border-color:{color}">
-          <div class="signal-header">
-            <span class="signal-code">{s['code']} {s['name']}</span>
-            <span class="signal-badge" style="background:{bg};color:{color}">{emoji} {s.get('signal') or s.get('tomorrow_signal','')}</span>
-          </div>
-          <p class="signal-text">{reason}</p>
-          <div class="signal-detail">{detail}</div>
-          {news_links}
-        </div>"""
-    return html
+                news_html = f'<div class="holding-news"><a href="{n["url"]}" target="_blank">📰 {n["title"][:40]}...</a></div>'
+        rows += f"""<tr>
+          <td><strong>{s['code']}</strong><br>{s['name']}</td>
+          <td>{signal_badge(s['signal'], s['signal_label'])}</td>
+          <td>{s.get('move','')}</td>
+          <td>{s.get('reason','')}<br><small style="color:#888">リスク：{s.get('risk','')}</small></td>
+          <td>{s.get('action','')}{news_html}</td>
+        </tr>"""
+    return f"""<table><thead><tr>
+      <th>銘柄</th><th>判断</th><th>直近動向</th><th>根拠・リスク</th><th>注目ポイント</th>
+    </tr></thead><tbody>{rows}</tbody></table>"""
 
 
-def build_news_section(news_items, market_news):
+def build_holdings_table_midday(signals, hn_map):
+    rows = ""
+    for s in signals:
+        hn = hn_map.get(s["code"], {})
+        news_html = ""
+        for n in hn.get("news", [])[:1]:
+            if n.get("url"):
+                news_html = f'<div class="holding-news"><a href="{n["url"]}" target="_blank">📰 {n["title"][:40]}...</a></div>'
+        rows += f"""<tr>
+          <td><strong>{s['code']}</strong><br>{s['name']}</td>
+          <td>{signal_badge(s['signal'], s['signal_label'])}</td>
+          <td>{s.get('reason','')}</td>
+          <td>{s.get('price_point','')}{news_html}</td>
+        </tr>"""
+    return f"""<table><thead><tr>
+      <th>銘柄</th><th>後場判断</th><th>根拠</th><th>価格帯・注目ライン</th>
+    </tr></thead><tbody>{rows}</tbody></table>"""
+
+
+def build_holdings_table_evening(signals, hn_map):
+    rows = ""
+    for s in signals:
+        hn = hn_map.get(s["code"], {})
+        news_html = ""
+        for n in hn.get("news", [])[:1]:
+            if n.get("url"):
+                news_html = f'<div class="holding-news"><a href="{n["url"]}" target="_blank">📰 {n["title"][:40]}...</a></div>'
+        rows += f"""<tr>
+          <td><strong>{s['code']}</strong><br>{s['name']}</td>
+          <td>{s.get('today_move','')}</td>
+          <td>{signal_badge(s['signal'], s['signal_label'])}</td>
+          <td>{s.get('strategy','')}{news_html}</td>
+        </tr>"""
+    return f"""<table><thead><tr>
+      <th>銘柄</th><th>本日動向</th><th>明日判断</th><th>明日以降の戦略</th>
+    </tr></thead><tbody>{rows}</tbody></table>"""
+
+
+def build_news_links(news_items, market_news):
     html = ""
     for i, item in enumerate(news_items):
         url = market_news[i]["url"] if i < len(market_news) else ""
-        link_attr = f'href="{url}" target="_blank"' if url else 'href="#"'
-        html += f"""
-        <a {link_attr} class="news-item">
-          <span class="news-headline">{item.get('headline','')}</span>
-          <span class="news-impact">{item.get('impact','')}</span>
+        link = f'href="{url}" target="_blank"' if url else 'href="#"'
+        html += f"""<a {link} class="news-link">
+          <div class="news-headline">▶ {item.get('headline','')}</div>
+          <div class="news-impact">{item.get('impact','')}</div>
         </a>"""
     return html
 
 
+def build_watchlist(items):
+    html = ""
+    for w in items:
+        html += f"""<div class="watchlist-item">
+          <span class="wl-code">{w.get('code','')} {w['name']}</span>
+          <div class="wl-reason">{w['reason']}</div>
+        </div>"""
+    return html
+
+
+def wrap_html(title, subtitle, date_id, body):
+    return f"""<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{title}</title><style>{CSS}</style></head><body>
+<div class="container">
+<h1>{title}</h1>
+<div class="meta">対象：保有{5}銘柄　|　基準日：{subtitle}　|　作成：Warren<br>
+本レポートは投資助言ではありません。売買は必ず自己責任で行ってください。</div>
+{body}
+<footer>Warren (Claude) · {date_id} · Powered by Anthropic</footer>
+</div></body></html>"""
+
+
 def generate_html_morning(data, market_news, holding_news, today_str, date_id):
     hn_map = {h["code"]: h for h in holding_news}
-    watchlist_html = "".join(
-        f'<div class="watchlist-item"><span class="wl-name">{w["name"]}</span><p class="wl-reason">{w["reason"]}</p></div>'
-        for w in data.get("watchlist", [])
-    )
-    signals_html = build_signal_cards(data.get("holdings_signals", []), hn_map)
-    news_html = build_news_section(data.get("news_summary", []), market_news)
+    bullets = "".join(f"<li>{b}</li>" for b in data.get("market_bullets", []))
+    body = f"""
+<h2>市場環境（朝の概況）</h2>
+<ul class="bullets">{bullets}</ul>
 
-    return f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Warren 朝レポート {today_str}</title><style>{CSS}</style></head><body>
-<header><h1>📊 Warren モーニングレポート</h1><p>{today_str}　|　投資判断は自己責任で</p></header>
-<div class="section"><div class="section-title">市場概況</div><div class="summary-box">{data.get('market_overview','')}</div></div>
-<div class="section"><div class="section-title">注目銘柄</div>{watchlist_html}</div>
-<div class="section"><div class="section-title">保有銘柄 売買シグナル</div>{signals_html}</div>
-<div class="section"><div class="section-title">最新マーケットニュース</div>{news_html}</div>
-<footer>Warren (Claude) · {date_id} · Powered by Anthropic</footer></body></html>"""
+<h2>注目銘柄</h2>
+{build_watchlist(data.get('watchlist', []))}
+
+<h2>保有銘柄一覧（売買シグナル）</h2>
+{build_holdings_table_morning(data.get('holdings_signals', []), hn_map)}
+
+<h2>最新マーケットニュース</h2>
+{build_news_links(data.get('news_summary', []), market_news)}"""
+    return wrap_html(f"モーニングレポート（{today_str}）", f"{today_str}（月）朝8時", date_id, body)
 
 
 def generate_html_midday(data, market_news, holding_news, today_str, date_id):
     hn_map = {h["code"]: h for h in holding_news}
-    signals_html = build_signal_cards(data.get("holdings_koba", []), hn_map)
-    news_html = build_news_section(data.get("koba_news", []), market_news)
+    bullets = "".join(f"<li>{b}</li>" for b in data.get("zenba_bullets", []))
+    body = f"""
+<h2>前場まとめ</h2>
+<ul class="bullets">{bullets}</ul>
 
-    return f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Warren 前場引けレポート {today_str}</title><style>{CSS}</style></head><body>
-<header><h1>📊 Warren 前場引けレポート</h1><p>{today_str} 12:15　|　投資判断は自己責任で</p></header>
-<div class="section"><div class="section-title">前場まとめ</div><div class="summary-box">{data.get('zenba_summary','')}</div></div>
-<div class="section"><div class="section-title">後場戦略</div><div class="summary-box">{data.get('koba_strategy','')}</div></div>
-<div class="section"><div class="section-title">保有銘柄 後場シグナル</div>{signals_html}</div>
-<div class="section"><div class="section-title">後場に影響するニュース</div>{news_html}</div>
-<footer>Warren (Claude) · {date_id} · Powered by Anthropic</footer></body></html>"""
+<h2>後場戦略</h2>
+<p style="font-size:14px;padding:10px;background:#f9f9f9;border-left:3px solid #1a6b3a;">{data.get('koba_strategy','')}</p>
+
+<h2>保有銘柄（後場シグナル）</h2>
+{build_holdings_table_midday(data.get('holdings_koba', []), hn_map)}
+
+<h2>後場に影響するニュース</h2>
+{build_news_links(data.get('koba_news', []), market_news)}"""
+    return wrap_html(f"前場引けレポート（{today_str}）", f"{today_str} 12:15", date_id, body)
 
 
 def generate_html_evening(data, market_news, holding_news, today_str, date_id):
     hn_map = {h["code"]: h for h in holding_news}
-    # 引けレポートのシグナルはtomorrow_signalフィールドを使う
-    signals_html = build_signal_cards(data.get("holdings_today", []), hn_map)
-    watchlist_html = "".join(
-        f'<div class="watchlist-item"><span class="wl-name">{w["name"]}</span><p class="wl-reason">{w["reason"]}</p></div>'
-        for w in data.get("tomorrow_watchlist", [])
-    )
-    news_html = build_news_section(data.get("evening_news", []), market_news)
+    bullets = "".join(f"<li>{b}</li>" for b in data.get("today_bullets", []))
+    body = f"""
+<h2>本日の相場まとめ</h2>
+<ul class="bullets">{bullets}</ul>
 
-    return f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Warren 引けレポート {today_str}</title><style>{CSS}</style></head><body>
-<header><h1>📊 Warren 引けレポート</h1><p>{today_str} 18:00　|　投資判断は自己責任で</p></header>
-<div class="section"><div class="section-title">本日の相場まとめ</div><div class="summary-box">{data.get('today_summary','')}</div></div>
-<div class="section"><div class="section-title">保有銘柄 本日動向・明日戦略</div>{signals_html}</div>
-<div class="section"><div class="section-title">明日の注目銘柄</div>{watchlist_html}</div>
-<div class="section"><div class="section-title">注目ニュース</div>{news_html}</div>
-<footer>Warren (Claude) · {date_id} · Powered by Anthropic</footer></body></html>"""
+<h2>保有銘柄　本日動向・明日戦略</h2>
+{build_holdings_table_evening(data.get('holdings_today', []), hn_map)}
+
+<h2>明日の注目銘柄</h2>
+{build_watchlist(data.get('tomorrow_watchlist', []))}
+
+<h2>注目ニュース</h2>
+{build_news_links(data.get('evening_news', []), market_news)}"""
+    return wrap_html(f"引けレポート（{today_str}）", f"{today_str} 18:00", date_id, body)
 
 
 def send_line(message):
@@ -370,7 +414,6 @@ def send_line(message):
 if __name__ == "__main__":
     today_str = datetime.now().strftime("%Y年%m月%d日")
     date_id = datetime.now().strftime("%Y-%m-%d")
-    time_str = datetime.now().strftime("%H%M")
 
     holdings = load_holdings()
     print(f"保有銘柄: {[h['name'] for h in holdings]}")
@@ -379,7 +422,6 @@ if __name__ == "__main__":
     print("ニュース取得中...")
     market_news = fetch_all_news()
     print(f"マーケットニュース: {len(market_news)}件")
-
     holding_news = fetch_holding_news(holdings)
 
     print("Claude APIでレポート生成中...")
