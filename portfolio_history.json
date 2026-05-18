@@ -1,1 +1,37 @@
-{"snapshots": []}
+{
+  "snapshots": [
+    {
+      "date": "2026-05-18",
+      "total_cost": 10868500,
+      "total_value": 10088900,
+      "total_pnl": -779600,
+      "holdings": {
+        "1436": {
+          "price": 1936.0,
+          "pnl_pct": 8.28,
+          "pnl_total": 177600
+        },
+        "186A": {
+          "price": 1892.0,
+          "pnl_pct": 6.05,
+          "pnl_total": 64800
+        },
+        "464A": {
+          "price": 3230.0,
+          "pnl_pct": 8.03,
+          "pnl_total": 120000
+        },
+        "6232": {
+          "price": 3040.0,
+          "pnl_pct": -24.75,
+          "pnl_total": -1300000
+        },
+        "6613": {
+          "price": 2127.0,
+          "pnl_pct": 17.45,
+          "pnl_total": 158000
+        }
+      }
+    }
+  ]
+}
