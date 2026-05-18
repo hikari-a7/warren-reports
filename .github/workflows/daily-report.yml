@@ -5,10 +5,11 @@ on:
     - cron: '0 23 * * 0-4'   # 朝8:00 JST（UTC前日23:00）
     - cron: '15 3 * * 1-5'   # 前場引け12:15 JST（UTC 3:15）
     - cron: '0 9 * * 1-5'    # 引け後18:00 JST（UTC 9:00）
+    - cron: '0 9 * * 5'      # 週次レポート 金曜18:00 JST（UTC 9:00）※引け後と兼用
   workflow_dispatch:
     inputs:
       report_type:
-        description: 'レポートタイプ (morning / midday / evening)'
+        description: 'レポートタイプ (morning / midday / evening / weekly)'
         required: false
         default: 'morning'
 
@@ -26,7 +27,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install anthropic yfinance
+        run: pip install anthropic yfinance matplotlib mplfinance
 
       - name: Determine report type
         id: report_type
@@ -35,11 +36,13 @@ jobs:
             echo "type=${{ github.event.inputs.report_type }}" >> $GITHUB_OUTPUT
           else
             HOUR=$(date -u +%H)
-            MIN=$(date -u +%M)
+            DOW=$(date -u +%u)   # 1=月 ... 5=金
             if [ "$HOUR" = "23" ]; then
               echo "type=morning" >> $GITHUB_OUTPUT
             elif [ "$HOUR" = "03" ]; then
               echo "type=midday" >> $GITHUB_OUTPUT
+            elif [ "$DOW" = "5" ]; then
+              echo "type=weekly" >> $GITHUB_OUTPUT
             else
               echo "type=evening" >> $GITHUB_OUTPUT
             fi

@@ -73,6 +73,49 @@ def fetch_stock_data(holdings):
     return result
 
 
+def check_earnings_alerts(holdings, log):
+    try:
+        import yfinance as yf
+        from datetime import date
+        alerts = []
+        today = date.today()
+        for h in holdings:
+            code = h["code"]
+            try:
+                cal = yf.Ticker(f"{code}.T").calendar
+                if cal is None:
+                    continue
+                ed = None
+                if hasattr(cal, "loc") and "Earnings Date" in cal.index:
+                    ed = cal.loc["Earnings Date"].iloc[0]
+                elif hasattr(cal, "columns") and "Earnings Date" in cal.columns:
+                    ed = cal["Earnings Date"].iloc[0]
+                if ed is None:
+                    continue
+                if hasattr(ed, "date"):
+                    ed = ed.date()
+                elif hasattr(ed, "to_pydatetime"):
+                    ed = ed.to_pydatetime().date()
+                days = (ed - today).days
+                if 0 <= days <= 7:
+                    key = f"earnings_{code}_{ed}"
+                    if log.get(key) != TODAY:
+                        label = "本日" if days == 0 else f"あと{days}日"
+                        alerts.append(
+                            f"📅 決算アラート\n"
+                            f"{code} {h['name']}\n"
+                            f"決算発表：{ed.strftime('%m/%d')}（{label}）\n"
+                            f"決算前後は価格変動に注意"
+                        )
+                        log[key] = TODAY
+            except Exception as e:
+                print(f"  決算情報エラー {code}: {e}")
+    except Exception as e:
+        print(f"決算チェックエラー: {e}")
+        alerts = []
+    return alerts
+
+
 def check_alerts(holdings, stock_data, log):
     alerts = []
     now_str = datetime.now(JST).strftime("%m/%d %H:%M")
@@ -179,6 +222,10 @@ if __name__ == "__main__":
 
     log = load_alert_log()
     alerts = check_alerts(holdings, stock_data, log)
+
+    print("決算スケジュール確認中...")
+    alerts += check_earnings_alerts(holdings, log)
+
     save_alert_log(log)
 
     if alerts:

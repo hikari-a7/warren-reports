@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Warren Daily Report - 朝8時・前場引け12:15・引け後18時の3本立て
+Warren Daily Report - 朝8時・前場引け・引け後・週次の4本立て + チャート付き
 """
 
 import os
@@ -27,38 +27,32 @@ def load_holdings():
 
 
 def fetch_stock_data(holdings):
+    """Returns (stats_dict, histories_dict)"""
     try:
         import yfinance as yf
     except ImportError:
-        print("yfinanceが未インストール — 株価データをスキップ")
-        return {}
+        print("yfinanceが未インストール")
+        return {}, {}
 
-    result = {}
+    result, histories = {}, {}
     for h in holdings:
         code = h["code"]
         try:
-            ticker = yf.Ticker(f"{code}.T")
-            hist = ticker.history(period="3mo")
-
-            if hist.empty:
-                print(f"株価データなし: {code}")
+            hist = yf.Ticker(f"{code}.T").history(period="3mo")
+            if hist.empty or len(hist) < 2:
                 result[code] = None
                 continue
 
+            histories[code] = hist
             closes = hist["Close"].dropna()
             volumes = hist["Volume"].dropna()
-
-            if len(closes) < 2:
-                result[code] = None
-                continue
 
             latest = float(closes.iloc[-1])
             prev = float(closes.iloc[-2])
             change_pct = (latest - prev) / prev * 100
 
-            vol_today = float(volumes.iloc[-1])
             vol_avg = float(volumes.iloc[-21:-1].mean()) if len(volumes) >= 21 else float(volumes.mean())
-            vol_ratio = vol_today / vol_avg if vol_avg > 0 else 1.0
+            vol_ratio = float(volumes.iloc[-1]) / vol_avg if vol_avg > 0 else 1.0
 
             ma5 = float(closes.tail(5).mean()) if len(closes) >= 5 else None
             ma25 = float(closes.tail(25).mean()) if len(closes) >= 25 else None
@@ -69,6 +63,10 @@ def fetch_stock_data(holdings):
             loss = float((-delta.clip(upper=0)).tail(14).mean())
             rsi = 100 - (100 / (1 + gain / loss)) if loss > 0 else 100.0
 
+            week_data = closes.tail(6)
+            week_start = float(week_data.iloc[0]) if len(week_data) >= 2 else None
+            week_change = (latest - week_start) / week_start * 100 if week_start else None
+
             cost = h.get("cost")
             shares = h.get("shares", 0)
             pnl_per = round(latest - cost, 1) if cost else None
@@ -78,6 +76,7 @@ def fetch_stock_data(holdings):
             result[code] = {
                 "price": round(latest, 1),
                 "change_pct": round(change_pct, 2),
+                "week_change": round(week_change, 2) if week_change is not None else None,
                 "volume_ratio": round(vol_ratio, 1),
                 "ma5": round(ma5, 1) if ma5 else None,
                 "ma25": round(ma25, 1) if ma25 else None,
@@ -94,12 +93,101 @@ def fetch_stock_data(holdings):
             }
             d = result[code]
             pnl_str = f" 含み{'+' if (d['pnl_pct'] or 0) >= 0 else ''}{d['pnl_pct']}%" if d['pnl_pct'] is not None else ""
-            print(f"株価取得: {code} ¥{d['price']} 前日比{d['change_pct']:+.2f}% RSI={d['rsi']}{pnl_str}")
+            print(f"株価取得: {code} ¥{d['price']} {d['change_pct']:+.2f}% RSI={d['rsi']}{pnl_str}")
         except Exception as e:
             print(f"株価取得エラー {code}: {e}")
             result[code] = None
 
-    return result
+    return result, histories
+
+
+def generate_chart_b64(code, hist, cost=None):
+    try:
+        import mplfinance as mpf
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        import pandas as pd
+        import io, base64
+
+        ohlcv = hist.tail(60)[["Open", "High", "Low", "Close", "Volume"]].copy()
+        closes = ohlcv["Close"]
+
+        delta = closes.diff()
+        gain = delta.clip(lower=0).rolling(14).mean()
+        loss = (-delta.clip(upper=0)).rolling(14).mean()
+        rsi = (100 - (100 / (1 + gain / loss))).fillna(50)
+
+        apds = [
+            mpf.make_addplot(closes.rolling(5).mean(), color="#1a4a8a", width=0.9),
+            mpf.make_addplot(closes.rolling(25).mean(), color="#c47a00", width=1.1),
+            mpf.make_addplot(rsi, panel=1, color="#7b2d8b", width=1.0, ylim=(0, 100)),
+        ]
+        if cost:
+            cost_line = pd.Series([float(cost)] * len(ohlcv), index=ohlcv.index)
+            apds.append(mpf.make_addplot(cost_line, color="#c0392b",
+                                          linestyle="--", width=0.8))
+
+        mc = mpf.make_marketcolors(up="#1a6b3a", down="#c0392b",
+                                    edge="inherit", wick="inherit")
+        s = mpf.make_mpf_style(marketcolors=mc, gridstyle=":",
+                                gridcolor="#e8e8e8", facecolor="white",
+                                edgecolor="#cccccc", figcolor="white")
+
+        fig, axes = mpf.plot(
+            ohlcv, type="candle", style=s, addplot=apds,
+            returnfig=True, figsize=(5.5, 3.2), panel_ratios=(3, 1),
+            volume=False, tight_layout=True
+        )
+
+        if len(axes) > 1:
+            axes[1].axhline(y=70, color="#c0392b", linestyle="--", linewidth=0.5, alpha=0.6)
+            axes[1].axhline(y=30, color="#1a6b3a", linestyle="--", linewidth=0.5, alpha=0.6)
+            axes[1].set_ylabel("RSI", fontsize=7)
+
+        buf = io.BytesIO()
+        fig.savefig(buf, format="png", dpi=90, bbox_inches="tight",
+                    facecolor="white", edgecolor="none")
+        plt.close(fig)
+        buf.seek(0)
+        return base64.b64encode(buf.read()).decode("utf-8")
+    except Exception as e:
+        print(f"チャート生成エラー {code}: {e}")
+        return None
+
+
+def build_charts_section(holdings, histories, stock_data):
+    html = ""
+    for h in holdings:
+        code = h["code"]
+        hist = histories.get(code)
+        if hist is None:
+            continue
+        d = stock_data.get(code) or {}
+        b64 = generate_chart_b64(code, hist, h.get("cost"))
+        if not b64:
+            continue
+
+        pnl_pct = d.get("pnl_pct")
+        week_change = d.get("week_change")
+        pnl_color = "#1a6b3a" if (pnl_pct or 0) >= 0 else "#c0392b"
+        week_color = "#1a6b3a" if (week_change or 0) >= 0 else "#c0392b"
+
+        week_str = f'今週 <span style="color:{week_color};font-weight:700">{("+" if (week_change or 0) >= 0 else "")}{week_change}%</span>' \
+                   if week_change is not None else ""
+        pnl_str = f'含み <span style="color:{pnl_color};font-weight:700">{("+" if (pnl_pct or 0) >= 0 else "")}{pnl_pct}%</span>' \
+                  if pnl_pct is not None else ""
+
+        html += f"""<div style="margin-bottom:14px;border:1px solid #ddd;border-radius:4px;padding:10px;background:#fff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+    <strong style="font-size:13px">{code} {h['name']}</strong>
+    <span style="font-size:12px;color:#666">{week_str}&ensp;{pnl_str}</span>
+  </div>
+  <img src="data:image/png;base64,{b64}" style="width:100%;height:auto;display:block;" alt="{code}">
+  <p style="font-size:10px;color:#aaa;margin-top:4px;">青=MA5　橙=MA25　赤破線=取得単価　下段=RSI（赤70・緑30）</p>
+</div>"""
+
+    return html or '<p style="color:#999;font-size:13px">チャートデータ取得不可</p>'
 
 
 def stock_data_str(holdings, stock_data):
@@ -327,13 +415,65 @@ holdings_today全銘柄分、tomorrow_watchlist3件、evening_news4〜5件。JSO
     return call_claude(prompt)
 
 
+def generate_weekly(market_news, holding_news, holdings, today_str, stock_data):
+    holdings_str = "\n".join(f"- {h['code']} {h['name']}" for h in holdings)
+    news_str = "\n".join(f"- {n['title']}" for n in market_news[:10])
+
+    perf_lines = []
+    for h in holdings:
+        d = stock_data.get(h["code"])
+        if d:
+            week_str = f"週間{'+' if (d.get('week_change') or 0) >= 0 else ''}{d.get('week_change', 'N/A')}%" \
+                       if d.get("week_change") is not None else "週間:N/A"
+            pnl_str = f"含み{'+' if (d.get('pnl_pct') or 0) >= 0 else ''}{d['pnl_pct']}%({d['pnl_total']:,}円)" \
+                      if d.get("pnl_pct") is not None else ""
+            perf_lines.append(
+                f"- {h['code']} {h['name']}: ¥{d['price']} | {week_str} | RSI={d['rsi']} | {pnl_str}"
+            )
+        else:
+            perf_lines.append(f"- {h['code']} {h['name']}: データなし")
+
+    prompt = f"""あなたは株式投資の専門家Warrenです。{today_str}の週次レポートを作成してください。
+
+## 保有銘柄の週間パフォーマンス（実データ）
+{chr(10).join(perf_lines)}
+
+## 今週の主要ニュース
+{news_str}
+
+## 保有銘柄
+{holdings_str}
+
+今週の実績を踏まえ、来週の戦略を具体的に立案してください。
+
+以下のJSON形式のみで出力：
+{{
+  "week_summary": "今週の相場全体サマリー（2〜3文）",
+  "best_performer": {{"code": "コード", "name": "銘柄名", "comment": "今週の活躍内容と理由"}},
+  "worst_performer": {{"code": "コード", "name": "銘柄名", "comment": "今週の動き・背景・対応策"}},
+  "holdings_weekly": [
+    {{
+      "code": "銘柄コード",
+      "name": "銘柄名",
+      "week_review": "今週の動き1文（数値を含める）",
+      "signal": "◎|○|△",
+      "signal_label": "来週買い増し|来週様子見|来週利確検討",
+      "next_week_strategy": "来週の戦略1〜2文（具体的な価格帯・RSIライン等を含める）"
+    }}
+  ],
+  "market_outlook": "来週の市場見通し2〜3文",
+  "key_strategies": ["来週の重要戦略ポイント（3つ）"]
+}}
+holdings_weekly全銘柄分。JSONのみ。"""
+    return call_claude(prompt)
+
+
 def signal_badge(signal, label):
-    colors = {"◎": ("#1a6b3a", "#d4edda", "◎"), "○": ("#1a4a8a", "#d0e4f7", "○"), "△": ("#8a5a00", "#fff3cd", "△")}
-    bg, fg, mark = "#f0f0f0", "#555", signal
+    colors = {"◎": ("#1a6b3a", "#d4edda"), "○": ("#1a4a8a", "#d0e4f7"), "△": ("#8a5a00", "#fff3cd")}
     if signal in colors:
-        bg_c, fg_c, mark = colors[signal]
-        fg, bg = fg_c, bg_c
-    return f'<span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:{bg};color:{fg};border:1px solid {fg}">{mark} {label}</span>'
+        fg, bg = colors[signal]
+        return f'<span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:{bg};color:{fg};border:1px solid {fg}">{signal} {label}</span>'
+    return f'<span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:#f0f0f0;color:#555">{signal} {label}</span>'
 
 
 CSS = """
@@ -360,6 +500,8 @@ tr:nth-child(even) td { background: #fafafa; }
 .holding-news { font-size: 11px; margin-top: 4px; }
 .holding-news a { color: #1a4a8a; text-decoration: none; }
 .tech-note { font-size: 11px; color: #999; margin-top: 4px; }
+.highlight-box { background: #f0f7f0; border: 1px solid #b8ddb8; border-radius: 4px; padding: 12px 16px; margin-bottom: 12px; }
+.highlight-box.red { background: #fdf0f0; border-color: #ddb8b8; }
 footer { font-size: 11px; color: #999; text-align: center; margin-top: 24px; padding-top: 12px; border-top: 1px solid #eee; }
 """
 
@@ -391,55 +533,38 @@ def build_price_table(holdings, stock_data):
     for h in holdings:
         d = stock_data.get(h["code"])
         if not d:
-            rows += f"""<tr>
-              <td><strong>{h['code']}</strong><br><small>{h['name']}</small></td>
-              <td colspan="7" style="color:#999;text-align:center;font-size:12px">データ取得不可</td>
-            </tr>"""
+            rows += f"""<tr><td><strong>{h['code']}</strong><br><small>{h['name']}</small></td>
+              <td colspan="7" style="color:#999;text-align:center;font-size:12px">データ取得不可</td></tr>"""
             continue
 
         chg = d["change_pct"]
         chg_color = "#1a6b3a" if chg >= 0 else "#c0392b"
-        chg_str = f"{'+' if chg >= 0 else ''}{chg}%"
-
         rsi = d["rsi"]
-        if rsi > 70:
-            rsi_color, rsi_note = "#c0392b", " ⚠"
-        elif rsi < 30:
-            rsi_color, rsi_note = "#1a4a8a", " ★"
-        else:
-            rsi_color, rsi_note = "#333", ""
-
+        rsi_color = "#c0392b" if rsi > 70 else ("#1a4a8a" if rsi < 30 else "#333")
+        rsi_note = " ⚠" if rsi > 70 else (" ★" if rsi < 30 else "")
         vs25 = d.get("vs_ma25")
-        if vs25 is not None:
-            ma25_str = f"{'+' if vs25 >= 0 else ''}{vs25}%"
-            ma25_color = "#1a6b3a" if vs25 >= 0 else "#c0392b"
-        else:
-            ma25_str, ma25_color = "N/A", "#999"
-
-        vol = d["volume_ratio"]
-        vol_color = "#c47a00" if vol >= 1.5 else "#333"
-
+        ma25_str = f"{'+' if (vs25 or 0) >= 0 else ''}{vs25}%" if vs25 is not None else "N/A"
+        ma25_color = "#1a6b3a" if (vs25 or 0) >= 0 else "#c0392b"
+        vol_color = "#c47a00" if d["volume_ratio"] >= 1.5 else "#333"
         pnl_pct = d.get("pnl_pct")
         pnl_total = d.get("pnl_total")
         cost = d.get("cost")
-        if pnl_pct is not None and pnl_total is not None:
-            pnl_color = "#1a6b3a" if pnl_pct >= 0 else "#c0392b"
-            pnl_sign = "+" if pnl_pct >= 0 else ""
-            pnl_cell = f'<span style="color:{pnl_color};font-weight:700">{pnl_sign}{pnl_pct}%</span><br><small style="color:{pnl_color}">{pnl_sign}¥{pnl_total:,}</small>'
-            cost_cell = f"¥{cost:,}"
+        if pnl_pct is not None:
+            pc = "#1a6b3a" if pnl_pct >= 0 else "#c0392b"
+            ps = "+" if pnl_pct >= 0 else ""
+            pnl_cell = f'<span style="color:{pc};font-weight:700">{ps}{pnl_pct}%</span><br><small style="color:{pc}">{ps}¥{pnl_total:,}</small>'
         else:
             pnl_cell = '<span style="color:#999">N/A</span>'
-            cost_cell = "N/A"
 
         rows += f"""<tr>
           <td><strong>{h['code']}</strong><br><small>{h['name']}</small></td>
           <td style="font-weight:700">¥{d['price']:,.1f}</td>
-          <td style="color:{chg_color};font-weight:700">{chg_str}</td>
-          <td>{cost_cell}</td>
+          <td style="color:{chg_color};font-weight:700">{'+' if chg >= 0 else ''}{chg}%</td>
+          <td>{'¥'+f"{cost:,}" if cost else 'N/A'}</td>
           <td>{pnl_cell}</td>
           <td style="color:{rsi_color};font-weight:600">{rsi}{rsi_note}</td>
           <td style="color:{ma25_color}">{ma25_str}</td>
-          <td style="color:{vol_color}">{vol}x</td>
+          <td style="color:{vol_color}">{d['volume_ratio']}x</td>
         </tr>"""
 
     return f"""<table><thead><tr>
@@ -461,8 +586,7 @@ def build_holdings_table_morning(signals, hn_map):
           <td>{signal_badge(s['signal'], s['signal_label'])}</td>
           <td>{s.get('move','')}</td>
           <td>{s.get('reason','')}<br><small style="color:#888">リスク：{s.get('risk','')}</small></td>
-          <td>{s.get('action','')}{news_html}</td>
-        </tr>"""
+          <td>{s.get('action','')}{news_html}</td></tr>"""
     return f"""<table><thead><tr>
       <th>銘柄</th><th>判断</th><th>直近動向</th><th>根拠・リスク</th><th>注目ポイント</th>
     </tr></thead><tbody>{rows}</tbody></table>"""
@@ -480,8 +604,7 @@ def build_holdings_table_midday(signals, hn_map):
           <td><strong>{s['code']}</strong><br>{s['name']}</td>
           <td>{signal_badge(s['signal'], s['signal_label'])}</td>
           <td>{s.get('reason','')}</td>
-          <td>{s.get('price_point','')}{news_html}</td>
-        </tr>"""
+          <td>{s.get('price_point','')}{news_html}</td></tr>"""
     return f"""<table><thead><tr>
       <th>銘柄</th><th>後場判断</th><th>根拠</th><th>価格帯・注目ライン</th>
     </tr></thead><tbody>{rows}</tbody></table>"""
@@ -499,10 +622,27 @@ def build_holdings_table_evening(signals, hn_map):
           <td><strong>{s['code']}</strong><br>{s['name']}</td>
           <td>{s.get('today_move','')}</td>
           <td>{signal_badge(s['signal'], s['signal_label'])}</td>
-          <td>{s.get('strategy','')}{news_html}</td>
-        </tr>"""
+          <td>{s.get('strategy','')}{news_html}</td></tr>"""
     return f"""<table><thead><tr>
       <th>銘柄</th><th>本日動向</th><th>明日判断</th><th>明日以降の戦略</th>
+    </tr></thead><tbody>{rows}</tbody></table>"""
+
+
+def build_holdings_table_weekly(signals, hn_map):
+    rows = ""
+    for s in signals:
+        hn = hn_map.get(s["code"], {})
+        news_html = ""
+        for n in hn.get("news", [])[:1]:
+            if n.get("url"):
+                news_html = f'<div class="holding-news"><a href="{n["url"]}" target="_blank">📰 {n["title"][:40]}...</a></div>'
+        rows += f"""<tr>
+          <td><strong>{s['code']}</strong><br>{s['name']}</td>
+          <td>{s.get('week_review','')}</td>
+          <td>{signal_badge(s['signal'], s['signal_label'])}</td>
+          <td>{s.get('next_week_strategy','')}{news_html}</td></tr>"""
+    return f"""<table><thead><tr>
+      <th>銘柄</th><th>今週の動き</th><th>来週判断</th><th>来週の戦略</th>
     </tr></thead><tbody>{rows}</tbody></table>"""
 
 
@@ -534,20 +674,23 @@ def wrap_html(title, subtitle, date_id, body):
 <title>{title}</title><style>{CSS}</style></head><body>
 <div class="container">
 <h1>{title}</h1>
-<div class="meta">対象：保有{5}銘柄　|　基準日：{subtitle}　|　作成：Warren<br>
+<div class="meta">対象：保有{len([])+5}銘柄　|　基準日：{subtitle}　|　作成：Warren<br>
 本レポートは投資助言ではありません。売買は必ず自己責任で行ってください。</div>
 {body}
 <footer>Warren (Claude) · {date_id} · Powered by Anthropic</footer>
 </div></body></html>"""
 
 
-def generate_html_morning(data, market_news, holding_news, today_str, date_id, holdings, stock_data):
+def generate_html_morning(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories):
     hn_map = {h["code"]: h for h in holding_news}
     bullets = "".join(f"<li>{b}</li>" for b in data.get("market_bullets", []))
     body = f"""
 {build_portfolio_summary(holdings, stock_data)}
 <h2>保有銘柄　株価・損益・テクニカル</h2>
 {build_price_table(holdings, stock_data)}
+
+<h2>チャート（60日・MA5/MA25・RSI）</h2>
+{build_charts_section(holdings, histories, stock_data)}
 
 <h2>市場環境（朝の概況）</h2>
 <ul class="bullets">{bullets}</ul>
@@ -563,13 +706,16 @@ def generate_html_morning(data, market_news, holding_news, today_str, date_id, h
     return wrap_html(f"モーニングレポート（{today_str}）", f"{today_str} 朝8時", date_id, body)
 
 
-def generate_html_midday(data, market_news, holding_news, today_str, date_id, holdings, stock_data):
+def generate_html_midday(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories):
     hn_map = {h["code"]: h for h in holding_news}
     bullets = "".join(f"<li>{b}</li>" for b in data.get("zenba_bullets", []))
     body = f"""
 {build_portfolio_summary(holdings, stock_data)}
 <h2>保有銘柄　株価・損益・テクニカル（前場終了時点）</h2>
 {build_price_table(holdings, stock_data)}
+
+<h2>チャート（60日・MA5/MA25・RSI）</h2>
+{build_charts_section(holdings, histories, stock_data)}
 
 <h2>前場まとめ</h2>
 <ul class="bullets">{bullets}</ul>
@@ -585,13 +731,16 @@ def generate_html_midday(data, market_news, holding_news, today_str, date_id, ho
     return wrap_html(f"前場引けレポート（{today_str}）", f"{today_str} 12:15", date_id, body)
 
 
-def generate_html_evening(data, market_news, holding_news, today_str, date_id, holdings, stock_data):
+def generate_html_evening(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories):
     hn_map = {h["code"]: h for h in holding_news}
     bullets = "".join(f"<li>{b}</li>" for b in data.get("today_bullets", []))
     body = f"""
 {build_portfolio_summary(holdings, stock_data)}
 <h2>保有銘柄　株価・損益・テクニカル（引け後）</h2>
 {build_price_table(holdings, stock_data)}
+
+<h2>チャート（60日・MA5/MA25・RSI）</h2>
+{build_charts_section(holdings, histories, stock_data)}
 
 <h2>本日の相場まとめ</h2>
 <ul class="bullets">{bullets}</ul>
@@ -605,6 +754,49 @@ def generate_html_evening(data, market_news, holding_news, today_str, date_id, h
 <h2>注目ニュース</h2>
 {build_news_links(data.get('evening_news', []), market_news)}"""
     return wrap_html(f"引けレポート（{today_str}）", f"{today_str} 18:00", date_id, body)
+
+
+def generate_html_weekly(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories):
+    hn_map = {h["code"]: h for h in holding_news}
+    best = data.get("best_performer", {})
+    worst = data.get("worst_performer", {})
+    strategies = "".join(f"<li>{s}</li>" for s in data.get("key_strategies", []))
+
+    best_box = f"""<div class="highlight-box">
+      <strong>🏆 今週のベスト：{best.get('code','')} {best.get('name','')}</strong>
+      <div style="font-size:13px;margin-top:4px;color:#333">{best.get('comment','')}</div>
+    </div>""" if best else ""
+
+    worst_box = f"""<div class="highlight-box red">
+      <strong>📉 今週のワースト：{worst.get('code','')} {worst.get('name','')}</strong>
+      <div style="font-size:13px;margin-top:4px;color:#333">{worst.get('comment','')}</div>
+    </div>""" if worst else ""
+
+    body = f"""
+{build_portfolio_summary(holdings, stock_data)}
+
+<h2>週間パフォーマンス　株価・損益</h2>
+{build_price_table(holdings, stock_data)}
+
+<h2>チャート（60日・MA5/MA25・RSI）</h2>
+{build_charts_section(holdings, histories, stock_data)}
+
+<h2>今週のサマリー</h2>
+<p style="font-size:14px;padding:10px;background:#f9f9f9;border-left:3px solid #1a6b3a;">{data.get('week_summary','')}</p>
+{best_box}{worst_box}
+
+<h2>保有銘柄　今週の動き・来週戦略</h2>
+{build_holdings_table_weekly(data.get('holdings_weekly', []), hn_map)}
+
+<h2>来週の市場見通し</h2>
+<p style="font-size:14px;padding:10px;background:#f9f9f9;border-left:3px solid #1a4a8a;">{data.get('market_outlook','')}</p>
+
+<h2>来週の重要戦略ポイント</h2>
+<ul class="bullets">{strategies}</ul>
+
+<h2>今週の注目ニュース</h2>
+{build_news_links(data.get('evening_news', []) if data.get('evening_news') else [{"headline": n["title"], "impact": ""} for n in market_news[:5]], market_news)}"""
+    return wrap_html(f"週次レポート（{today_str}）", f"週次 {today_str}", date_id, body)
 
 
 def send_line(message):
@@ -631,7 +823,10 @@ if __name__ == "__main__":
     print(f"レポートタイプ: {REPORT_TYPE}")
 
     print("株価データ取得中...")
-    stock_data = fetch_stock_data(holdings)
+    stock_data, histories = fetch_stock_data(holdings)
+
+    print("チャート生成中...")
+    # チャートはgenerate_html_*内で生成されるため、historiesを渡すだけでOK
 
     print("ニュース取得中...")
     market_news = fetch_all_news()
@@ -641,17 +836,22 @@ if __name__ == "__main__":
     print("Claude APIでレポート生成中...")
     if REPORT_TYPE == "morning":
         data = generate_morning(market_news, holding_news, holdings, today_str, stock_data)
-        html = generate_html_morning(data, market_news, holding_news, today_str, date_id, holdings, stock_data)
+        html = generate_html_morning(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories)
         filename = f"report-{date_id}-morning.html"
         label = "モーニングレポート"
     elif REPORT_TYPE == "midday":
         data = generate_midday(market_news, holding_news, holdings, today_str, stock_data)
-        html = generate_html_midday(data, market_news, holding_news, today_str, date_id, holdings, stock_data)
+        html = generate_html_midday(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories)
         filename = f"report-{date_id}-midday.html"
         label = "前場引けレポート"
+    elif REPORT_TYPE == "weekly":
+        data = generate_weekly(market_news, holding_news, holdings, today_str, stock_data)
+        html = generate_html_weekly(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories)
+        filename = f"report-{date_id}-weekly.html"
+        label = "週次レポート"
     else:
         data = generate_evening(market_news, holding_news, holdings, today_str, stock_data)
-        html = generate_html_evening(data, market_news, holding_news, today_str, date_id, holdings, stock_data)
+        html = generate_html_evening(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories)
         filename = f"report-{date_id}-evening.html"
         label = "引けレポート"
 
