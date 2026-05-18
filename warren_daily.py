@@ -256,6 +256,110 @@ def fetch_holding_news(holdings):
     return result
 
 
+def save_portfolio_snapshot(holdings, stock_data, date_id):
+    history_file = "portfolio_history.json"
+    try:
+        with open(history_file, encoding="utf-8") as f:
+            history = json.load(f)
+    except Exception:
+        history = {"snapshots": []}
+
+    if any(s["date"] == date_id for s in history["snapshots"]):
+        print(f"スナップショット（{date_id}）は記録済みのためスキップ")
+        return
+
+    total_cost = total_value = total_pnl = 0
+    holdings_data = {}
+    for h in holdings:
+        d = stock_data.get(h["code"])
+        if d and d.get("cost") and d.get("shares"):
+            total_cost += d["cost"] * d["shares"]
+            total_value += d["price"] * d["shares"]
+            total_pnl += (d["pnl_total"] or 0)
+            holdings_data[h["code"]] = {
+                "price": d["price"],
+                "pnl_pct": d["pnl_pct"],
+                "pnl_total": d["pnl_total"],
+            }
+
+    history["snapshots"].append({
+        "date": date_id,
+        "total_cost": round(total_cost),
+        "total_value": round(total_value),
+        "total_pnl": round(total_pnl),
+        "holdings": holdings_data,
+    })
+    history["snapshots"] = sorted(history["snapshots"], key=lambda x: x["date"])[-90:]
+
+    with open(history_file, "w", encoding="utf-8") as f:
+        json.dump(history, f, ensure_ascii=False, indent=2)
+    print(f"ポートフォリオスナップショット保存: {date_id}")
+
+
+def build_portfolio_trend_chart():
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        import matplotlib.dates as mdates
+        from datetime import datetime as dt
+        import io, base64
+
+        with open("portfolio_history.json", encoding="utf-8") as f:
+            history = json.load(f)
+
+        snapshots = history.get("snapshots", [])
+        if len(snapshots) < 2:
+            return None
+
+        dates = [dt.strptime(s["date"], "%Y-%m-%d") for s in snapshots]
+        values = [s["total_value"] for s in snapshots]
+        costs = [s["total_cost"] for s in snapshots]
+        pnls = [s["total_pnl"] for s in snapshots]
+        base_cost = costs[0] if costs else 0
+
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 4),
+                                         gridspec_kw={"height_ratios": [3, 1]})
+        fig.patch.set_facecolor("white")
+
+        ax1.plot(dates, values, color="#1a4a8a", linewidth=1.5)
+        ax1.axhline(y=base_cost, color="#888", linestyle="--", linewidth=0.8)
+        ax1.fill_between(dates, base_cost, values,
+                         where=[v >= base_cost for v in values],
+                         alpha=0.12, color="#1a6b3a")
+        ax1.fill_between(dates, base_cost, values,
+                         where=[v < base_cost for v in values],
+                         alpha=0.12, color="#c0392b")
+        ax1.set_ylabel("Portfolio (JPY)", fontsize=8)
+        ax1.yaxis.set_major_formatter(
+            plt.FuncFormatter(lambda x, _: f"{x/1e6:.2f}M"))
+        ax1.grid(True, linestyle=":", alpha=0.4)
+        ax1.set_facecolor("white")
+        ax1.tick_params(labelsize=7)
+        ax1.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
+
+        bar_colors = ["#1a6b3a" if p >= 0 else "#c0392b" for p in pnls]
+        ax2.bar(dates, pnls, color=bar_colors, width=0.6)
+        ax2.axhline(y=0, color="#333", linewidth=0.5)
+        ax2.set_ylabel("P&L (JPY)", fontsize=8)
+        ax2.yaxis.set_major_formatter(
+            plt.FuncFormatter(lambda x, _: f"{x/1e4:.0f}万"))
+        ax2.set_facecolor("white")
+        ax2.tick_params(labelsize=7)
+        ax2.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
+
+        plt.tight_layout(pad=0.5)
+        buf = io.BytesIO()
+        fig.savefig(buf, format="png", dpi=90, bbox_inches="tight",
+                    facecolor="white", edgecolor="none")
+        plt.close(fig)
+        buf.seek(0)
+        return base64.b64encode(buf.read()).decode("utf-8")
+    except Exception as e:
+        print(f"トレンドチャート生成エラー: {e}")
+        return None
+
+
 def call_claude(prompt):
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     resp = client.messages.create(
@@ -556,21 +660,37 @@ def build_price_table(holdings, stock_data):
         else:
             pnl_cell = '<span style="color:#999">N/A</span>'
 
+        # 目標・損切セル
+        target = h.get("target")
+        stop = h.get("stop_loss")
+        price = d["price"]
+        target_cell = ""
+        if target:
+            t_dist = round((target - price) / price * 100, 1)
+            t_color = "#1a6b3a" if t_dist >= 0 else "#888"
+            t_sign = "+" if t_dist >= 0 else ""
+            target_cell += f'<span style="color:{t_color}">↑¥{target:,}({t_sign}{t_dist}%)</span>'
+        if stop:
+            s_dist = round((stop - price) / price * 100, 1)
+            s_color = "#c0392b" if s_dist < 0 else "#888"
+            target_cell += f'<br><span style="color:{s_color}">↓¥{stop:,}({s_dist:+.1f}%)</span>'
+
         rows += f"""<tr>
           <td><strong>{h['code']}</strong><br><small>{h['name']}</small></td>
-          <td style="font-weight:700">¥{d['price']:,.1f}</td>
+          <td style="font-weight:700">¥{price:,.1f}</td>
           <td style="color:{chg_color};font-weight:700">{'+' if chg >= 0 else ''}{chg}%</td>
           <td>{'¥'+f"{cost:,}" if cost else 'N/A'}</td>
           <td>{pnl_cell}</td>
+          <td style="font-size:12px">{target_cell or 'N/A'}</td>
           <td style="color:{rsi_color};font-weight:600">{rsi}{rsi_note}</td>
           <td style="color:{ma25_color}">{ma25_str}</td>
           <td style="color:{vol_color}">{d['volume_ratio']}x</td>
         </tr>"""
 
     return f"""<table><thead><tr>
-      <th>銘柄</th><th>現在値</th><th>前日比</th><th>取得単価</th><th>含み損益</th><th>RSI(14)</th><th>MA25比</th><th>出来高比</th>
+      <th>銘柄</th><th>現在値</th><th>前日比</th><th>取得単価</th><th>含み損益</th><th>目標↑/損切↓</th><th>RSI(14)</th><th>MA25比</th><th>出来高比</th>
     </tr></thead><tbody>{rows}</tbody></table>
-    <p class="tech-note">RSI★=売られすぎ(30以下)　RSI⚠=買われすぎ(70以上)　MA25比=25日移動平均との乖離　出来高比=当日/直近20日平均</p>"""
+    <p class="tech-note">RSI★=売られすぎ(30以下)　RSI⚠=買われすぎ(70以上)　目標/損切は現在値からの距離</p>"""
 
 
 def build_holdings_table_morning(signals, hn_map):
@@ -772,8 +892,18 @@ def generate_html_weekly(data, market_news, holding_news, today_str, date_id, ho
       <div style="font-size:13px;margin-top:4px;color:#333">{worst.get('comment','')}</div>
     </div>""" if worst else ""
 
+    trend_b64 = build_portfolio_trend_chart()
+    trend_html = f'<img src="data:image/png;base64,{trend_b64}" style="width:100%;height:auto;display:block;" alt="portfolio trend">' \
+                 if trend_b64 else '<p style="color:#999;font-size:13px">データ蓄積中（来週以降に表示）</p>'
+
     body = f"""
 {build_portfolio_summary(holdings, stock_data)}
+
+<h2>ポートフォリオ推移</h2>
+<div style="border:1px solid #ddd;border-radius:4px;padding:10px;background:#fff;margin-bottom:8px;">
+{trend_html}
+<p class="tech-note">青線=評価額　灰破線=取得金額　下段=日次損益</p>
+</div>
 
 <h2>週間パフォーマンス　株価・損益</h2>
 {build_price_table(holdings, stock_data)}
@@ -860,6 +990,8 @@ if __name__ == "__main__":
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html)
     print(f"HTML保存: {filename}")
+
+    save_portfolio_snapshot(holdings, stock_data, date_id)
 
     report_url = f"{PAGES_URL}/{filename}"
     message = f"📊 Warren {label} {today_str}\n\nレポートはこちら👇\n{report_url}"

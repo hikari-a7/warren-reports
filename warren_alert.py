@@ -194,6 +194,30 @@ def check_alerts(holdings, stock_data, log):
             )
             mark("loss15")
 
+        # 目標株価到達
+        target = h.get("target")
+        if target and price >= target and not alerted("target"):
+            dist = round((price - target) / target * 100, 1)
+            alerts.append(
+                f"🎯 目標株価到達！\n"
+                f"{code} {h['name']}\n"
+                f"現在値 ¥{price:,.1f}（目標 ¥{target:,}、+{dist}%超過）\n"
+                f"利確を検討してください"
+            )
+            mark("target")
+
+        # 損切り株価ライン
+        stop = h.get("stop_loss")
+        if stop and price <= stop and not alerted("stop_price"):
+            dist = round((price - stop) / stop * 100, 1)
+            alerts.append(
+                f"🔴 損切り株価ライン到達\n"
+                f"{code} {h['name']}\n"
+                f"現在値 ¥{price:,.1f}（損切ライン ¥{stop:,}）\n"
+                f"損切りの実行を検討してください"
+            )
+            mark("stop_price")
+
     return alerts
 
 
