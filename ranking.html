@@ -509,7 +509,7 @@ async function load() {
       }
     });
     const themeRow = document.getElementById('themeFilterRow');
-    themeRow.innerHTML = '<span class="filter-label">テーマ</span><button class="theme-btn active" onclick="setTheme(\'all\', this)">すべて</button>';
+    themeRow.innerHTML = `<span class="filter-label">テーマ</span><button class="theme-btn ${currentTheme === 'all' ? 'active' : ''}" onclick="setTheme('all', this)">すべて</button>`;
     themeMap.forEach((name, id) => {
       const btn = document.createElement('button');
       btn.className = 'theme-btn' + (currentTheme === id ? ' active' : '');

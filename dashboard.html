@@ -412,7 +412,7 @@ function buildPositions(positions) {
         ${targetDist !== null ? `<div class="level-dist">現在値からあと ${targetDist > 0 ? '+' : ''}${targetDist}%</div>` : ''}
       </div>
       <div class="level-box stop">
-        <div class="level-label">↓ 損切 +${p.stop_pct}%</div>
+        <div class="level-label">↓ 損切 ${p.stop_pct}%</div>
         <div class="level-price">¥${p.stop_price.toLocaleString()}</div>
         ${stopDist !== null ? `<div class="level-dist">現在値から ${stopDist}%</div>` : ''}
       </div>
