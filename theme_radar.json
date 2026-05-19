@@ -1,1 +1,68 @@
-{"updated": "", "themes": []}
+{
+  "updated": "2026-05-19",
+  "themes": [
+    {
+      "id": "fintech",
+      "name": "フィンテック・金融DX",
+      "icon": "💳",
+      "avg_week": 5.68,
+      "avg_day": 0.89,
+      "momentum": "hot",
+      "stock_count": 5
+    },
+    {
+      "id": "healthcare",
+      "name": "ヘルスケア・バイオ",
+      "icon": "🏥",
+      "avg_week": 5.38,
+      "avg_day": -0.34,
+      "momentum": "hot",
+      "stock_count": 7
+    },
+    {
+      "id": "green",
+      "name": "グリーン・EV・エネルギー",
+      "icon": "🌿",
+      "avg_week": 4.35,
+      "avg_day": 0.5,
+      "momentum": "rising",
+      "stock_count": 7
+    },
+    {
+      "id": "space",
+      "name": "宇宙・防衛",
+      "icon": "🚀",
+      "avg_week": 3.73,
+      "avg_day": 4.43,
+      "momentum": "rising",
+      "stock_count": 7
+    },
+    {
+      "id": "inbound",
+      "name": "インバウンド・消費",
+      "icon": "🏨",
+      "avg_week": 1.46,
+      "avg_day": 3.16,
+      "momentum": "rising",
+      "stock_count": 6
+    },
+    {
+      "id": "ai_dx",
+      "name": "AI・DX",
+      "icon": "🤖",
+      "avg_week": -1.25,
+      "avg_day": 1.16,
+      "momentum": "neutral",
+      "stock_count": 10
+    },
+    {
+      "id": "semiconductor",
+      "name": "半導体・電子部品",
+      "icon": "💾",
+      "avg_week": -8.89,
+      "avg_day": -3.01,
+      "momentum": "cold",
+      "stock_count": 8
+    }
+  ]
+}
