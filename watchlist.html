@@ -5,18 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Warren — 次の一手</title>
 <style>
+  :root {
+    --bg:       #07090d;
+    --surf1:    #0d1018;
+    --surf2:    #111620;
+    --surf3:    #161d2a;
+    --border:   #1c2535;
+    --border2:  #243044;
+    --text1:    #dce4f0;
+    --text2:    #8a9ab8;
+    --text3:    #4e5f78;
+    --up:       #4a9e7a;   /* セージグリーン */
+    --up-dim:   #4a9e7a22;
+    --up-mid:   #4a9e7a44;
+    --dn:       #a85858;   /* ダストローズ */
+    --dn-dim:   #a8585820;
+    --dn-mid:   #a8585840;
+    --hot:      #c49040;   /* ウォームアンバー */
+    --hot-dim:  #c4904022;
+    --hot-mid:  #c4904044;
+    --cool:     #4a7eb8;   /* スチールブルー */
+    --cool-dim: #4a7eb820;
+    --slate:    #3a4d66;
+    --slate-dim:#3a4d6622;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Noto Sans JP', sans-serif;
-    background: #0a0a0f;
-    color: #e8ecf0;
+    background: var(--bg);
+    color: var(--text1);
     min-height: 100vh;
   }
 
   .header {
-    background: #111118;
-    border-bottom: 1px solid #1e2028;
-    padding: 16px 20px;
+    background: var(--surf1);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -24,195 +49,196 @@
     top: 0;
     z-index: 10;
   }
-  .header-title { font-size: 20px; font-weight: 800; color: #fff; }
-  .header-title span { color: #4ade80; }
-  .header-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+  .header-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .header-title span { color: var(--up); }
+  .header-sub { font-size: 13px; color: var(--text3); margin-top: 3px; }
   .nav { display: flex; gap: 8px; }
   .nav a {
-    font-size: 13px; color: #9ca3af; text-decoration: none;
-    padding: 5px 12px; border-radius: 6px; border: 1px solid #1e2028;
+    font-size: 14px; color: var(--text2); text-decoration: none;
+    padding: 6px 16px; border-radius: 7px; border: 1px solid var(--border);
+    transition: all .15s;
   }
-  .nav a.active { color: #4ade80; border-color: #4ade8044; background: #4ade8011; }
+  .nav a:hover { color: var(--text1); border-color: var(--border2); }
+  .nav a.active { color: var(--up); border-color: var(--up-mid); background: var(--up-dim); }
 
-  .container { max-width: 740px; margin: 0 auto; padding: 18px 16px 48px; }
+  .container { max-width: 1440px; margin: 0 auto; padding: 24px 32px 56px; }
 
   /* テーマレーダー */
-  .radar-section { margin-bottom: 24px; }
+  .radar-section { margin-bottom: 28px; }
   .section-head {
-    font-size: 12px; font-weight: 700; color: #6b7280;
-    text-transform: uppercase; letter-spacing: 1px;
-    display: flex; align-items: center; gap: 8px;
-    margin-bottom: 12px;
+    font-size: 13px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 1.2px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
   }
-  .section-head::after { content: ''; flex: 1; height: 1px; background: #1e2028; }
+  .section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .radar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+  .radar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
   .radar-card {
-    background: #111118;
-    border: 1px solid #1e2028;
-    border-radius: 12px;
-    padding: 12px 14px;
+    background: var(--surf2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
     position: relative;
     overflow: hidden;
+    transition: border-color .2s;
   }
+  .radar-card:hover { border-color: var(--border2); }
   .radar-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 3px;
-    border-radius: 12px 12px 0 0;
+    border-radius: 14px 14px 0 0;
   }
-  .radar-card.hot::before     { background: #f97316; }
-  .radar-card.rising::before  { background: #4ade80; }
-  .radar-card.neutral::before { background: #374151; }
-  .radar-card.cooling::before { background: #60a5fa; }
-  .radar-card.cold::before    { background: #f87171; }
+  .radar-card.hot::before     { background: var(--hot); }
+  .radar-card.rising::before  { background: var(--up); }
+  .radar-card.neutral::before { background: var(--slate); }
+  .radar-card.cooling::before { background: var(--cool); }
+  .radar-card.cold::before    { background: var(--dn); }
 
-  .radar-icon { font-size: 20px; margin-bottom: 6px; }
-  .radar-name { font-size: 12px; font-weight: 700; color: #d1d5db; margin-bottom: 6px; line-height: 1.3; }
-  .radar-week {
-    font-size: 18px; font-weight: 800;
-  }
-  .radar-week.pos { color: #4ade80; }
-  .radar-week.neg { color: #f87171; }
-  .radar-week.zero { color: #9ca3af; }
-  .radar-day { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .radar-icon { font-size: 22px; margin-bottom: 8px; }
+  .radar-name { font-size: 13px; font-weight: 700; color: var(--text2); margin-bottom: 8px; line-height: 1.3; }
+  .radar-week { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .radar-week.pos  { color: var(--up); }
+  .radar-week.neg  { color: var(--dn); }
+  .radar-week.zero { color: var(--text3); }
+  .radar-day { font-size: 12px; color: var(--text3); margin-top: 3px; }
   .radar-badge {
     display: inline-block;
-    font-size: 10px; font-weight: 700;
-    padding: 2px 7px; border-radius: 4px;
-    margin-top: 5px;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 9px; border-radius: 5px;
+    margin-top: 8px;
   }
-  .radar-badge.hot     { background: #f9731622; color: #f97316; border: 1px solid #f9731644; }
-  .radar-badge.rising  { background: #4ade8022; color: #4ade80; border: 1px solid #4ade8044; }
-  .radar-badge.neutral { background: #37415122; color: #9ca3af; border: 1px solid #37415144; }
-  .radar-badge.cooling { background: #60a5fa22; color: #60a5fa; border: 1px solid #60a5fa44; }
-  .radar-badge.cold    { background: #f8717122; color: #f87171; border: 1px solid #f8717144; }
-
-  .badge-label { hot:'🔥急騰中'; rising:'↑上昇中'; neutral:'→横ばい'; cooling:'↓鈍化中'; cold:'❄️下落中'; }
+  .radar-badge.hot     { background: var(--hot-dim);  color: var(--hot);  border: 1px solid var(--hot-mid); }
+  .radar-badge.rising  { background: var(--up-dim);   color: var(--up);   border: 1px solid var(--up-mid); }
+  .radar-badge.neutral { background: var(--slate-dim);color: var(--text2);border: 1px solid var(--slate); }
+  .radar-badge.cooling { background: var(--cool-dim); color: var(--cool); border: 1px solid #4a7eb840; }
+  .radar-badge.cold    { background: var(--dn-dim);   color: var(--dn);   border: 1px solid var(--dn-mid); }
 
   /* ステータスサマリー */
-  .status-row { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .status-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
   .status-pill {
-    display: flex; align-items: center; gap: 5px;
-    border-radius: 20px; padding: 5px 14px;
-    font-size: 13px; font-weight: 700; border: 1px solid;
+    display: flex; align-items: center; gap: 6px;
+    border-radius: 20px; padding: 6px 16px;
+    font-size: 14px; font-weight: 700; border: 1px solid;
   }
-  .status-pill.ready { background: #4ade8015; border-color: #4ade8044; color: #4ade80; }
-  .status-pill.near  { background: #fbbf2415; border-color: #fbbf2444; color: #fbbf24; }
-  .status-pill.watch { background: #37415115; border-color: #37415144; color: #9ca3af; }
+  .status-pill.ready { background: var(--up-dim);   border-color: var(--up-mid);  color: var(--up); }
+  .status-pill.near  { background: var(--hot-dim);  border-color: var(--hot-mid); color: var(--hot); }
+  .status-pill.watch { background: var(--slate-dim);border-color: var(--slate);   color: var(--text2); }
   .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .dot.ready { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
-  .dot.near  { background: #fbbf24; animation: blink 1.4s ease-in-out infinite; }
-  .dot.watch { background: #6b7280; }
+  .dot.ready { background: var(--up); }
+  .dot.near  { background: var(--hot); animation: blink 1.4s ease-in-out infinite; }
+  .dot.watch { background: var(--text3); }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
   /* 候補カード */
+  .cand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(520px, 1fr)); gap: 16px; }
   .cand-card {
-    background: #111118;
-    border: 1px solid #1e2028;
-    border-radius: 16px;
-    margin-bottom: 14px;
+    background: var(--surf2);
+    border: 1px solid var(--border);
+    border-radius: 18px;
     overflow: hidden;
     position: relative;
+    transition: border-color .2s;
   }
+  .cand-card:hover { border-color: var(--border2); }
   .cand-accent {
     position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-    border-radius: 16px 0 0 16px;
   }
-  .cand-accent.ready { background: #4ade80; box-shadow: 0 0 10px #4ade8066; }
-  .cand-accent.near  { background: #fbbf24; box-shadow: 0 0 10px #fbbf2466; animation: glow 1.5s ease-in-out infinite; }
-  .cand-accent.watch { background: #374151; }
-  @keyframes glow { 0%,100%{box-shadow:0 0 10px #fbbf2466} 50%{box-shadow:0 0 20px #fbbf24aa} }
+  .cand-accent.ready { background: var(--up); }
+  .cand-accent.near  { background: var(--hot); animation: glow-h 1.8s ease-in-out infinite; }
+  .cand-accent.watch { background: var(--slate); }
+  @keyframes glow-h { 0%,100%{opacity:1} 50%{opacity:.5} }
 
-  .cand-inner { padding: 18px 18px 18px 22px; }
+  .cand-inner { padding: 22px 22px 22px 26px; }
 
   /* カードヘッダー */
-  .cand-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-  .cand-name { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 3px; }
-  .cand-meta { font-size: 12px; color: #6b7280; }
+  .cand-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .cand-name { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 4px; letter-spacing: -0.3px; }
+  .cand-meta { font-size: 13px; color: var(--text3); }
   .cand-price-block { text-align: right; }
-  .cand-price { font-size: 22px; font-weight: 800; color: #fff; }
-  .cand-chg { font-size: 13px; font-weight: 700; margin-top: 2px; }
-  .cand-chg.pos { color: #4ade80; }
-  .cand-chg.neg { color: #f87171; }
+  .cand-price { font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .cand-chg { font-size: 14px; font-weight: 700; margin-top: 3px; }
+  .cand-chg.pos { color: var(--up); }
+  .cand-chg.neg { color: var(--dn); }
 
   /* ステータスバッジ */
   .cand-badge {
     display: inline-block;
-    font-size: 12px; font-weight: 800;
-    padding: 4px 11px; border-radius: 7px; border: 1px solid;
-    margin-bottom: 6px;
+    font-size: 13px; font-weight: 800;
+    padding: 5px 13px; border-radius: 8px; border: 1px solid;
+    margin-bottom: 8px;
   }
-  .cand-badge.ready { background: #4ade8015; border-color: #4ade8044; color: #4ade80; }
-  .cand-badge.near  { background: #fbbf2415; border-color: #fbbf2444; color: #fbbf24; }
-  .cand-badge.watch { background: #37415122; border-color: #37415166; color: #9ca3af; }
+  .cand-badge.ready { background: var(--up-dim);   border-color: var(--up-mid);  color: var(--up); }
+  .cand-badge.near  { background: var(--hot-dim);  border-color: var(--hot-mid); color: var(--hot); }
+  .cand-badge.watch { background: var(--slate-dim);border-color: var(--slate);   color: var(--text2); }
 
   /* 投資メモ */
   .memo-box {
-    background: #0d0d15;
-    border: 1px solid #1e2028;
-    border-radius: 10px;
-    padding: 13px 15px;
-    margin-bottom: 12px;
+    background: var(--surf1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
   }
-  .memo-label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-  .memo-reason { font-size: 14px; color: #d1d5db; line-height: 1.65; margin-bottom: 8px; }
-  .memo-catalyst { font-size: 13px; color: #fbbf24; margin-bottom: 6px; }
-  .memo-risk { font-size: 12px; color: #f87171; }
-  .memo-period { font-size: 12px; color: #6b7280; margin-top: 6px; }
+  .memo-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .memo-reason { font-size: 15px; color: var(--text1); line-height: 1.7; margin-bottom: 10px; }
+  .memo-catalyst { font-size: 14px; color: var(--hot); margin-bottom: 8px; }
+  .memo-risk { font-size: 13px; color: var(--dn); }
+  .memo-period { font-size: 13px; color: var(--text3); margin-top: 8px; }
 
   /* エントリーバー */
-  .entry-wrap { margin-bottom: 12px; }
-  .entry-row { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
-  .entry-bar { position: relative; height: 26px; background: #0a0a0f; border-radius: 7px; border: 1px solid #1e2028; }
-  .entry-fill { position: absolute; top: 0; bottom: 0; background: #4ade8020; border: 1px solid #4ade8044; border-radius: 6px; }
+  .entry-wrap { margin-bottom: 14px; }
+  .entry-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text3); margin-bottom: 6px; }
+  .entry-bar { position: relative; height: 28px; background: var(--surf1); border-radius: 8px; border: 1px solid var(--border); }
+  .entry-fill { position: absolute; top: 0; bottom: 0; background: var(--up-dim); border: 1px solid var(--up-mid); border-radius: 7px; }
   .entry-marker { position: absolute; top: -5px; bottom: -5px; width: 3px; border-radius: 2px; transform: translateX(-50%); }
-  .entry-marker.inside  { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
-  .entry-marker.outside { background: #f87171; }
-  .entry-marker.near-z  { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
-  .marker-tip { position: absolute; top: -20px; transform: translateX(-50%); font-size: 10px; font-weight: 800; white-space: nowrap; }
-  .entry-sub { display: flex; justify-content: space-between; margin-top: 4px; font-size: 11px; color: #6b7280; }
+  .entry-marker.inside  { background: var(--up); }
+  .entry-marker.outside { background: var(--dn); }
+  .entry-marker.near-z  { background: var(--hot); }
+  .marker-tip { position: absolute; top: -22px; transform: translateX(-50%); font-size: 11px; font-weight: 800; white-space: nowrap; }
+  .entry-sub { display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px; color: var(--text3); }
 
   /* 数字ブロック */
-  .nums { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-  .num-box { background: #0a0a0f; border: 1px solid #1e2028; border-radius: 9px; padding: 9px 12px; }
-  .num-label { font-size: 11px; color: #6b7280; margin-bottom: 3px; font-weight: 600; }
-  .num-val { font-size: 16px; font-weight: 800; }
-  .num-val.g { color: #4ade80; }
-  .num-val.r { color: #f87171; }
-  .num-val.w { color: #e8ecf0; }
-  .num-sub { font-size: 10px; color: #6b7280; margin-top: 2px; }
+  .nums { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .num-box { background: var(--surf1); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; }
+  .num-label { font-size: 12px; color: var(--text3); margin-bottom: 4px; font-weight: 600; }
+  .num-val { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+  .num-val.g { color: var(--up); }
+  .num-val.r { color: var(--dn); }
+  .num-val.w { color: var(--text1); }
+  .num-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
 
   /* RR */
-  .rr-box { background: #0a0a0f; border: 1px solid #1e2028; border-radius: 9px; padding: 9px 14px; }
-  .rr-label { font-size: 11px; color: #6b7280; margin-bottom: 6px; font-weight: 600; }
-  .rr-bar { display: flex; height: 7px; border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
-  .rr-g { background: #4ade80; border-radius: 4px 0 0 4px; }
-  .rr-r { background: #f87171; border-radius: 0 4px 4px 0; }
-  .rr-nums { display: flex; justify-content: space-between; font-size: 11px; }
+  .rr-box { background: var(--surf1); border: 1px solid var(--border); border-radius: 10px; padding: 11px 16px; }
+  .rr-label { font-size: 12px; color: var(--text3); margin-bottom: 8px; font-weight: 600; }
+  .rr-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+  .rr-g { background: var(--up); border-radius: 4px 0 0 4px; }
+  .rr-r { background: var(--dn); border-radius: 0 4px 4px 0; }
+  .rr-nums { display: flex; justify-content: space-between; font-size: 12px; }
 
   /* テクニカルチップ */
-  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .chip { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 5px; border: 1px solid; }
-  .chip.rsi-ok  { background: #4ade8015; border-color: #4ade8033; color: #4ade80; }
-  .chip.rsi-hot { background: #f8717115; border-color: #f8717133; color: #f87171; }
-  .chip.rsi-low { background: #60a5fa15; border-color: #60a5fa33; color: #60a5fa; }
-  .chip.vol     { background: #fbbf2415; border-color: #fbbf2433; color: #fbbf24; }
-  .chip.neutral { background: #37415115; border-color: #37415133; color: #9ca3af; }
+  .chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+  .chip { font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 6px; border: 1px solid; }
+  .chip.rsi-ok  { background: var(--up-dim);   border-color: var(--up-mid);  color: var(--up); }
+  .chip.rsi-hot { background: var(--dn-dim);   border-color: var(--dn-mid);  color: var(--dn); }
+  .chip.rsi-low { background: var(--cool-dim); border-color: #4a7eb840;      color: var(--cool); }
+  .chip.vol     { background: var(--hot-dim);  border-color: var(--hot-mid); color: var(--hot); }
+  .chip.neutral { background: var(--slate-dim);border-color: var(--slate);   color: var(--text2); }
 
   /* 空・ローディング */
-  .empty { text-align: center; padding: 60px 20px; color: #6b7280; }
-  .empty-icon { font-size: 44px; margin-bottom: 14px; }
-  .empty-title { font-size: 17px; font-weight: 700; color: #9ca3af; margin-bottom: 8px; }
-  .empty-desc { font-size: 14px; line-height: 1.7; }
-  .loading { display: flex; flex-direction: column; align-items: center; padding: 80px 20px; gap: 14px; }
-  .spinner { width: 30px; height: 30px; border: 3px solid #1e2028; border-top-color: #4ade80; border-radius: 50%; animation: spin .8s linear infinite; }
+  .empty { text-align: center; padding: 80px 20px; color: var(--text3); }
+  .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-title { font-size: 18px; font-weight: 700; color: var(--text2); margin-bottom: 10px; }
+  .empty-desc { font-size: 15px; line-height: 1.8; }
+  .loading { display: flex; flex-direction: column; align-items: center; padding: 100px 20px; gap: 16px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--up); border-radius: 50%; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 14px; color: #6b7280; }
+  .loading-text { font-size: 15px; color: var(--text3); }
 
-  .updated { font-size: 12px; color: #4b5563; text-align: right; margin-bottom: 14px; }
-  .footer { font-size: 11px; color: #374151; text-align: center; padding: 16px 0 0; line-height: 1.8; }
+  .updated { font-size: 13px; color: var(--text3); text-align: right; margin-bottom: 16px; }
+  .footer { font-size: 12px; color: var(--text3); text-align: center; padding: 20px 0 0; line-height: 1.9; border-top: 1px solid var(--border); margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -442,9 +468,9 @@ async function load() {
   <div class="empty-desc">毎朝8:30のスクリーナーで自動更新されます。<br>手動実行はGitHub Actions → Warren Screener → Run workflow。</div>
 </div>`;
     } else {
-      html += `<div class="section-head" style="margin-bottom:12px">買い候補 ${candidates.length}件</div>`;
+      html += `<div class="section-head" style="margin-bottom:14px">買い候補 ${candidates.length}件</div>`;
       html += buildStatusRow(candidates);
-      html += candidates.map(buildCard).join('');
+      html += `<div class="cand-grid">${candidates.map(buildCard).join('')}</div>`;
     }
 
     html += `<div class="footer">⚡ Warren — Powered by Claude<br>本情報は投資助言ではありません。売買は自己責任で行ってください。</div>`;
