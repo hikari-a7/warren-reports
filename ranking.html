@@ -187,6 +187,13 @@
     padding: 2px 8px; border-radius: 4px;
     background: var(--up-dim); border: 1px solid var(--up-mid); color: var(--up);
   }
+  .buy-now-badge {
+    display: inline-block; font-size: 11px; font-weight: 800;
+    padding: 2px 9px; border-radius: 4px;
+    background: #1a3d2a; border: 1px solid var(--up); color: #6dffb3;
+    letter-spacing: 0.2px;
+  }
+  .seg-btn.signal-buy.active { background: #1a3d2a; border-color: var(--up); color: #6dffb3; }
 
   /* ページネーション */
   .pagination-bar {
@@ -292,10 +299,10 @@
   <!-- 市場区分 -->
   <div class="filter-row">
     <span class="filter-label">市場区分</span>
-    <button class="seg-btn active" onclick="setMarket('all', this)">すべて</button>
-    <button class="seg-btn market-prime" onclick="setMarket('プライム', this)">プライム</button>
-    <button class="seg-btn market-std" onclick="setMarket('スタンダード', this)">スタンダード</button>
-    <button class="seg-btn market-growth" onclick="setMarket('グロース', this)">グロース</button>
+    <button class="seg-btn market-seg-btn active" onclick="setMarket('all', this)">すべて</button>
+    <button class="seg-btn market-seg-btn market-prime" onclick="setMarket('プライム', this)">プライム</button>
+    <button class="seg-btn market-seg-btn market-std" onclick="setMarket('スタンダード', this)">スタンダード</button>
+    <button class="seg-btn market-seg-btn market-growth" onclick="setMarket('グロース', this)">グロース</button>
     <input class="search-box" id="searchBox" placeholder="銘柄名・コードで検索..." oninput="onSearch()">
     <span class="updated-label" id="updatedLabel">—</span>
   </div>
@@ -303,6 +310,12 @@
   <div class="filter-row" id="themeFilterRow">
     <span class="filter-label">テーマ</span>
     <button class="theme-btn active" onclick="setTheme('all', this)">すべて</button>
+  </div>
+  <!-- シグナル -->
+  <div class="filter-row">
+    <span class="filter-label">シグナル</span>
+    <button class="seg-btn signal-seg-btn active" onclick="setSignal('all', this)">すべて</button>
+    <button class="seg-btn signal-seg-btn signal-buy" onclick="setSignal('buy', this)">🟢 今すぐ買い</button>
   </div>
 </div>
 
@@ -326,11 +339,34 @@ let searchQuery   = '';
 let sortCol = 'rank';
 let sortDir = 'asc';
 let currentPage = 1;
+let currentSignal = 'all';
 const candidateCodes = new Set();
+
+function isBuyReady(s) {
+  const rsi = s.rsi;
+  const vol = s.vol_ratio;
+  const ma  = s.vs_ma25;
+  const wk  = s.week_pct;
+  return (
+    s.score >= 70 &&
+    rsi != null && rsi >= 30 && rsi <= 58 &&
+    vol != null && vol >= 2.0 &&
+    ma  != null && ma  >= -5  && ma  <= 8 &&
+    wk  != null && wk  >= 0
+  );
+}
 
 function setMarket(m, btn) {
   currentMarket = m;
-  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.market-seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPage = 1;
+  applyFilters();
+}
+
+function setSignal(sig, btn) {
+  currentSignal = sig;
+  document.querySelectorAll('.signal-seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   currentPage = 1;
   applyFilters();
@@ -369,6 +405,7 @@ function applyFilters() {
   filtered = allStocks.filter(s => {
     if (currentMarket !== 'all' && s.market_section !== currentMarket) return false;
     if (currentTheme !== 'all' && s.theme_id !== currentTheme) return false;
+    if (currentSignal === 'buy' && !isBuyReady(s)) return false;
     if (searchQuery) {
       const q = searchQuery;
       if (!s.name.toLowerCase().includes(q) && !s.code.includes(q) && !(s.industry||'').toLowerCase().includes(q)) return false;
@@ -443,7 +480,7 @@ function renderPage() {
   <td class="${rsiClass(s.rsi)}">${s.rsi != null ? s.rsi.toFixed(0) : '—'}</td>
   <td class="${s.vol_ratio != null && s.vol_ratio >= 2 ? 'val-up' : 'val-neut'}">${s.vol_ratio != null ? s.vol_ratio.toFixed(1) + 'x' : '—'}</td>
   <td class="${ma25 != null ? (ma25 >= 0 ? 'val-up' : 'val-dn') : 'val-neut'}">${ma25 != null ? (ma25 >= 0 ? '+' : '') + ma25.toFixed(1) + '%' : '—'}</td>
-  <td>${isCandidate ? '<span class="candidate-badge">🎯 候補入り</span>' : ''}</td>
+  <td>${isBuyReady(s) ? '<span class="buy-now-badge">🟢 今すぐ</span> ' : ''}${isCandidate ? '<span class="candidate-badge">🎯 候補入り</span>' : ''}</td>
 </tr>`;
   }).join('');
 
