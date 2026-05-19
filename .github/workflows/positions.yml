@@ -1,0 +1,55 @@
+name: Warren Positions Update
+
+on:
+  schedule:
+    - cron: '0 7 * * 1-5'   # 毎日16:00 JST (UTC 7:00) 平日のみ
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance pandas
+
+      - name: Update positions
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        run: python update_positions.py
+
+      - name: Commit results
+        run: |
+          git config user.name "Warren"
+          git config user.email "warren@claude.local"
+          git add positions.json
+          git diff --staged --quiet || git commit -m "positions: $(date +%Y-%m-%d)"
+          git push
+
+      - name: Notify failure
+        if: failure()
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        run: |
+          python3 - <<'EOF'
+          import os, json, urllib.request
+          token = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
+          uid   = os.environ["LINE_USER_ID"]
+          msg   = "⚠️ Warren ポジション更新失敗\nhttps://github.com/hikari-a7/warren-reports/actions"
+          payload = json.dumps({"to": uid, "messages": [{"type": "text", "text": msg}]}).encode()
+          req = urllib.request.Request(
+              "https://api.line.me/v2/bot/message/push", data=payload,
+              headers={"Content-Type": "application/json", "Authorization": f"Bearer {token}"},
+              method="POST")
+          urllib.request.urlopen(req)
+          EOF

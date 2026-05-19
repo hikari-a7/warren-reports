@@ -1,120 +1,172 @@
 #!/usr/bin/env python3
 """
-Warren Position Updater - yfinanceで現在株価を取得しpositions.jsonを更新
+Warren Positions Updater
+holdings.jsonから現在株価を取得しpositions.jsonを更新、LINEに通知する
 """
 
 import json
-import sys
+import os
+import urllib.request
 from datetime import datetime, timezone, timedelta
 
 JST = timezone(timedelta(hours=9))
+LINE_TOKEN   = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN", "")
+LINE_USER_ID = os.environ.get("LINE_USER_ID", "")
+PAGES_URL    = "https://hikari-a7.github.io/warren-reports"
 
 
-def load_positions():
-    with open("positions.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_positions(data):
-    with open("positions.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-
-def fetch_prices(codes):
+def update_positions():
     import yfinance as yf
-    result = {}
-    for code in codes:
-        try:
-            hist = yf.Ticker(f"{code}.T").history(period="5d")
-            if hist.empty:
-                print(f"  {code}: データなし")
-                result[code] = None
-                continue
-            closes = hist["Close"].dropna()
-            price = round(float(closes.iloc[-1]), 1)
-            result[code] = price
-            print(f"  {code}: ¥{price:,.1f}")
-        except Exception as e:
-            print(f"  {code} エラー: {e}")
-            result[code] = None
-    return result
 
-
-def update_position(pos, price):
-    if price is None:
-        return pos
-    shares = pos["shares"]
-    entry = pos["entry_price"]
-    pos["current_price"] = price
-    pos["current_value"] = round(price * shares)
-    pos["pnl_per"] = round(price - entry, 1)
-    pos["pnl_pct"] = round((price - entry) / entry * 100, 2)
-    pos["pnl_total"] = round((price - entry) * shares)
-    # ノート自動更新
-    target = pos.get("target_price", 0)
-    stop = pos.get("stop_price", 0)
-    if target and price >= target:
-        pos["note"] = f"🎯 目標+{pos['target_pct']}%超過。利確を検討"
-    elif stop and price <= stop and pos.get("status") != "watch":
-        pos["note"] = f"🔴 損切りライン到達 ¥{stop:,}"
-    return pos
-
-
-def load_watchlist():
-    try:
-        with open("watchlist.json", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return {"candidates": []}
-
-
-def save_watchlist(data):
-    with open("watchlist.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-
-def update_watchlist_prices(wl_data, prices):
-    for c in wl_data.get("candidates", []):
-        code = c["code"]
-        price = prices.get(code)
-        if price is None:
-            continue
-        c["current_price"] = price
-        lo = c.get("entry_low", 0)
-        hi = c.get("entry_high", float("inf"))
-        if lo <= price <= hi:
-            c["status"] = "ready"
-        elif hi > 0 and price <= hi * 1.05:
-            c["status"] = "near"
-        else:
-            c["status"] = "watch"
-    return wl_data
-
-
-def main():
     now = datetime.now(JST)
-    print(f"positions.json 更新開始: {now.strftime('%Y-%m-%d %H:%M JST')}")
+    print(f"Warren Positions Update 開始: {now.strftime('%Y-%m-%d %H:%M JST')}")
 
-    data = load_positions()
-    wl_data = load_watchlist()
+    try:
+        with open("holdings.json", encoding="utf-8") as f:
+            holdings_data = json.load(f)
+    except FileNotFoundError:
+        print("holdings.json が見つかりません。終了します。")
+        return
 
-    pos_codes = [p["code"] for p in data["positions"]]
-    wl_codes  = [c["code"] for c in wl_data.get("candidates", [])]
-    all_codes = list(set(pos_codes + wl_codes))
+    holdings = holdings_data.get("holdings", [])
+    if not holdings:
+        print("保有銘柄なし。終了します。")
+        return
+
+    # 既存positions.jsonから引き継ぐ情報
+    existing_notes = {}
+    closed_trades  = []
+    monthly_target = 1500000
+    month = now.strftime("%Y-%m")
+
+    try:
+        with open("positions.json", encoding="utf-8") as f:
+            existing = json.load(f)
+        closed_trades  = existing.get("closed_trades", [])
+        monthly_target = existing.get("monthly_target", monthly_target)
+        month          = existing.get("month", month)
+        for p in existing.get("positions", []):
+            existing_notes[p["code"]] = p.get("note", "")
+    except Exception:
+        pass
+
+    # yfinanceで現在株価を取得
+    codes   = [h["code"] for h in holdings]
+    tickers = [f"{c}.T" for c in codes]
+    prices  = {}
 
     print("株価取得中...")
-    prices = fetch_prices(all_codes)
+    try:
+        raw = yf.download(
+            tickers, period="5d", group_by="ticker",
+            auto_adjust=True, progress=False, threads=True
+        )
+        for code, ticker in zip(codes, tickers):
+            try:
+                closes = raw[ticker]["Close"].dropna() if len(tickers) > 1 else raw["Close"].dropna()
+                if len(closes) > 0:
+                    prices[code] = float(closes.iloc[-1])
+                    print(f"  {code}: ¥{prices[code]:,.0f}")
+            except Exception as e:
+                print(f"  {code} 取得失敗: {e}")
+    except Exception as e:
+        print(f"株価取得エラー: {e}")
 
-    for pos in data["positions"]:
-        update_position(pos, prices.get(pos["code"]))
+    # positions生成
+    now_str   = now.strftime("%Y-%m-%d %H:%M JST")
+    positions = []
 
-    wl_data = update_watchlist_prices(wl_data, prices)
+    for h in holdings:
+        code      = h["code"]
+        cost      = h["cost"]
+        shares    = h["shares"]
+        target    = h.get("target")
+        stop_loss = h.get("stop_loss")
+        note      = h.get("note", existing_notes.get(code, ""))
 
-    data["last_updated"] = now.strftime("%Y-%m-%d %H:%M JST")
-    save_positions(data)
-    save_watchlist(wl_data)
-    print(f"更新完了: {now.strftime('%H:%M')}")
+        current_price = prices.get(code)
+        if current_price is None:
+            print(f"⚠ {code} 株価取得できず。スキップ。")
+            continue
+
+        current_value = round(current_price * shares)
+        pnl_per   = round(current_price - cost, 1)
+        pnl_pct   = round((current_price - cost) / cost * 100, 2)
+        pnl_total = round(pnl_per * shares)
+        target_pct = round((target    - cost) / cost * 100, 1) if target    else 20
+        stop_pct   = round((stop_loss - cost) / cost * 100, 1) if stop_loss else -8
+
+        positions.append({
+            "code":          code,
+            "name":          h["name"],
+            "shares":        shares,
+            "entry_price":   cost,
+            "current_price": round(current_price, 1),
+            "current_value": current_value,
+            "pnl_per":       pnl_per,
+            "pnl_pct":       pnl_pct,
+            "pnl_total":     pnl_total,
+            "target_pct":    target_pct,
+            "target_price":  target,
+            "stop_pct":      stop_pct,
+            "stop_price":    stop_loss,
+            "status":        "holding",
+            "note":          note,
+        })
+
+    result = {
+        "month":          month,
+        "monthly_target": monthly_target,
+        "last_updated":   now_str,
+        "positions":      positions,
+        "closed_trades":  closed_trades,
+        "watchlist":      [],
+    }
+
+    with open("positions.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
+
+    print(f"positions.json 更新完了: {len(positions)}銘柄")
+    send_line_update(positions, now_str)
+
+
+def send_line_update(positions, now_str):
+    if not LINE_TOKEN or not LINE_USER_ID:
+        return
+
+    total_pnl = sum(p["pnl_total"] for p in positions)
+    total_val = sum(p["current_value"] for p in positions)
+
+    lines = [f"📊 Warren 大引け更新 {now_str}", "─" * 22]
+    for p in positions:
+        arrow = "📈" if p["pnl_pct"] >= 0 else "📉"
+        pnl_sign = "+" if p["pnl_total"] >= 0 else ""
+        lines.append(f"{arrow} {p['name']}")
+        lines.append(f"   ¥{p['current_price']:,.0f}  {p['pnl_pct']:+.1f}%  ({pnl_sign}¥{p['pnl_total']:,})")
+
+    lines.append("─" * 22)
+    total_sign = "+" if total_pnl >= 0 else ""
+    lines.append(f"含み損益合計: {total_sign}¥{total_pnl:,}")
+    lines.append(f"評価額合計:   ¥{total_val:,}")
+    lines.append(f"\n詳細 → {PAGES_URL}/dashboard.html")
+
+    msg = "\n".join(lines)
+    payload = json.dumps({
+        "to": LINE_USER_ID,
+        "messages": [{"type": "text", "text": msg}]
+    }).encode()
+    req = urllib.request.Request(
+        "https://api.line.me/v2/bot/message/push",
+        data=payload,
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {LINE_TOKEN}"},
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req) as r:
+            print(f"LINE通知送信: {r.status}")
+    except Exception as e:
+        print(f"LINE通知エラー: {e}")
 
 
 if __name__ == "__main__":
-    main()
+    update_positions()
