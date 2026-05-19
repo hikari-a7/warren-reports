@@ -626,10 +626,11 @@ def build_portfolio_summary(holdings, stock_data):
     pnl_sign = "+" if total_pnl >= 0 else ""
     pnl_pct = round(total_pnl / total_cost * 100, 2) if total_cost else 0
     return f"""<div style="background:#f9f9f9;border:1px solid #ddd;border-radius:4px;padding:12px 16px;margin-bottom:16px;display:flex;gap:24px;flex-wrap:wrap;">
-  <div><span style="font-size:11px;color:#888">評価額合計</span><br><strong style="font-size:16px">¥{total_val:,.0f}</strong></div>
+  <div><span style="font-size:11px;color:#888">評価額合計 <span style="color:#bbb">※参考値</span></span><br><strong style="font-size:16px">¥{total_val:,.0f}</strong></div>
   <div><span style="font-size:11px;color:#888">取得金額合計</span><br><strong style="font-size:16px">¥{total_cost:,.0f}</strong></div>
   <div><span style="font-size:11px;color:#888">含み損益</span><br><strong style="font-size:16px;color:{pnl_color}">{pnl_sign}¥{total_pnl:,} ({pnl_sign}{pnl_pct}%)</strong></div>
-</div>"""
+</div>
+<p style="font-size:11px;color:#aaa;margin:-10px 0 14px">※ 評価額はyfinance取得値（最大15分遅延）。SBI証券のリアルタイム価格とは差が出る場合があります。</p>"""
 
 
 def build_price_table(holdings, stock_data):

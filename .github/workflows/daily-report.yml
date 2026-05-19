@@ -34,21 +34,36 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "type=${{ github.event.inputs.report_type }}" >> $GITHUB_OUTPUT
+            echo "skip=false" >> $GITHUB_OUTPUT
           else
             HOUR=$(date -u +%H)
             DOW=$(date -u +%u)   # 1=月 ... 5=金
-            if [ "$HOUR" = "23" ]; then
+            # 許容ウィンドウ: 各スケジュールから±2時間以内のみ送信
+            # 朝 UTC 23:00 → 許容 UTC 21〜01
+            # 前場 UTC 03:15 → 許容 UTC 02〜05
+            # 引け・週次 UTC 09:00 → 許容 UTC 07〜11
+            if echo "21 22 23 00 01" | grep -qw "$HOUR"; then
               echo "type=morning" >> $GITHUB_OUTPUT
-            elif [ "$HOUR" = "03" ]; then
+              echo "skip=false" >> $GITHUB_OUTPUT
+            elif echo "02 03 04 05" | grep -qw "$HOUR"; then
               echo "type=midday" >> $GITHUB_OUTPUT
-            elif [ "$DOW" = "5" ]; then
-              echo "type=weekly" >> $GITHUB_OUTPUT
+              echo "skip=false" >> $GITHUB_OUTPUT
+            elif echo "07 08 09 10 11" | grep -qw "$HOUR"; then
+              if [ "$DOW" = "5" ]; then
+                echo "type=weekly" >> $GITHUB_OUTPUT
+              else
+                echo "type=evening" >> $GITHUB_OUTPUT
+              fi
+              echo "skip=false" >> $GITHUB_OUTPUT
             else
-              echo "type=evening" >> $GITHUB_OUTPUT
+              echo "type=skip" >> $GITHUB_OUTPUT
+              echo "skip=true" >> $GITHUB_OUTPUT
+              echo "⚠️ GitHub Actions 遅延検知: UTC ${HOUR}時に実行 → 許容時間外のためスキップ"
             fi
           fi
 
       - name: Generate and send report
+        if: steps.report_type.outputs.skip == 'false'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
