@@ -60,23 +60,59 @@ def update_position(pos, price):
     return pos
 
 
+def load_watchlist():
+    try:
+        with open("watchlist.json", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"candidates": []}
+
+
+def save_watchlist(data):
+    with open("watchlist.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def update_watchlist_prices(wl_data, prices):
+    for c in wl_data.get("candidates", []):
+        code = c["code"]
+        price = prices.get(code)
+        if price is None:
+            continue
+        c["current_price"] = price
+        lo = c.get("entry_low", 0)
+        hi = c.get("entry_high", float("inf"))
+        if lo <= price <= hi:
+            c["status"] = "ready"
+        elif hi > 0 and price <= hi * 1.05:
+            c["status"] = "near"
+        else:
+            c["status"] = "watch"
+    return wl_data
+
+
 def main():
     now = datetime.now(JST)
     print(f"positions.json 更新開始: {now.strftime('%Y-%m-%d %H:%M JST')}")
 
     data = load_positions()
-    codes = [p["code"] for p in data["positions"]]
+    wl_data = load_watchlist()
+
+    pos_codes = [p["code"] for p in data["positions"]]
+    wl_codes  = [c["code"] for c in wl_data.get("candidates", [])]
+    all_codes = list(set(pos_codes + wl_codes))
 
     print("株価取得中...")
-    prices = fetch_prices(codes)
+    prices = fetch_prices(all_codes)
 
     for pos in data["positions"]:
-        code = pos["code"]
-        price = prices.get(code)
-        update_position(pos, price)
+        update_position(pos, prices.get(pos["code"]))
+
+    wl_data = update_watchlist_prices(wl_data, prices)
 
     data["last_updated"] = now.strftime("%Y-%m-%d %H:%M JST")
     save_positions(data)
+    save_watchlist(wl_data)
     print(f"更新完了: {now.strftime('%H:%M')}")
 
 

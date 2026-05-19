@@ -403,7 +403,18 @@ def generate_morning(market_news, holding_news, holdings, today_str, stock_data)
 {{
   "market_bullets": ["市場概況の箇条書き（3〜4項目、日経平均・テーマ・為替・注意点）"],
   "watchlist": [
-    {{"code": "コード", "name": "銘柄名", "reason": "注目理由1〜2文"}}
+    {{
+      "code": "銘柄コード（4桁）",
+      "name": "銘柄名",
+      "reason": "推奨理由（なぜ今注目か・テクニカル+ファンダメンタル）1〜2文",
+      "catalyst": "カタリスト（決算・テーマ・需給動向）1文",
+      "entry_low": エントリー下限株価（数値のみ）,
+      "entry_high": エントリー上限株価（数値のみ）,
+      "target_price": 目標株価（数値のみ）,
+      "target_pct": 目標上昇率（数値のみ、例：30）,
+      "stop_price": 損切株価（数値のみ）,
+      "stop_pct": 損切率（数値のみ、例：-8）
+    }}
   ],
   "holdings_signals": [
     {{
@@ -788,6 +799,29 @@ def build_news_links(news_items, market_news):
     return html
 
 
+def save_watchlist(candidates, date_id):
+    watchlist_file = "watchlist.json"
+    try:
+        with open(watchlist_file, encoding="utf-8") as f:
+            existing = json.load(f)
+    except Exception:
+        existing = {"updated": date_id, "candidates": []}
+
+    # 既存候補を維持しつつ今日の候補を追加（重複コードは今日版で上書き）
+    existing_map = {c["code"]: c for c in existing.get("candidates", [])}
+    for c in candidates:
+        c["added_date"] = date_id
+        c["status"] = "watch"
+        existing_map[c["code"]] = c
+
+    existing["updated"] = date_id
+    existing["candidates"] = list(existing_map.values())
+
+    with open(watchlist_file, "w", encoding="utf-8") as f:
+        json.dump(existing, f, ensure_ascii=False, indent=2)
+    print(f"ウォッチリスト保存: {len(candidates)}件追加")
+
+
 def build_watchlist(items):
     html = ""
     for w in items:
@@ -979,6 +1013,8 @@ if __name__ == "__main__":
         html = generate_html_morning(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories)
         filename = f"report-{date_id}-morning.html"
         label = "モーニングレポート"
+        if data.get("watchlist"):
+            save_watchlist(data["watchlist"], date_id)
     elif REPORT_TYPE == "midday":
         data = generate_midday(market_news, holding_news, holdings, today_str, stock_data)
         html = generate_html_midday(data, market_news, holding_news, today_str, date_id, holdings, stock_data, histories)

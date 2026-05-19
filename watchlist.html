@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — 次の一手</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+    background: #0a0a0f;
+    color: #e8ecf0;
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  .header {
+    background: #111118;
+    border-bottom: 1px solid #1e2028;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .header-title { font-size: 20px; font-weight: 800; color: #fff; }
+  .header-title span { color: #4ade80; }
+  .header-sub { font-size: 13px; color: #6b7280; }
+  .header-nav { display: flex; gap: 8px; }
+  .nav-btn {
+    font-size: 13px;
+    color: #9ca3af;
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid #1e2028;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { color: #fff; border-color: #374151; }
+  .nav-btn.active { color: #4ade80; border-color: #4ade8044; background: #4ade8011; }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  /* 空状態 */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-title { font-size: 18px; font-weight: 700; color: #9ca3af; margin-bottom: 8px; }
+  .empty-desc { font-size: 14px; line-height: 1.7; }
+
+  /* ステータスバー */
+  .status-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .status-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .status-chip.all    { background: #1e202811; border-color: #374151; color: #9ca3af; }
+  .status-chip.ready  { background: #4ade8015; border-color: #4ade8044; color: #4ade80; }
+  .status-chip.near   { background: #fbbf2415; border-color: #fbbf2444; color: #fbbf24; }
+  .status-chip.watch  { background: #6b728015; border-color: #6b728044; color: #9ca3af; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot.ready { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+  .dot.near  { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; animation: blink 1.5s ease-in-out infinite; }
+  .dot.watch { background: #6b7280; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* 候補カード */
+  .candidate-card {
+    background: #111118;
+    border: 1px solid #1e2028;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-accent {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 16px 0 0 16px;
+  }
+  .card-accent.ready { background: #4ade80; box-shadow: 0 0 12px #4ade8066; }
+  .card-accent.near  { background: #fbbf24; box-shadow: 0 0 12px #fbbf2466; animation: glow 1.5s ease-in-out infinite; }
+  .card-accent.watch { background: #374151; }
+  @keyframes glow { 0%,100%{box-shadow:0 0 12px #fbbf2466} 50%{box-shadow:0 0 20px #fbbf24aa} }
+
+  .card-inner { padding: 18px 20px 18px 24px; }
+
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .card-name { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+  .card-code { font-size: 13px; color: #6b7280; }
+  .status-badge {
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 800;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .status-badge.ready { background: #4ade8015; border-color: #4ade8044; color: #4ade80; }
+  .status-badge.near  { background: #fbbf2415; border-color: #fbbf2444; color: #fbbf24; }
+  .status-badge.watch { background: #1e202833; border-color: #37415166; color: #9ca3af; }
+
+  .card-reason {
+    background: #0a0a0f;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    border: 1px solid #1e2028;
+  }
+  .reason-label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; font-weight: 700; }
+  .reason-text { font-size: 14px; color: #d1d5db; line-height: 1.65; }
+  .catalyst-text { font-size: 13px; color: #fbbf24; margin-top: 6px; }
+
+  /* エントリーゾーンバー */
+  .entry-zone-wrap { margin-bottom: 12px; }
+  .entry-zone-label { font-size: 12px; color: #6b7280; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .entry-bar-container { position: relative; height: 28px; background: #0a0a0f; border-radius: 8px; border: 1px solid #1e2028; overflow: visible; }
+  .entry-zone-fill {
+    position: absolute;
+    top: 0; bottom: 0;
+    background: #4ade8022;
+    border: 1px solid #4ade8055;
+    border-radius: 6px;
+  }
+  .current-price-marker {
+    position: absolute;
+    top: -4px; bottom: -4px;
+    width: 3px;
+    border-radius: 2px;
+    transform: translateX(-50%);
+  }
+  .current-price-marker.inside  { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+  .current-price-marker.outside { background: #f87171; }
+  .current-price-marker.near-zone { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+  .marker-label {
+    position: absolute;
+    top: -22px;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .bar-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 11px;
+    color: #6b7280;
+  }
+
+  /* 数字グリッド */
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .number-box {
+    background: #0a0a0f;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #1e2028;
+  }
+  .number-label { font-size: 11px; color: #6b7280; margin-bottom: 4px; font-weight: 600; }
+  .number-val { font-size: 16px; font-weight: 800; }
+  .number-val.green  { color: #4ade80; }
+  .number-val.red    { color: #f87171; }
+  .number-val.yellow { color: #fbbf24; }
+  .number-val.white  { color: #e8ecf0; }
+  .number-sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+
+  /* RR比 */
+  .rr-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .rr-gain { background: #4ade80; border-radius: 4px 0 0 4px; }
+  .rr-loss { background: #f87171; border-radius: 0 4px 4px 0; }
+
+  /* 削除ボタン */
+  .remove-btn {
+    font-size: 11px;
+    color: #6b7280;
+    background: none;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    padding: 3px 10px;
+    cursor: pointer;
+    float: right;
+    margin-top: 2px;
+    transition: all 0.15s;
+  }
+  .remove-btn:hover { color: #f87171; border-color: #f8717144; }
+
+  /* 更新日 */
+  .updated-info { font-size: 12px; color: #6b7280; text-align: right; margin-bottom: 16px; }
+
+  /* ローディング */
+  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; gap: 16px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid #1e2028; border-top-color: #4ade80; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; color: #6b7280; }
+
+  .footer { font-size: 12px; color: #374151; text-align: center; padding: 20px 0 0; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div>
+      <div class="header-title">⚡ <span>Warren</span></div>
+      <div class="header-sub">次の一手 — 買い候補</div>
+    </div>
+  </div>
+  <div class="header-nav">
+    <a href="dashboard.html" class="nav-btn">ポジション</a>
+    <a href="watchlist.html" class="nav-btn active">次の一手</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">データを取得中...</div>
+  </div>
+  <div id="content" style="display:none"></div>
+</div>
+
+<script>
+const fmt = n => Math.abs(Math.round(n)).toLocaleString('ja-JP');
+
+function statusLabel(s) {
+  if (s === 'ready') return '🟢 今すぐ買える';
+  if (s === 'near')  return '🟡 エントリーゾーン接近';
+  return '⏳ 下落待ち';
+}
+
+function buildStatusBar(candidates) {
+  const ready = candidates.filter(c => c.status === 'ready').length;
+  const near  = candidates.filter(c => c.status === 'near').length;
+  const watch = candidates.filter(c => c.status === 'watch').length;
+  return `
+<div class="status-bar">
+  <div class="status-chip all">全て ${candidates.length}</div>
+  ${ready > 0 ? `<div class="status-chip ready"><div class="dot ready"></div>今すぐ買える ${ready}</div>` : ''}
+  ${near  > 0 ? `<div class="status-chip near"><div class="dot near"></div>接近中 ${near}</div>` : ''}
+  ${watch > 0 ? `<div class="status-chip watch"><div class="dot watch"></div>待機中 ${watch}</div>` : ''}
+</div>`;
+}
+
+function buildEntryBar(c) {
+  const lo = c.entry_low;
+  const hi = c.entry_high;
+  const cur = c.current_price;
+  if (!lo || !hi) return '';
+
+  // バーの範囲: lo の 10% 下 〜 hi の 20% 上
+  const barMin = lo * 0.90;
+  const barMax = hi * 1.20;
+  const barRange = barMax - barMin;
+
+  const zoneLeft  = ((lo - barMin) / barRange * 100).toFixed(1);
+  const zoneWidth = ((hi - lo)    / barRange * 100).toFixed(1);
+
+  let markerPct = cur ? ((cur - barMin) / barRange * 100) : null;
+  markerPct = markerPct !== null ? Math.min(Math.max(markerPct, 2), 98) : null;
+
+  const isInside = cur && cur >= lo && cur <= hi;
+  const isNear   = cur && cur > hi && cur <= hi * 1.05;
+  const markerClass = isInside ? 'inside' : (isNear ? 'near-zone' : 'outside');
+  const markerColor = isInside ? '#4ade80' : (isNear ? '#fbbf24' : '#f87171');
+
+  const markerHtml = markerPct !== null ? `
+    <div class="current-price-marker ${markerClass}" style="left:${markerPct.toFixed(1)}%">
+      <div class="marker-label" style="color:${markerColor}">¥${fmt(cur)}</div>
+    </div>` : '';
+
+  const distText = cur
+    ? (isInside
+        ? 'エントリーゾーン内'
+        : cur < lo
+          ? `あと -${((lo - cur) / cur * 100).toFixed(1)}% でエントリーゾーン`
+          : `エントリーゾーンより +${((cur - hi) / hi * 100).toFixed(1)}% 上`)
+    : '現在値取得中';
+
+  return `
+<div class="entry-zone-wrap">
+  <div class="entry-zone-label">
+    <span>エントリーゾーン</span>
+    <span style="color:${isInside ? '#4ade80' : (isNear ? '#fbbf24' : '#9ca3af')}">${distText}</span>
+  </div>
+  <div class="entry-bar-container">
+    <div class="entry-zone-fill" style="left:${zoneLeft}%;width:${zoneWidth}%"></div>
+    ${markerHtml}
+  </div>
+  <div class="bar-labels">
+    <span>¥${fmt(lo)}</span>
+    <span style="color:#4ade8099">ゾーン ¥${fmt(lo)}〜¥${fmt(hi)}</span>
+    <span>¥${fmt(hi)}</span>
+  </div>
+</div>`;
+}
+
+function buildCard(c, idx) {
+  const status = c.status || 'watch';
+  const rrGain = c.target_pct ? Math.abs(c.target_pct) : 20;
+  const rrLoss = c.stop_pct   ? Math.abs(c.stop_pct)   : 8;
+  const rrTotal = rrGain + rrLoss;
+  const rrRatio = (rrGain / rrLoss).toFixed(1);
+  const gainPct = (rrGain / rrTotal * 100).toFixed(0);
+
+  const curPriceHtml = c.current_price
+    ? `<div class="number-box"><div class="number-label">現在株価</div><div class="number-val white">¥${fmt(c.current_price)}</div></div>`
+    : `<div class="number-box"><div class="number-label">現在株価</div><div class="number-val white" style="color:#6b7280">—</div></div>`;
+
+  return `
+<div class="candidate-card" id="card-${idx}">
+  <div class="card-accent ${status}"></div>
+  <div class="card-inner">
+    <div class="card-header">
+      <div>
+        <div class="card-name">${c.name}</div>
+        <div class="card-code">${c.code} ・ Warren推奨 ${c.added_date || ''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="status-badge ${status}">${statusLabel(status)}</div>
+        <button class="remove-btn" onclick="removeCard(${idx})">削除</button>
+      </div>
+    </div>
+
+    <div class="card-reason">
+      <div class="reason-label">Warren の見立て</div>
+      <div class="reason-text">${c.reason || ''}</div>
+      ${c.catalyst ? `<div class="catalyst-text">⚡ ${c.catalyst}</div>` : ''}
+    </div>
+
+    ${buildEntryBar(c)}
+
+    <div class="numbers-grid">
+      ${curPriceHtml}
+      <div class="number-box">
+        <div class="number-label">↑ 目標 +${c.target_pct || '—'}%</div>
+        <div class="number-val green">¥${c.target_price ? fmt(c.target_price) : '—'}</div>
+      </div>
+      <div class="number-box">
+        <div class="number-label">↓ 損切 ${c.stop_pct || '—'}%</div>
+        <div class="number-val red">¥${c.stop_price ? fmt(c.stop_price) : '—'}</div>
+      </div>
+    </div>
+
+    <div class="number-box" style="padding:10px 14px">
+      <div class="number-label" style="margin-bottom:6px">リスク・リワード比 (RR = ${rrRatio})</div>
+      <div class="rr-bar">
+        <div class="rr-gain" style="width:${gainPct}%"></div>
+        <div class="rr-loss" style="width:${100 - gainPct}%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:5px">
+        <span style="color:#4ade80">利益 +${rrGain}%</span>
+        <span style="color:#f87171">損失 ${c.stop_pct || -8}%</span>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+let allData = null;
+
+function removeCard(idx) {
+  if (!allData) return;
+  allData.candidates.splice(idx, 1);
+  render(allData);
+}
+
+function render(data) {
+  allData = data;
+  const candidates = data.candidates || [];
+
+  document.getElementById('content').innerHTML = candidates.length === 0
+    ? `<div class="empty">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">候補なし</div>
+        <div class="empty-desc">毎朝のWarrenレポートで<br>自動的に候補が追加されます。<br>次の更新をお待ちください。</div>
+      </div>`
+    : `<div class="updated-info">Warren更新: ${data.updated || '—'}</div>
+       ${buildStatusBar(candidates)}
+       ${candidates.map((c, i) => buildCard(c, i)).join('')}
+       <div class="footer">⚡ Warren — Powered by Claude<br>本情報は投資助言ではありません。売買は自己責任で行ってください。</div>`;
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+async function load() {
+  try {
+    const res = await fetch('watchlist.json?t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    render(await res.json());
+  } catch (e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-title">読み込みエラー</div>
+        <div class="empty-desc">${e.message}</div>
+      </div>`;
+    document.getElementById('content').style.display = 'block';
+  }
+}
+
+load();
+setInterval(load, 5 * 60 * 1000);
+</script>
+</body>
+</html>
