@@ -1,4 +1,61 @@
 {
-  "updated": "—",
-  "candidates": []
+  "updated": "2026-05-19",
+  "candidates": [
+    {
+      "code": "6232",
+      "name": "ACSL",
+      "reason": "本日+12.5%の急騰でMA25比+43.6%と強烈な上昇トレンド継続中。防衛・ドローンテーマへの資金集中が続いており、RSI=70.0はちょうど過熱ラインに到達した局面。",
+      "catalyst": "防衛費増額・ドローン規制緩和の政策追い風と、国産ドローン需要拡大による業績期待が株価を押し上げ。",
+      "entry_low": 3200,
+      "entry_high": 3450,
+      "target_price": 4200,
+      "target_pct": 23,
+      "stop_price": 2950,
+      "stop_pct": -14,
+      "added_date": "2026-05-19",
+      "status": "watch"
+    },
+    {
+      "code": "464A",
+      "name": "QPSホールディングス",
+      "reason": "本日+10.37%・RSI=81.9と極度の買われすぎ水準に突入、MA25比+27.7%で短期急騰が続いており、新規エントリーは押し目を待つ戦略が有効。",
+      "catalyst": "小型SAR衛星の商業利用拡大と宇宙インフラ投資テーマへの国内外資金流入が継続中。",
+      "entry_low": 3100,
+      "entry_high": 3300,
+      "target_price": 4200,
+      "target_pct": 27,
+      "stop_price": 2880,
+      "stop_pct": -12,
+      "added_date": "2026-05-19",
+      "status": "watch"
+    },
+    {
+      "code": "1436",
+      "name": "グリーンエナジー&カンパニー",
+      "reason": "3Q累計経常利益3.3倍増益・直近四半期103倍増益という驚異的な業績改善を達成しており、RSI=67.9で過熱手前、MA25比+28.8%の上昇トレンドが継続中。",
+      "catalyst": "再エネ関連政策強化と木質バイオマス発電事業の収益急拡大が直近好決算の主因で、次の決算開示が追加カタリストに。",
+      "entry_low": 1780,
+      "entry_high": 1900,
+      "target_price": 2400,
+      "target_pct": 28,
+      "stop_price": 1620,
+      "stop_pct": -10,
+      "added_date": "2026-05-19",
+      "status": "watch"
+    },
+    {
+      "code": "7011",
+      "name": "三菱重工業",
+      "reason": "ADR市場での買い優勢と防衛・エネルギーインフラ双方のテーマを持ち、日経6万円超えの相場環境において大型優良株への資金シフトが起きやすい局面。",
+      "catalyst": "防衛費倍増計画の具体化と原子力・ガスタービン事業の受注拡大が業績の長期成長を裏付ける強材料。",
+      "entry_low": 9200,
+      "entry_high": 9800,
+      "target_price": 12000,
+      "target_pct": 25,
+      "stop_price": 8400,
+      "stop_pct": -9,
+      "added_date": "2026-05-19",
+      "status": "watch"
+    }
+  ]
 }
