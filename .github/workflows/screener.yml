@@ -19,7 +19,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install anthropic yfinance
+        run: pip install anthropic yfinance xlrd
 
       - name: Run screener
         env:

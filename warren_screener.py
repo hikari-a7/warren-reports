@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Warren Screener - 宇宙全体をスキャンして買い候補を抽出し投資メモを生成
+Warren Screener - 全上場銘柄をスキャンして買い候補を抽出し投資メモを生成
 """
 
+import io
 import os
 import json
 import urllib.request
@@ -16,6 +17,10 @@ LINE_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN", "")
 LINE_USER_ID = os.environ.get("LINE_USER_ID", "")
 PAGES_URL = "https://hikari-a7.github.io/warren-reports"
 
+JPX_URL = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls"
+TARGET_MARKETS = {"プライム市場", "スタンダード市場", "グロース市場"}
+MARKET_LABEL = {"プライム市場": "プライム", "スタンダード市場": "スタンダード", "グロース市場": "グロース"}
+
 
 # ── データ取得 ──────────────────────────────────────────────────────
 
@@ -24,7 +29,77 @@ def load_universe():
         return json.load(f)
 
 
-def all_stocks(universe):
+def fetch_jpx_stocks():
+    """JPX公開Excelから全上場株式を取得（約3,800銘柄）"""
+    print("  JPX上場銘柄一覧をダウンロード中...")
+    try:
+        req = urllib.request.Request(JPX_URL, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = resp.read()
+        import xlrd
+        wb = xlrd.open_workbook(file_contents=data)
+        ws = wb.sheet_by_index(0)
+        stocks = []
+        for i in range(1, ws.nrows):
+            row = ws.row_values(i)
+            market = str(row[1]).strip() if row[1] else ""
+            if market not in TARGET_MARKETS:
+                continue
+            raw_code = row[2]
+            name = str(row[3]).strip() if row[3] else ""
+            industry = str(row[5]).strip() if len(row) > 5 and row[5] else ""
+            if not raw_code or not name:
+                continue
+            code = str(int(float(raw_code)))
+            stocks.append({
+                "code": code,
+                "name": name,
+                "market_section": MARKET_LABEL.get(market, market),
+                "industry": industry,
+            })
+        print(f"  JPX取得完了: {len(stocks)}銘柄")
+        return stocks
+    except Exception as e:
+        print(f"  JPXダウンロード失敗: {e} → universe.jsonにフォールバック")
+        return []
+
+
+def build_full_stock_list(universe, jpx_stocks):
+    """JPX全銘柄 + universe.jsonのテーマメタデータをマージ"""
+    theme_map = {}
+    for theme in universe["themes"]:
+        for s in theme["stocks"]:
+            theme_map[s["code"]] = {"theme_id": theme["id"], "theme_name": theme["name"]}
+
+    seen, stocks = set(), []
+
+    if jpx_stocks:
+        for s in jpx_stocks:
+            code = s["code"]
+            if code in seen:
+                continue
+            seen.add(code)
+            meta = theme_map.get(code, {"theme_id": "", "theme_name": ""})
+            stocks.append({**s, **meta})
+    else:
+        for theme in universe["themes"]:
+            for s in theme["stocks"]:
+                if s["code"] in seen:
+                    continue
+                seen.add(s["code"])
+                stocks.append({
+                    **s,
+                    "theme_id": theme["id"],
+                    "theme_name": theme["name"],
+                    "market_section": "プライム",
+                    "industry": "",
+                })
+
+    return stocks
+
+
+def thematic_stocks(universe):
+    """テーマレーダー用：universe.jsonの銘柄のみ"""
     seen, stocks = set(), []
     for theme in universe["themes"]:
         for s in theme["stocks"]:
@@ -34,58 +109,80 @@ def all_stocks(universe):
     return stocks
 
 
-def fetch_universe_data(stocks):
+def _calc_metrics(closes, volumes):
+    """終値・出来高系列からテクニカル指標を計算"""
+    latest   = float(closes.iloc[-1])
+    prev     = float(closes.iloc[-2])
+    week_ago = float(closes.iloc[-6]) if len(closes) >= 6 else prev
+
+    change_pct = (latest - prev) / prev * 100
+    week_pct   = (latest - week_ago) / week_ago * 100
+
+    vol_avg   = float(volumes.iloc[-21:-1].mean()) if len(volumes) >= 21 else float(volumes.mean())
+    vol_ratio = float(volumes.iloc[-1]) / vol_avg if vol_avg > 0 else 1.0
+
+    ma25 = float(closes.tail(25).mean()) if len(closes) >= 25 else None
+    ma5  = float(closes.tail(5).mean())  if len(closes) >= 5  else None
+    ma75 = float(closes.tail(75).mean()) if len(closes) >= 75 else None
+
+    delta = closes.diff().dropna()
+    gain  = float(delta.clip(lower=0).tail(14).mean())
+    loss  = float((-delta.clip(upper=0)).tail(14).mean())
+    rsi   = 100 - (100 / (1 + gain / loss)) if loss > 0 else 100.0
+
+    high_52w = float(closes.tail(252).max()) if len(closes) >= 52 else float(closes.max())
+    vs_high  = (latest - high_52w) / high_52w * 100
+
+    return {
+        "price":       round(latest, 1),
+        "change_pct":  round(change_pct, 2),
+        "week_pct":    round(week_pct, 2),
+        "vol_ratio":   round(vol_ratio, 1),
+        "ma5":         round(ma5, 1)  if ma5  else None,
+        "ma25":        round(ma25, 1) if ma25 else None,
+        "ma75":        round(ma75, 1) if ma75 else None,
+        "rsi":         round(rsi, 1),
+        "vs_ma25":     round((latest - ma25) / ma25 * 100, 1) if ma25 else None,
+        "vs_high_52w": round(vs_high, 1),
+    }
+
+
+def fetch_universe_data(stocks, batch_size=80):
+    """yf.download() バッチで全銘柄を高速取得"""
     import yfinance as yf
-    result = {}
-    codes = [s["code"] for s in stocks]
-    print(f"  {len(codes)}銘柄を取得中...")
+    import pandas as pd
 
-    for code in codes:
+    codes   = [s["code"] for s in stocks]
+    tickers = [f"{c}.T" for c in codes]
+    result  = {}
+    total   = len(tickers)
+    n_batch = (total + batch_size - 1) // batch_size
+    print(f"  {total}銘柄を{n_batch}バッチで取得中...")
+
+    for i in range(0, total, batch_size):
+        batch_t = tickers[i:i + batch_size]
+        batch_c = codes[i:i + batch_size]
+        bn = i // batch_size + 1
+        print(f"  バッチ {bn}/{n_batch} ({len(batch_t)}銘柄)", flush=True)
         try:
-            hist = yf.Ticker(f"{code}.T").history(period="3mo")
-            if hist.empty or len(hist) < 10:
-                continue
-            closes = hist["Close"].dropna()
-            volumes = hist["Volume"].dropna()
-
-            latest  = float(closes.iloc[-1])
-            prev    = float(closes.iloc[-2])
-            week_ago = float(closes.iloc[-6]) if len(closes) >= 6 else prev
-
-            change_pct = (latest - prev) / prev * 100
-            week_pct   = (latest - week_ago) / week_ago * 100
-
-            vol_avg   = float(volumes.iloc[-21:-1].mean()) if len(volumes) >= 21 else float(volumes.mean())
-            vol_ratio = float(volumes.iloc[-1]) / vol_avg if vol_avg > 0 else 1.0
-
-            ma5  = float(closes.tail(5).mean())  if len(closes) >= 5  else None
-            ma25 = float(closes.tail(25).mean()) if len(closes) >= 25 else None
-            ma75 = float(closes.tail(75).mean()) if len(closes) >= 75 else None
-
-            delta = closes.diff().dropna()
-            gain  = float(delta.clip(lower=0).tail(14).mean())
-            loss  = float((-delta.clip(upper=0)).tail(14).mean())
-            rsi   = 100 - (100 / (1 + gain / loss)) if loss > 0 else 100.0
-
-            high_52w = float(closes.tail(252).max()) if len(closes) >= 52 else float(closes.max())
-            vs_high  = (latest - high_52w) / high_52w * 100
-
-            result[code] = {
-                "price":      round(latest, 1),
-                "change_pct": round(change_pct, 2),
-                "week_pct":   round(week_pct, 2),
-                "vol_ratio":  round(vol_ratio, 1),
-                "ma5":        round(ma5, 1)  if ma5  else None,
-                "ma25":       round(ma25, 1) if ma25 else None,
-                "ma75":       round(ma75, 1) if ma75 else None,
-                "rsi":        round(rsi, 1),
-                "vs_ma25":    round((latest - ma25) / ma25 * 100, 1) if ma25 else None,
-                "vs_high_52w":round(vs_high, 1),
-            }
+            raw = yf.download(
+                batch_t, period="3mo", group_by="ticker",
+                auto_adjust=True, progress=False, threads=True
+            )
+            for code, ticker in zip(batch_c, batch_t):
+                try:
+                    hist = raw[ticker] if len(batch_t) > 1 else raw
+                    closes  = hist["Close"].dropna()
+                    volumes = hist["Volume"].dropna()
+                    if len(closes) < 10:
+                        continue
+                    result[code] = _calc_metrics(closes, volumes)
+                except Exception:
+                    pass
         except Exception as e:
-            print(f"    {code} エラー: {e}")
+            print(f"  バッチ{bn}エラー: {e}")
 
-    print(f"  取得完了: {len(result)}/{len(codes)}件")
+    print(f"  取得完了: {len(result)}/{total}件")
     return result
 
 
@@ -297,19 +394,21 @@ def save_results(candidates_with_memos, theme_radar, date_id, all_scored=None):
     # ranking.json — 全銘柄スコアランキング
     if all_scored:
         ranking_stocks = [{
-            "rank":       i + 1,
-            "code":       s["code"],
-            "name":       s["name"],
-            "theme_id":   s.get("theme_id", ""),
-            "theme_name": s.get("theme_name", ""),
-            "score":      s["score"],
-            "price":      s.get("price"),
-            "change_pct": s.get("change_pct"),
-            "week_pct":   s.get("week_pct"),
-            "rsi":        s.get("rsi"),
-            "vol_ratio":  s.get("vol_ratio"),
-            "vs_ma25":    s.get("vs_ma25"),
-            "vs_high_52w":s.get("vs_high_52w"),
+            "rank":           i + 1,
+            "code":           s["code"],
+            "name":           s["name"],
+            "theme_id":       s.get("theme_id", ""),
+            "theme_name":     s.get("theme_name", ""),
+            "market_section": s.get("market_section", ""),
+            "industry":       s.get("industry", ""),
+            "score":          s["score"],
+            "price":          s.get("price"),
+            "change_pct":     s.get("change_pct"),
+            "week_pct":       s.get("week_pct"),
+            "rsi":            s.get("rsi"),
+            "vol_ratio":      s.get("vol_ratio"),
+            "vs_ma25":        s.get("vs_ma25"),
+            "vs_high_52w":    s.get("vs_high_52w"),
         } for i, s in enumerate(all_scored)]
         ranking = {"updated": date_id, "stocks": ranking_stocks}
         with open("ranking.json", "w", encoding="utf-8") as f:
@@ -363,9 +462,11 @@ if __name__ == "__main__":
     today_str = now.strftime("%Y-%m-%d")
     print(f"Warren Screener 開始: {now.strftime('%Y-%m-%d %H:%M JST')}")
 
-    universe = load_universe()
-    stocks   = all_stocks(universe)
-    print(f"ユニバース: {len(stocks)}銘柄")
+    universe  = load_universe()
+    jpx_stocks = fetch_jpx_stocks()
+    stocks    = build_full_stock_list(universe, jpx_stocks)
+    t_stocks  = thematic_stocks(universe)
+    print(f"ユニバース: {len(stocks)}銘柄（テーマ株 {len(t_stocks)}銘柄含む）")
 
     print("株価データ取得中...")
     stock_data = fetch_universe_data(stocks)

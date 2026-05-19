@@ -23,8 +23,8 @@
     --dn-mid:   #a8585840;
     --hot:      #c49040;
     --hot-dim:  #c4904022;
-    --hot-mid:  #c4904044;
     --cool:     #4a7eb8;
+    --cool-dim: #4a7eb822;
     --slate:    #3a4d66;
     --slate-dim:#3a4d6622;
   }
@@ -75,87 +75,144 @@
   }
   .header-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
   .header-sub { font-size: 13px; color: var(--text3); margin-top: 3px; }
+  .header-meta { font-size: 13px; color: var(--text3); text-align: right; }
+  .header-count { font-size: 18px; font-weight: 800; color: var(--up); }
 
   /* フィルターバー */
-  .filter-bar {
-    background: var(--surf2); border-bottom: 1px solid var(--border);
-    padding: 12px 32px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  .filter-wrap {
+    background: var(--surf2);
+    border-bottom: 1px solid var(--border);
   }
-  .filter-label { font-size: 13px; color: var(--text2); font-weight: 600; }
-  .theme-btn {
-    background: var(--surf3); border: 1px solid var(--border);
-    border-radius: 20px; color: var(--text2);
+  .filter-row {
+    padding: 10px 32px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-row:last-child { border-bottom: none; }
+  .filter-label { font-size: 12px; color: var(--text3); font-weight: 700; letter-spacing: 0.5px; min-width: 60px; }
+
+  .seg-btn {
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text2);
     font-size: 13px; font-weight: 600; padding: 5px 14px;
+    cursor: pointer; transition: all .15s; font-family: inherit;
+  }
+  .seg-btn:hover { border-color: var(--border2); color: var(--text1); }
+  .seg-btn.active { background: var(--surf3); border-color: var(--border2); color: var(--text1); }
+  .seg-btn.market-prime.active   { background: var(--up-dim);   border-color: var(--up);   color: var(--up); }
+  .seg-btn.market-std.active     { background: var(--cool-dim); border-color: var(--cool); color: var(--cool); }
+  .seg-btn.market-growth.active  { background: var(--hot-dim);  border-color: var(--hot);  color: var(--hot); }
+
+  .theme-btn {
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 20px; color: var(--text2);
+    font-size: 12px; font-weight: 600; padding: 4px 12px;
     cursor: pointer; transition: all .15s; font-family: inherit;
   }
   .theme-btn:hover { border-color: var(--border2); color: var(--text1); }
   .theme-btn.active { background: var(--up-dim); border-color: var(--up-mid); color: var(--up); }
+
+  /* 検索 */
+  .search-box {
+    background: var(--surf3); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text1); font-size: 13px;
+    padding: 5px 12px; width: 200px; font-family: inherit;
+    outline: none;
+  }
+  .search-box:focus { border-color: var(--border2); }
+  .search-box::placeholder { color: var(--text3); }
   .updated-label { margin-left: auto; font-size: 12px; color: var(--text3); }
 
-  .container { padding: 24px 32px 56px; }
+  .container { padding: 20px 32px 56px; }
 
   /* テーブル */
   .table-wrap { overflow-x: auto; }
-  table {
-    width: 100%; border-collapse: collapse;
-    font-size: 14px;
-  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
   thead th {
     background: var(--surf2); color: var(--text3);
     font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
-    padding: 10px 14px; text-align: left;
+    padding: 10px 12px; text-align: left;
     border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-    cursor: pointer; user-select: none;
+    white-space: nowrap; cursor: pointer; user-select: none;
   }
   thead th:hover { color: var(--text2); }
   thead th.sort-asc::after  { content: ' ↑'; color: var(--up); }
   thead th.sort-desc::after { content: ' ↓'; color: var(--up); }
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background .1s;
-  }
+  thead th.no-sort { cursor: default; }
+  thead th.no-sort:hover { color: var(--text3); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
   tbody tr:hover { background: var(--surf2); }
   tbody tr.top5 { background: var(--up-dim); }
   tbody tr.top5:hover { background: var(--up-mid); }
-  td { padding: 12px 14px; white-space: nowrap; }
+  td { padding: 10px 12px; white-space: nowrap; }
 
-  .rank-num {
-    font-size: 16px; font-weight: 800; color: var(--text3);
-    width: 40px; text-align: center;
-  }
+  .rank-num { font-size: 15px; font-weight: 800; color: var(--text3); width: 36px; text-align: center; }
   .rank-num.gold   { color: #d4a840; }
   .rank-num.silver { color: #8a9ab8; }
   .rank-num.bronze { color: #a06040; }
 
-  .stock-name { font-size: 15px; font-weight: 700; color: var(--text1); }
-  .stock-code { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .stock-name { font-size: 14px; font-weight: 700; color: var(--text1); }
+  .stock-code { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  .market-tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 4px; letter-spacing: 0.3px;
+  }
+  .market-tag.p { background: var(--up-dim);   border: 1px solid var(--up);   color: var(--up); }
+  .market-tag.s { background: var(--cool-dim); border: 1px solid var(--cool); color: var(--cool); }
+  .market-tag.g { background: var(--hot-dim);  border: 1px solid var(--hot);  color: var(--hot); }
 
   .theme-tag {
     display: inline-block; font-size: 11px; font-weight: 600;
-    padding: 3px 9px; border-radius: 5px;
-    background: var(--slate-dim); border: 1px solid var(--slate);
-    color: var(--text2);
+    padding: 2px 8px; border-radius: 5px;
+    background: var(--slate-dim); border: 1px solid var(--slate); color: var(--text2);
+    max-width: 130px; overflow: hidden; text-overflow: ellipsis;
   }
+  .industry-text { font-size: 11px; color: var(--text3); }
 
-  .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
-  .score-bar-bg { width: 80px; height: 6px; background: var(--surf3); border-radius: 3px; overflow: hidden; }
+  .score-bar-wrap { display: flex; align-items: center; gap: 7px; }
+  .score-bar-bg { width: 64px; height: 5px; background: var(--surf3); border-radius: 3px; overflow: hidden; }
   .score-bar-fill { height: 100%; border-radius: 3px; background: var(--up); }
-  .score-num { font-size: 15px; font-weight: 800; color: var(--text1); min-width: 28px; }
+  .score-num { font-size: 14px; font-weight: 800; color: var(--text1); min-width: 26px; }
 
   .val-up   { color: var(--up);  font-weight: 700; }
   .val-dn   { color: var(--dn);  font-weight: 700; }
   .val-neut { color: var(--text2); }
-
-  .rsi-ok  { color: var(--up); }
-  .rsi-hot { color: var(--dn); }
-  .rsi-low { color: var(--cool); }
+  .rsi-ok  { color: var(--up); font-weight: 700; }
+  .rsi-hot { color: var(--dn); font-weight: 700; }
+  .rsi-low { color: var(--cool); font-weight: 700; }
 
   .candidate-badge {
     display: inline-block; font-size: 11px; font-weight: 700;
     padding: 2px 8px; border-radius: 4px;
     background: var(--up-dim); border: 1px solid var(--up-mid); color: var(--up);
   }
+
+  /* ページネーション */
+  .pagination-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 0; flex-wrap: wrap; gap: 12px;
+  }
+  .page-info { font-size: 13px; color: var(--text3); }
+  .page-info strong { color: var(--text1); }
+  .page-controls { display: flex; align-items: center; gap: 6px; }
+  .page-btn {
+    background: var(--surf2); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text2);
+    font-size: 13px; font-weight: 600; padding: 5px 12px;
+    cursor: pointer; font-family: inherit; transition: all .15s;
+    min-width: 36px; text-align: center;
+  }
+  .page-btn:hover:not(:disabled) { border-color: var(--border2); color: var(--text1); }
+  .page-btn.active { background: var(--up-dim); border-color: var(--up-mid); color: var(--up); }
+  .page-btn:disabled { opacity: 0.35; cursor: default; }
+  .page-jump { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text3); }
+  .page-jump input {
+    background: var(--surf3); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text1); font-size: 13px;
+    padding: 4px 8px; width: 56px; text-align: center; font-family: inherit; outline: none;
+  }
+  .page-jump input:focus { border-color: var(--border2); }
 
   /* ローディング */
   .loading { display: flex; flex-direction: column; align-items: center; padding: 100px 20px; gap: 16px; }
@@ -193,20 +250,36 @@
 <div class="header">
   <div>
     <div class="header-title">📈 全銘柄ランキング</div>
-    <div class="header-sub">スクリーニングスコア順 — 全ユニバース</div>
+    <div class="header-sub">全上場株式をスクリーニングスコア順に表示</div>
+  </div>
+  <div class="header-meta">
+    <div class="header-count" id="totalCount">—</div>
+    <div>銘柄スキャン済み</div>
   </div>
 </div>
 
-<div class="filter-bar" id="filterBar">
-  <span class="filter-label">テーマ</span>
-  <button class="theme-btn active" onclick="setTheme('all', this)">すべて</button>
-  <span class="updated-label" id="updatedLabel">—</span>
+<div class="filter-wrap">
+  <!-- 市場区分 -->
+  <div class="filter-row">
+    <span class="filter-label">市場区分</span>
+    <button class="seg-btn active" onclick="setMarket('all', this)">すべて</button>
+    <button class="seg-btn market-prime" onclick="setMarket('プライム', this)">プライム</button>
+    <button class="seg-btn market-std" onclick="setMarket('スタンダード', this)">スタンダード</button>
+    <button class="seg-btn market-growth" onclick="setMarket('グロース', this)">グロース</button>
+    <input class="search-box" id="searchBox" placeholder="銘柄名・コードで検索..." oninput="onSearch()">
+    <span class="updated-label" id="updatedLabel">—</span>
+  </div>
+  <!-- テーマ -->
+  <div class="filter-row" id="themeFilterRow">
+    <span class="filter-label">テーマ</span>
+    <button class="theme-btn active" onclick="setTheme('all', this)">すべて</button>
+  </div>
 </div>
 
 <div class="container">
   <div class="loading" id="loading">
     <div class="spinner"></div>
-    <div class="loading-text">Warren がランキングを集計中...</div>
+    <div class="loading-text">Warren が全銘柄をランキング中...</div>
   </div>
   <div id="content" style="display:none"></div>
 </div>
@@ -214,16 +287,37 @@
 </div><!-- /layout -->
 
 <script>
+const PAGE_SIZE = 50;
 let allStocks = [];
-let currentTheme = 'all';
+let filtered   = [];
+let currentMarket = 'all';
+let currentTheme  = 'all';
+let searchQuery   = '';
 let sortCol = 'rank';
 let sortDir = 'asc';
+let currentPage = 1;
+const candidateCodes = new Set();
+
+function setMarket(m, btn) {
+  currentMarket = m;
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPage = 1;
+  applyFilters();
+}
 
 function setTheme(theme, btn) {
   currentTheme = theme;
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderTable();
+  currentPage = 1;
+  applyFilters();
+}
+
+function onSearch() {
+  searchQuery = document.getElementById('searchBox').value.trim().toLowerCase();
+  currentPage = 1;
+  applyFilters();
 }
 
 function setSort(col) {
@@ -233,95 +327,160 @@ function setSort(col) {
     sortCol = col;
     sortDir = col === 'rank' ? 'asc' : 'desc';
   }
-  document.querySelectorAll('thead th').forEach(th => {
+  document.querySelectorAll('thead th[data-col]').forEach(th => {
     th.classList.remove('sort-asc', 'sort-desc');
     if (th.dataset.col === col) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
   });
-  renderTable();
+  currentPage = 1;
+  renderPage();
 }
 
-const candidateCodes = new Set();
+function applyFilters() {
+  filtered = allStocks.filter(s => {
+    if (currentMarket !== 'all' && s.market_section !== currentMarket) return false;
+    if (currentTheme !== 'all' && s.theme_id !== currentTheme) return false;
+    if (searchQuery) {
+      const q = searchQuery;
+      if (!s.name.toLowerCase().includes(q) && !s.code.includes(q) && !(s.industry||'').toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    let va = a[sortCol] ?? (sortDir === 'asc' ? Infinity : -Infinity);
+    let vb = b[sortCol] ?? (sortDir === 'asc' ? Infinity : -Infinity);
+    if (typeof va === 'string') return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    return sortDir === 'asc' ? va - vb : vb - va;
+  });
+
+  renderPage();
+}
+
+function marketTagClass(m) {
+  if (m === 'プライム')    return 'p';
+  if (m === 'スタンダード') return 's';
+  if (m === 'グロース')    return 'g';
+  return '';
+}
 
 function rsiClass(rsi) {
-  if (rsi === null || rsi === undefined) return 'val-neut';
+  if (rsi == null) return 'val-neut';
   if (rsi < 30) return 'rsi-low';
   if (rsi > 70) return 'rsi-hot';
   return 'rsi-ok';
 }
 
-function renderTable() {
-  let stocks = currentTheme === 'all'
-    ? [...allStocks]
-    : allStocks.filter(s => s.theme_id === currentTheme);
+function renderPage() {
+  const total   = filtered.length;
+  const maxPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentPage > maxPage) currentPage = maxPage;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end   = Math.min(start + PAGE_SIZE, total);
+  const page  = filtered.slice(start, end);
+  const maxScore = allStocks.length > 0 ? Math.max(...allStocks.map(s => s.score || 0)) : 1;
 
-  // ソート
-  stocks.sort((a, b) => {
-    let va = a[sortCol] ?? -999;
-    let vb = b[sortCol] ?? -999;
-    return sortDir === 'asc' ? va - vb : vb - va;
-  });
-
-  const maxScore = Math.max(...allStocks.map(s => s.score || 0));
-
-  const rows = stocks.map((s, i) => {
+  const rows = page.map(s => {
     const isCandidate = candidateCodes.has(s.code);
     const rankDisplay = s.rank;
     const rankClass = rankDisplay === 1 ? 'gold' : rankDisplay === 2 ? 'silver' : rankDisplay === 3 ? 'bronze' : '';
-    const isTop5 = rankDisplay <= 5 && currentTheme === 'all';
-
+    const isTop5 = rankDisplay <= 5 && currentTheme === 'all' && currentMarket === 'all' && !searchQuery;
     const chg  = s.change_pct;
     const week = s.week_pct;
     const ma25 = s.vs_ma25;
-
     const scoreW = maxScore > 0 ? (s.score / maxScore * 100).toFixed(0) : 0;
+    const mc = marketTagClass(s.market_section || '');
+    const mLabel = s.market_section || '';
 
     return `<tr class="${isTop5 ? 'top5' : ''}">
   <td><div class="rank-num ${rankClass}">${rankDisplay}</div></td>
   <td>
     <div class="stock-name">${s.name}</div>
-    <div class="stock-code">${s.code}</div>
+    <div class="stock-code">${s.code}${mc ? ' &nbsp;<span class="market-tag ' + mc + '">' + mLabel + '</span>' : ''}</div>
   </td>
-  <td><span class="theme-tag">${s.theme_name || ''}</span></td>
+  <td>
+    ${s.theme_name ? '<span class="theme-tag">' + s.theme_name + '</span>' : ''}
+    ${s.industry ? '<div class="industry-text" style="margin-top:3px">' + s.industry + '</div>' : ''}
+  </td>
   <td>
     <div class="score-bar-wrap">
       <div class="score-bar-bg"><div class="score-bar-fill" style="width:${scoreW}%"></div></div>
       <span class="score-num">${s.score}</span>
     </div>
   </td>
-  <td class="${s.price ? 'val-neut' : ''}">¥${s.price ? s.price.toLocaleString('ja-JP') : '—'}</td>
-  <td class="${chg >= 0 ? 'val-up' : 'val-dn'}">${chg != null ? (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' : '—'}</td>
-  <td class="${week >= 0 ? 'val-up' : 'val-dn'}">${week != null ? (week >= 0 ? '+' : '') + week.toFixed(1) + '%' : '—'}</td>
+  <td class="val-neut">¥${s.price != null ? s.price.toLocaleString('ja-JP') : '—'}</td>
+  <td class="${chg != null ? (chg >= 0 ? 'val-up' : 'val-dn') : 'val-neut'}">${chg != null ? (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' : '—'}</td>
+  <td class="${week != null ? (week >= 0 ? 'val-up' : 'val-dn') : 'val-neut'}">${week != null ? (week >= 0 ? '+' : '') + week.toFixed(1) + '%' : '—'}</td>
   <td class="${rsiClass(s.rsi)}">${s.rsi != null ? s.rsi.toFixed(0) : '—'}</td>
-  <td class="${s.vol_ratio >= 2 ? 'val-up' : 'val-neut'}">${s.vol_ratio != null ? s.vol_ratio.toFixed(1) + 'x' : '—'}</td>
-  <td class="${ma25 != null ? (ma25 >= 0 ? 'val-up' : 'val-dn') : ''}">${ma25 != null ? (ma25 >= 0 ? '+' : '') + ma25.toFixed(1) + '%' : '—'}</td>
+  <td class="${s.vol_ratio != null && s.vol_ratio >= 2 ? 'val-up' : 'val-neut'}">${s.vol_ratio != null ? s.vol_ratio.toFixed(1) + 'x' : '—'}</td>
+  <td class="${ma25 != null ? (ma25 >= 0 ? 'val-up' : 'val-dn') : 'val-neut'}">${ma25 != null ? (ma25 >= 0 ? '+' : '') + ma25.toFixed(1) + '%' : '—'}</td>
   <td>${isCandidate ? '<span class="candidate-badge">🎯 候補入り</span>' : ''}</td>
 </tr>`;
   }).join('');
 
+  const pagination = buildPagination(currentPage, maxPage, total, start, end);
+
   document.getElementById('content').innerHTML = `
+${pagination}
 <div class="table-wrap">
 <table>
   <thead>
     <tr>
       <th data-col="rank" onclick="setSort('rank')" class="sort-asc">順位</th>
-      <th data-col="name">銘柄</th>
-      <th data-col="theme_id" onclick="setSort('theme_id')">テーマ</th>
+      <th class="no-sort">銘柄</th>
+      <th class="no-sort">テーマ / 業種</th>
       <th data-col="score" onclick="setSort('score')">スコア</th>
-      <th data-col="price">株価</th>
+      <th class="no-sort">株価</th>
       <th data-col="change_pct" onclick="setSort('change_pct')">前日比</th>
       <th data-col="week_pct" onclick="setSort('week_pct')">週間</th>
       <th data-col="rsi" onclick="setSort('rsi')">RSI</th>
       <th data-col="vol_ratio" onclick="setSort('vol_ratio')">出来高比</th>
       <th data-col="vs_ma25" onclick="setSort('vs_ma25')">MA25比</th>
-      <th>ステータス</th>
+      <th class="no-sort">ステータス</th>
     </tr>
   </thead>
-  <tbody>${rows}</tbody>
+  <tbody>${rows || '<tr><td colspan="11" class="empty">該当銘柄なし</td></tr>'}</tbody>
 </table>
 </div>
-<div class="footer">📈 全銘柄ランキング ・ 更新: <span id="footerDate">—</span><br>⚡ Warren — Powered by Claude ・ スコアはWarrenのスイング向け独自指標</div>`;
+${pagination}
+<div class="footer">📈 全上場銘柄ランキング ・ 更新: ${document.getElementById('updatedLabel').textContent.replace('更新: ','')}<br>⚡ Warren — Powered by Claude ・ スコアはWarrenのスイング向け独自指標</div>`;
 
-  document.getElementById('footerDate').textContent = document.getElementById('updatedLabel').textContent.replace('更新: ', '');
+  document.querySelectorAll('thead th[data-col]').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.dataset.col === sortCol) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+  });
+}
+
+function buildPagination(page, maxPage, total, start, end) {
+  const prev = `<button class="page-btn" onclick="goPage(${page-1})" ${page<=1?'disabled':''}>←</button>`;
+  const next = `<button class="page-btn" onclick="goPage(${page+1})" ${page>=maxPage?'disabled':''}>→</button>`;
+
+  let pages = '';
+  const delta = 2;
+  let shown = new Set();
+  for (let p = 1; p <= maxPage; p++) {
+    if (p === 1 || p === maxPage || (p >= page - delta && p <= page + delta)) {
+      shown.add(p);
+    }
+  }
+  let prev2 = 0;
+  [...shown].sort((a,b)=>a-b).forEach(p => {
+    if (prev2 && p - prev2 > 1) pages += `<span style="color:var(--text3);padding:0 4px">…</span>`;
+    pages += `<button class="page-btn ${p===page?'active':''}" onclick="goPage(${p})">${p}</button>`;
+    prev2 = p;
+  });
+
+  return `<div class="pagination-bar">
+  <div class="page-info"><strong>${start+1}–${end}</strong> / ${total.toLocaleString()}件中</div>
+  <div class="page-controls">${prev}${pages}${next}</div>
+  <div class="page-jump">ページ <input type="number" min="1" max="${maxPage}" value="${page}" onchange="goPage(+this.value)"> / ${maxPage}</div>
+</div>`;
+}
+
+function goPage(p) {
+  const maxPage = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  currentPage = Math.max(1, Math.min(p, maxPage));
+  renderPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function load() {
@@ -335,26 +494,32 @@ async function load() {
     const rankData = await rankRes.json();
     allStocks = rankData.stocks || [];
     document.getElementById('updatedLabel').textContent = '更新: ' + (rankData.updated || '—');
+    document.getElementById('totalCount').textContent = allStocks.length.toLocaleString();
 
-    // 候補銘柄コードを取得
     if (wlRes.ok) {
       const wl = await wlRes.json();
       (wl.candidates || []).forEach(c => candidateCodes.add(c.code));
     }
 
-    // テーマフィルターボタンを動的生成
-    const themes = [...new Map(allStocks.map(s => [s.theme_id, s])).values()];
-    const filterBar = document.getElementById('filterBar');
-    const updatedSpan = document.getElementById('updatedLabel');
-    themes.forEach(t => {
+    // テーマフィルターボタンを動的生成（テーマ株のみ）
+    const themeMap = new Map();
+    allStocks.forEach(s => {
+      if (s.theme_id && s.theme_name && !themeMap.has(s.theme_id)) {
+        themeMap.set(s.theme_id, s.theme_name);
+      }
+    });
+    const themeRow = document.getElementById('themeFilterRow');
+    const allBtn = themeRow.querySelector('.theme-btn');
+    themeMap.forEach((name, id) => {
       const btn = document.createElement('button');
       btn.className = 'theme-btn';
-      btn.textContent = t.theme_name;
-      btn.onclick = () => setTheme(t.theme_id, btn);
-      filterBar.insertBefore(btn, updatedSpan);
+      btn.textContent = name;
+      btn.onclick = () => setTheme(id, btn);
+      themeRow.appendChild(btn);
     });
 
-    renderTable();
+    filtered = [...allStocks];
+    applyFilters();
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
   } catch (e) {
