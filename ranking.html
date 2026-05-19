@@ -501,7 +501,7 @@ async function load() {
       (wl.candidates || []).forEach(c => candidateCodes.add(c.code));
     }
 
-    // テーマフィルターボタンを動的生成（テーマ株のみ）
+    // テーマフィルターボタンを再構築（重複防止のためリセット）
     const themeMap = new Map();
     allStocks.forEach(s => {
       if (s.theme_id && s.theme_name && !themeMap.has(s.theme_id)) {
@@ -509,10 +509,10 @@ async function load() {
       }
     });
     const themeRow = document.getElementById('themeFilterRow');
-    const allBtn = themeRow.querySelector('.theme-btn');
+    themeRow.innerHTML = '<span class="filter-label">テーマ</span><button class="theme-btn active" onclick="setTheme(\'all\', this)">すべて</button>';
     themeMap.forEach((name, id) => {
       const btn = document.createElement('button');
-      btn.className = 'theme-btn';
+      btn.className = 'theme-btn' + (currentTheme === id ? ' active' : '');
       btn.textContent = name;
       btn.onclick = () => setTheme(id, btn);
       themeRow.appendChild(btn);
