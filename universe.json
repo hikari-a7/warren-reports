@@ -1,0 +1,104 @@
+{
+  "themes": [
+    {
+      "id": "space",
+      "name": "宇宙・防衛",
+      "icon": "🚀",
+      "stocks": [
+        {"code": "6232", "name": "ACSL"},
+        {"code": "186A", "name": "アストロスケールHD"},
+        {"code": "464A", "name": "QPSホールディングス"},
+        {"code": "7011", "name": "三菱重工業"},
+        {"code": "7013", "name": "IHI"},
+        {"code": "6460", "name": "セガサミーHD"},
+        {"code": "9082", "name": "大和自動車交通"}
+      ]
+    },
+    {
+      "id": "ai_dx",
+      "name": "AI・DX",
+      "icon": "🤖",
+      "stocks": [
+        {"code": "3993", "name": "PKSHATechnology"},
+        {"code": "4180", "name": "Appier"},
+        {"code": "4011", "name": "ヘッドウォータース"},
+        {"code": "4382", "name": "HEROZ"},
+        {"code": "4052", "name": "フィーチャー"},
+        {"code": "4478", "name": "freee"},
+        {"code": "4385", "name": "メルカリ"},
+        {"code": "3697", "name": "SHIFT"},
+        {"code": "4442", "name": "ビートレンド"},
+        {"code": "4170", "name": "Kaizen Platform"}
+      ]
+    },
+    {
+      "id": "green",
+      "name": "グリーン・EV・エネルギー",
+      "icon": "🌿",
+      "stocks": [
+        {"code": "1436", "name": "グリーンエナジー"},
+        {"code": "9519", "name": "レノバ"},
+        {"code": "1407", "name": "ウエストHD"},
+        {"code": "6501", "name": "日立製作所"},
+        {"code": "6902", "name": "デンソー"},
+        {"code": "4680", "name": "ラウンドワン"},
+        {"code": "7272", "name": "ヤマハ発動機"}
+      ]
+    },
+    {
+      "id": "semiconductor",
+      "name": "半導体・電子部品",
+      "icon": "💾",
+      "stocks": [
+        {"code": "8035", "name": "東京エレクトロン"},
+        {"code": "6857", "name": "アドバンテスト"},
+        {"code": "6146", "name": "ディスコ"},
+        {"code": "4062", "name": "イビデン"},
+        {"code": "6963", "name": "ローム"},
+        {"code": "6503", "name": "三菱電機"},
+        {"code": "6723", "name": "ルネサスエレクトロニクス"},
+        {"code": "6771", "name": "池上通信機"}
+      ]
+    },
+    {
+      "id": "healthcare",
+      "name": "ヘルスケア・バイオ",
+      "icon": "🏥",
+      "stocks": [
+        {"code": "4480", "name": "メドレー"},
+        {"code": "4427", "name": "カケハシ"},
+        {"code": "4483", "name": "JMDC"},
+        {"code": "4587", "name": "ペプチドリーム"},
+        {"code": "6254", "name": "野村マイクロ・サイエンス"},
+        {"code": "2413", "name": "エムスリー"},
+        {"code": "4543", "name": "テルモ"}
+      ]
+    },
+    {
+      "id": "inbound",
+      "name": "インバウンド・消費",
+      "icon": "🏨",
+      "stocks": [
+        {"code": "9603", "name": "エイチ・アイ・エス"},
+        {"code": "9008", "name": "京王電鉄"},
+        {"code": "8253", "name": "クレディセゾン"},
+        {"code": "9766", "name": "コナミG"},
+        {"code": "4755", "name": "楽天グループ"},
+        {"code": "3382", "name": "セブン&アイHD"}
+      ]
+    },
+    {
+      "id": "fintech",
+      "name": "フィンテック・金融DX",
+      "icon": "💳",
+      "stocks": [
+        {"code": "3774", "name": "IIJ"},
+        {"code": "4348", "name": "インフォコム"},
+        {"code": "7203", "name": "トヨタ自動車"},
+        {"code": "8306", "name": "三菱UFJ"},
+        {"code": "4062", "name": "イビデン"},
+        {"code": "3769", "name": "GMOペイメント"}
+      ]
+    }
+  ]
+}

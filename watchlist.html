@@ -11,13 +11,12 @@
     background: #0a0a0f;
     color: #e8ecf0;
     min-height: 100vh;
-    font-size: 15px;
   }
 
   .header {
     background: #111118;
     border-bottom: 1px solid #1e2028;
-    padding: 18px 24px;
+    padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -25,66 +24,91 @@
     top: 0;
     z-index: 10;
   }
-  .header-left { display: flex; align-items: center; gap: 16px; }
   .header-title { font-size: 20px; font-weight: 800; color: #fff; }
   .header-title span { color: #4ade80; }
-  .header-sub { font-size: 13px; color: #6b7280; }
-  .header-nav { display: flex; gap: 8px; }
-  .nav-btn {
-    font-size: 13px;
-    color: #9ca3af;
-    text-decoration: none;
-    padding: 5px 12px;
-    border-radius: 6px;
+  .header-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+  .nav { display: flex; gap: 8px; }
+  .nav a {
+    font-size: 13px; color: #9ca3af; text-decoration: none;
+    padding: 5px 12px; border-radius: 6px; border: 1px solid #1e2028;
+  }
+  .nav a.active { color: #4ade80; border-color: #4ade8044; background: #4ade8011; }
+
+  .container { max-width: 740px; margin: 0 auto; padding: 18px 16px 48px; }
+
+  /* テーマレーダー */
+  .radar-section { margin-bottom: 24px; }
+  .section-head {
+    font-size: 12px; font-weight: 700; color: #6b7280;
+    text-transform: uppercase; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px;
+  }
+  .section-head::after { content: ''; flex: 1; height: 1px; background: #1e2028; }
+
+  .radar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+  .radar-card {
+    background: #111118;
     border: 1px solid #1e2028;
-    transition: all 0.15s;
+    border-radius: 12px;
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
   }
-  .nav-btn:hover { color: #fff; border-color: #374151; }
-  .nav-btn.active { color: #4ade80; border-color: #4ade8044; background: #4ade8011; }
+  .radar-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 12px 12px 0 0;
+  }
+  .radar-card.hot::before     { background: #f97316; }
+  .radar-card.rising::before  { background: #4ade80; }
+  .radar-card.neutral::before { background: #374151; }
+  .radar-card.cooling::before { background: #60a5fa; }
+  .radar-card.cold::before    { background: #f87171; }
 
-  .container { max-width: 720px; margin: 0 auto; padding: 20px 16px 40px; }
+  .radar-icon { font-size: 20px; margin-bottom: 6px; }
+  .radar-name { font-size: 12px; font-weight: 700; color: #d1d5db; margin-bottom: 6px; line-height: 1.3; }
+  .radar-week {
+    font-size: 18px; font-weight: 800;
+  }
+  .radar-week.pos { color: #4ade80; }
+  .radar-week.neg { color: #f87171; }
+  .radar-week.zero { color: #9ca3af; }
+  .radar-day { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .radar-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 4px;
+    margin-top: 5px;
+  }
+  .radar-badge.hot     { background: #f9731622; color: #f97316; border: 1px solid #f9731644; }
+  .radar-badge.rising  { background: #4ade8022; color: #4ade80; border: 1px solid #4ade8044; }
+  .radar-badge.neutral { background: #37415122; color: #9ca3af; border: 1px solid #37415144; }
+  .radar-badge.cooling { background: #60a5fa22; color: #60a5fa; border: 1px solid #60a5fa44; }
+  .radar-badge.cold    { background: #f8717122; color: #f87171; border: 1px solid #f8717144; }
 
-  /* 空状態 */
-  .empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: #6b7280;
-  }
-  .empty-icon { font-size: 48px; margin-bottom: 16px; }
-  .empty-title { font-size: 18px; font-weight: 700; color: #9ca3af; margin-bottom: 8px; }
-  .empty-desc { font-size: 14px; line-height: 1.7; }
+  .badge-label { hot:'🔥急騰中'; rising:'↑上昇中'; neutral:'→横ばい'; cooling:'↓鈍化中'; cold:'❄️下落中'; }
 
-  /* ステータスバー */
-  .status-bar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+  /* ステータスサマリー */
+  .status-row { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .status-pill {
+    display: flex; align-items: center; gap: 5px;
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 13px; font-weight: 700; border: 1px solid;
   }
-  .status-chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 13px;
-    font-weight: 700;
-    border: 1px solid;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .status-chip.all    { background: #1e202811; border-color: #374151; color: #9ca3af; }
-  .status-chip.ready  { background: #4ade8015; border-color: #4ade8044; color: #4ade80; }
-  .status-chip.near   { background: #fbbf2415; border-color: #fbbf2444; color: #fbbf24; }
-  .status-chip.watch  { background: #6b728015; border-color: #6b728044; color: #9ca3af; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .status-pill.ready { background: #4ade8015; border-color: #4ade8044; color: #4ade80; }
+  .status-pill.near  { background: #fbbf2415; border-color: #fbbf2444; color: #fbbf24; }
+  .status-pill.watch { background: #37415115; border-color: #37415144; color: #9ca3af; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
   .dot.ready { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
-  .dot.near  { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; animation: blink 1.5s ease-in-out infinite; }
+  .dot.near  { background: #fbbf24; animation: blink 1.4s ease-in-out infinite; }
   .dot.watch { background: #6b7280; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
   /* 候補カード */
-  .candidate-card {
+  .cand-card {
     background: #111118;
     border: 1px solid #1e2028;
     border-radius: 16px;
@@ -92,336 +116,345 @@
     overflow: hidden;
     position: relative;
   }
-  .card-accent {
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
+  .cand-accent {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
     border-radius: 16px 0 0 16px;
   }
-  .card-accent.ready { background: #4ade80; box-shadow: 0 0 12px #4ade8066; }
-  .card-accent.near  { background: #fbbf24; box-shadow: 0 0 12px #fbbf2466; animation: glow 1.5s ease-in-out infinite; }
-  .card-accent.watch { background: #374151; }
-  @keyframes glow { 0%,100%{box-shadow:0 0 12px #fbbf2466} 50%{box-shadow:0 0 20px #fbbf24aa} }
+  .cand-accent.ready { background: #4ade80; box-shadow: 0 0 10px #4ade8066; }
+  .cand-accent.near  { background: #fbbf24; box-shadow: 0 0 10px #fbbf2466; animation: glow 1.5s ease-in-out infinite; }
+  .cand-accent.watch { background: #374151; }
+  @keyframes glow { 0%,100%{box-shadow:0 0 10px #fbbf2466} 50%{box-shadow:0 0 20px #fbbf24aa} }
 
-  .card-inner { padding: 18px 20px 18px 24px; }
+  .cand-inner { padding: 18px 18px 18px 22px; }
 
-  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .card-name { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 3px; }
-  .card-code { font-size: 13px; color: #6b7280; }
-  .status-badge {
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 13px;
-    font-weight: 800;
-    border: 1px solid;
-    white-space: nowrap;
+  /* カードヘッダー */
+  .cand-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .cand-name { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+  .cand-meta { font-size: 12px; color: #6b7280; }
+  .cand-price-block { text-align: right; }
+  .cand-price { font-size: 22px; font-weight: 800; color: #fff; }
+  .cand-chg { font-size: 13px; font-weight: 700; margin-top: 2px; }
+  .cand-chg.pos { color: #4ade80; }
+  .cand-chg.neg { color: #f87171; }
+
+  /* ステータスバッジ */
+  .cand-badge {
+    display: inline-block;
+    font-size: 12px; font-weight: 800;
+    padding: 4px 11px; border-radius: 7px; border: 1px solid;
+    margin-bottom: 6px;
   }
-  .status-badge.ready { background: #4ade8015; border-color: #4ade8044; color: #4ade80; }
-  .status-badge.near  { background: #fbbf2415; border-color: #fbbf2444; color: #fbbf24; }
-  .status-badge.watch { background: #1e202833; border-color: #37415166; color: #9ca3af; }
+  .cand-badge.ready { background: #4ade8015; border-color: #4ade8044; color: #4ade80; }
+  .cand-badge.near  { background: #fbbf2415; border-color: #fbbf2444; color: #fbbf24; }
+  .cand-badge.watch { background: #37415122; border-color: #37415166; color: #9ca3af; }
 
-  .card-reason {
-    background: #0a0a0f;
+  /* 投資メモ */
+  .memo-box {
+    background: #0d0d15;
+    border: 1px solid #1e2028;
     border-radius: 10px;
-    padding: 12px 14px;
+    padding: 13px 15px;
     margin-bottom: 12px;
-    border: 1px solid #1e2028;
   }
-  .reason-label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; font-weight: 700; }
-  .reason-text { font-size: 14px; color: #d1d5db; line-height: 1.65; }
-  .catalyst-text { font-size: 13px; color: #fbbf24; margin-top: 6px; }
+  .memo-label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .memo-reason { font-size: 14px; color: #d1d5db; line-height: 1.65; margin-bottom: 8px; }
+  .memo-catalyst { font-size: 13px; color: #fbbf24; margin-bottom: 6px; }
+  .memo-risk { font-size: 12px; color: #f87171; }
+  .memo-period { font-size: 12px; color: #6b7280; margin-top: 6px; }
 
-  /* エントリーゾーンバー */
-  .entry-zone-wrap { margin-bottom: 12px; }
-  .entry-zone-label { font-size: 12px; color: #6b7280; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; }
-  .entry-bar-container { position: relative; height: 28px; background: #0a0a0f; border-radius: 8px; border: 1px solid #1e2028; overflow: visible; }
-  .entry-zone-fill {
-    position: absolute;
-    top: 0; bottom: 0;
-    background: #4ade8022;
-    border: 1px solid #4ade8055;
-    border-radius: 6px;
-  }
-  .current-price-marker {
-    position: absolute;
-    top: -4px; bottom: -4px;
-    width: 3px;
-    border-radius: 2px;
-    transform: translateX(-50%);
-  }
-  .current-price-marker.inside  { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
-  .current-price-marker.outside { background: #f87171; }
-  .current-price-marker.near-zone { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
-  .marker-label {
-    position: absolute;
-    top: -22px;
-    transform: translateX(-50%);
-    font-size: 11px;
-    font-weight: 800;
-    white-space: nowrap;
-  }
-  .bar-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 4px;
-    font-size: 11px;
-    color: #6b7280;
-  }
+  /* エントリーバー */
+  .entry-wrap { margin-bottom: 12px; }
+  .entry-row { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .entry-bar { position: relative; height: 26px; background: #0a0a0f; border-radius: 7px; border: 1px solid #1e2028; }
+  .entry-fill { position: absolute; top: 0; bottom: 0; background: #4ade8020; border: 1px solid #4ade8044; border-radius: 6px; }
+  .entry-marker { position: absolute; top: -5px; bottom: -5px; width: 3px; border-radius: 2px; transform: translateX(-50%); }
+  .entry-marker.inside  { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+  .entry-marker.outside { background: #f87171; }
+  .entry-marker.near-z  { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+  .marker-tip { position: absolute; top: -20px; transform: translateX(-50%); font-size: 10px; font-weight: 800; white-space: nowrap; }
+  .entry-sub { display: flex; justify-content: space-between; margin-top: 4px; font-size: 11px; color: #6b7280; }
 
-  /* 数字グリッド */
-  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-  .number-box {
-    background: #0a0a0f;
-    border-radius: 10px;
-    padding: 10px 12px;
-    border: 1px solid #1e2028;
-  }
-  .number-label { font-size: 11px; color: #6b7280; margin-bottom: 4px; font-weight: 600; }
-  .number-val { font-size: 16px; font-weight: 800; }
-  .number-val.green  { color: #4ade80; }
-  .number-val.red    { color: #f87171; }
-  .number-val.yellow { color: #fbbf24; }
-  .number-val.white  { color: #e8ecf0; }
-  .number-sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  /* 数字ブロック */
+  .nums { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .num-box { background: #0a0a0f; border: 1px solid #1e2028; border-radius: 9px; padding: 9px 12px; }
+  .num-label { font-size: 11px; color: #6b7280; margin-bottom: 3px; font-weight: 600; }
+  .num-val { font-size: 16px; font-weight: 800; }
+  .num-val.g { color: #4ade80; }
+  .num-val.r { color: #f87171; }
+  .num-val.w { color: #e8ecf0; }
+  .num-sub { font-size: 10px; color: #6b7280; margin-top: 2px; }
 
-  /* RR比 */
-  .rr-bar {
-    display: flex;
-    height: 8px;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 6px;
-  }
-  .rr-gain { background: #4ade80; border-radius: 4px 0 0 4px; }
-  .rr-loss { background: #f87171; border-radius: 0 4px 4px 0; }
+  /* RR */
+  .rr-box { background: #0a0a0f; border: 1px solid #1e2028; border-radius: 9px; padding: 9px 14px; }
+  .rr-label { font-size: 11px; color: #6b7280; margin-bottom: 6px; font-weight: 600; }
+  .rr-bar { display: flex; height: 7px; border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
+  .rr-g { background: #4ade80; border-radius: 4px 0 0 4px; }
+  .rr-r { background: #f87171; border-radius: 0 4px 4px 0; }
+  .rr-nums { display: flex; justify-content: space-between; font-size: 11px; }
 
-  /* 削除ボタン */
-  .remove-btn {
-    font-size: 11px;
-    color: #6b7280;
-    background: none;
-    border: 1px solid #374151;
-    border-radius: 6px;
-    padding: 3px 10px;
-    cursor: pointer;
-    float: right;
-    margin-top: 2px;
-    transition: all 0.15s;
-  }
-  .remove-btn:hover { color: #f87171; border-color: #f8717144; }
+  /* テクニカルチップ */
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .chip { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 5px; border: 1px solid; }
+  .chip.rsi-ok  { background: #4ade8015; border-color: #4ade8033; color: #4ade80; }
+  .chip.rsi-hot { background: #f8717115; border-color: #f8717133; color: #f87171; }
+  .chip.rsi-low { background: #60a5fa15; border-color: #60a5fa33; color: #60a5fa; }
+  .chip.vol     { background: #fbbf2415; border-color: #fbbf2433; color: #fbbf24; }
+  .chip.neutral { background: #37415115; border-color: #37415133; color: #9ca3af; }
 
-  /* 更新日 */
-  .updated-info { font-size: 12px; color: #6b7280; text-align: right; margin-bottom: 16px; }
-
-  /* ローディング */
-  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; gap: 16px; }
-  .spinner { width: 32px; height: 32px; border: 3px solid #1e2028; border-top-color: #4ade80; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  /* 空・ローディング */
+  .empty { text-align: center; padding: 60px 20px; color: #6b7280; }
+  .empty-icon { font-size: 44px; margin-bottom: 14px; }
+  .empty-title { font-size: 17px; font-weight: 700; color: #9ca3af; margin-bottom: 8px; }
+  .empty-desc { font-size: 14px; line-height: 1.7; }
+  .loading { display: flex; flex-direction: column; align-items: center; padding: 80px 20px; gap: 14px; }
+  .spinner { width: 30px; height: 30px; border: 3px solid #1e2028; border-top-color: #4ade80; border-radius: 50%; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading-text { font-size: 14px; color: #6b7280; }
 
-  .footer { font-size: 12px; color: #374151; text-align: center; padding: 20px 0 0; line-height: 1.8; }
+  .updated { font-size: 12px; color: #4b5563; text-align: right; margin-bottom: 14px; }
+  .footer { font-size: 11px; color: #374151; text-align: center; padding: 16px 0 0; line-height: 1.8; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-left">
-    <div>
-      <div class="header-title">⚡ <span>Warren</span></div>
-      <div class="header-sub">次の一手 — 買い候補</div>
-    </div>
+  <div>
+    <div class="header-title">⚡ <span>Warren</span> 次の一手</div>
+    <div class="header-sub">スクリーニング × 投資メモ × テーマレーダー</div>
   </div>
-  <div class="header-nav">
-    <a href="dashboard.html" class="nav-btn">ポジション</a>
-    <a href="watchlist.html" class="nav-btn active">次の一手</a>
+  <div class="nav">
+    <a href="dashboard.html">ポジション</a>
+    <a href="watchlist.html" class="active">次の一手</a>
   </div>
 </div>
 
 <div class="container">
   <div class="loading" id="loading">
     <div class="spinner"></div>
-    <div class="loading-text">データを取得中...</div>
+    <div class="loading-text">Warren が分析中...</div>
   </div>
   <div id="content" style="display:none"></div>
 </div>
 
 <script>
 const fmt = n => Math.abs(Math.round(n)).toLocaleString('ja-JP');
+const fmtF = n => n.toLocaleString('ja-JP');
+
+const momentumLabel = { hot:'🔥 急騰中', rising:'↑ 上昇中', neutral:'→ 横ばい', cooling:'↓ 鈍化中', cold:'❄️ 下落中' };
+
+function buildRadar(themes) {
+  if (!themes || themes.length === 0) return '';
+  const cards = themes.map(t => {
+    const isPos = t.avg_week >= 0;
+    const wLabel = (isPos ? '+' : '') + t.avg_week.toFixed(1) + '%';
+    const dLabel = (t.avg_day >= 0 ? '+' : '') + t.avg_day.toFixed(1) + '%';
+    return `
+<div class="radar-card ${t.momentum}">
+  <div class="radar-icon">${t.icon}</div>
+  <div class="radar-name">${t.name}</div>
+  <div class="radar-week ${isPos ? 'pos' : t.avg_week < 0 ? 'neg' : 'zero'}">${wLabel}</div>
+  <div class="radar-day">本日 ${dLabel} ・ ${t.stock_count}銘柄</div>
+  <span class="radar-badge ${t.momentum}">${momentumLabel[t.momentum] || t.momentum}</span>
+</div>`;
+  }).join('');
+  return `
+<div class="radar-section">
+  <div class="section-head">テーマレーダー — 週間騰落</div>
+  <div class="radar-grid">${cards}</div>
+</div>`;
+}
 
 function statusLabel(s) {
   if (s === 'ready') return '🟢 今すぐ買える';
-  if (s === 'near')  return '🟡 エントリーゾーン接近';
+  if (s === 'near')  return '🟡 エントリーゾーン接近中';
   return '⏳ 下落待ち';
 }
 
-function buildStatusBar(candidates) {
-  const ready = candidates.filter(c => c.status === 'ready').length;
-  const near  = candidates.filter(c => c.status === 'near').length;
-  const watch = candidates.filter(c => c.status === 'watch').length;
-  return `
-<div class="status-bar">
-  <div class="status-chip all">全て ${candidates.length}</div>
-  ${ready > 0 ? `<div class="status-chip ready"><div class="dot ready"></div>今すぐ買える ${ready}</div>` : ''}
-  ${near  > 0 ? `<div class="status-chip near"><div class="dot near"></div>接近中 ${near}</div>` : ''}
-  ${watch > 0 ? `<div class="status-chip watch"><div class="dot watch"></div>待機中 ${watch}</div>` : ''}
-</div>`;
-}
-
 function buildEntryBar(c) {
-  const lo = c.entry_low;
-  const hi = c.entry_high;
-  const cur = c.current_price;
+  const lo  = c.entry_low;
+  const hi  = c.entry_high;
+  const cur = c.price;
   if (!lo || !hi) return '';
 
-  // バーの範囲: lo の 10% 下 〜 hi の 20% 上
-  const barMin = lo * 0.90;
-  const barMax = hi * 1.20;
+  const barMin   = lo * 0.88;
+  const barMax   = hi * 1.22;
   const barRange = barMax - barMin;
+  const zL = ((lo - barMin) / barRange * 100).toFixed(1);
+  const zW = ((hi - lo)    / barRange * 100).toFixed(1);
 
-  const zoneLeft  = ((lo - barMin) / barRange * 100).toFixed(1);
-  const zoneWidth = ((hi - lo)    / barRange * 100).toFixed(1);
+  let mPct = Math.min(Math.max((cur - barMin) / barRange * 100, 2), 97);
+  const isIn   = cur >= lo && cur <= hi;
+  const isNear = !isIn && cur <= hi * 1.06;
+  const mClass = isIn ? 'inside' : (isNear ? 'near-z' : 'outside');
+  const mColor = isIn ? '#4ade80' : (isNear ? '#fbbf24' : '#f87171');
 
-  let markerPct = cur ? ((cur - barMin) / barRange * 100) : null;
-  markerPct = markerPct !== null ? Math.min(Math.max(markerPct, 2), 98) : null;
-
-  const isInside = cur && cur >= lo && cur <= hi;
-  const isNear   = cur && cur > hi && cur <= hi * 1.05;
-  const markerClass = isInside ? 'inside' : (isNear ? 'near-zone' : 'outside');
-  const markerColor = isInside ? '#4ade80' : (isNear ? '#fbbf24' : '#f87171');
-
-  const markerHtml = markerPct !== null ? `
-    <div class="current-price-marker ${markerClass}" style="left:${markerPct.toFixed(1)}%">
-      <div class="marker-label" style="color:${markerColor}">¥${fmt(cur)}</div>
-    </div>` : '';
-
-  const distText = cur
-    ? (isInside
-        ? 'エントリーゾーン内'
-        : cur < lo
-          ? `あと -${((lo - cur) / cur * 100).toFixed(1)}% でエントリーゾーン`
-          : `エントリーゾーンより +${((cur - hi) / hi * 100).toFixed(1)}% 上`)
-    : '現在値取得中';
+  const distMsg = isIn
+    ? 'エントリーゾーン内'
+    : cur < lo
+      ? `あと -${((lo - cur) / cur * 100).toFixed(1)}% でゾーン入り`
+      : `ゾーンより +${((cur - hi) / hi * 100).toFixed(1)}% 上`;
 
   return `
-<div class="entry-zone-wrap">
-  <div class="entry-zone-label">
-    <span>エントリーゾーン</span>
-    <span style="color:${isInside ? '#4ade80' : (isNear ? '#fbbf24' : '#9ca3af')}">${distText}</span>
+<div class="entry-wrap">
+  <div class="entry-row"><span>エントリーゾーン</span><span style="color:${mColor}">${distMsg}</span></div>
+  <div class="entry-bar">
+    <div class="entry-fill" style="left:${zL}%;width:${zW}%"></div>
+    <div class="entry-marker ${mClass}" style="left:${mPct.toFixed(1)}%">
+      <div class="marker-tip" style="color:${mColor}">¥${fmt(cur)}</div>
+    </div>
   </div>
-  <div class="entry-bar-container">
-    <div class="entry-zone-fill" style="left:${zoneLeft}%;width:${zoneWidth}%"></div>
-    ${markerHtml}
-  </div>
-  <div class="bar-labels">
-    <span>¥${fmt(lo)}</span>
-    <span style="color:#4ade8099">ゾーン ¥${fmt(lo)}〜¥${fmt(hi)}</span>
-    <span>¥${fmt(hi)}</span>
-  </div>
+  <div class="entry-sub"><span>¥${fmt(lo)}</span><span style="color:#4ade8066">ゾーン ¥${fmt(lo)}〜¥${fmt(hi)}</span><span>¥${fmt(hi)}</span></div>
 </div>`;
 }
 
-function buildCard(c, idx) {
-  const status = c.status || 'watch';
-  const rrGain = c.target_pct ? Math.abs(c.target_pct) : 20;
-  const rrLoss = c.stop_pct   ? Math.abs(c.stop_pct)   : 8;
+function buildChips(c) {
+  const chips = [];
+  const rsi = c.rsi;
+  if (rsi !== undefined) {
+    if (rsi < 30)      chips.push(`<span class="chip rsi-low">RSI ${rsi} 売られすぎ</span>`);
+    else if (rsi < 55) chips.push(`<span class="chip rsi-ok">RSI ${rsi} 良好</span>`);
+    else               chips.push(`<span class="chip rsi-hot">RSI ${rsi} 高値圏</span>`);
+  }
+  if (c.vol_ratio >= 2) chips.push(`<span class="chip vol">出来高 ${c.vol_ratio}x</span>`);
+  if (c.vs_ma25 !== undefined && c.vs_ma25 !== null) {
+    const label = c.vs_ma25 >= 0 ? `MA25比 +${c.vs_ma25}%` : `MA25比 ${c.vs_ma25}%`;
+    chips.push(`<span class="chip ${c.vs_ma25 >= 0 ? 'rsi-ok' : 'neutral'}">${label}</span>`);
+  }
+  if (c.week_pct !== undefined) chips.push(`<span class="chip ${c.week_pct >= 0 ? 'rsi-ok' : 'neutral'}">週間 ${c.week_pct >= 0 ? '+' : ''}${c.week_pct}%</span>`);
+  return chips.length ? `<div class="chips">${chips.join('')}</div>` : '';
+}
+
+function buildCard(c) {
+  const s = c.status || 'watch';
+  const rrGain  = c.target_pct ? Math.abs(c.target_pct) : 20;
+  const rrLoss  = c.stop_pct   ? Math.abs(c.stop_pct)   : 8;
   const rrTotal = rrGain + rrLoss;
   const rrRatio = (rrGain / rrLoss).toFixed(1);
-  const gainPct = (rrGain / rrTotal * 100).toFixed(0);
-
-  const curPriceHtml = c.current_price
-    ? `<div class="number-box"><div class="number-label">現在株価</div><div class="number-val white">¥${fmt(c.current_price)}</div></div>`
-    : `<div class="number-box"><div class="number-label">現在株価</div><div class="number-val white" style="color:#6b7280">—</div></div>`;
+  const gPct    = (rrGain / rrTotal * 100).toFixed(0);
+  const isPos   = c.change_pct >= 0;
 
   return `
-<div class="candidate-card" id="card-${idx}">
-  <div class="card-accent ${status}"></div>
-  <div class="card-inner">
-    <div class="card-header">
+<div class="cand-card">
+  <div class="cand-accent ${s}"></div>
+  <div class="cand-inner">
+
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="cand-badge ${s}">${statusLabel(s)}</div>
+      ${c.theme_name ? `<span style="font-size:11px;color:#6b7280">${c.theme_name}</span>` : ''}
+    </div>
+
+    <div class="cand-top">
       <div>
-        <div class="card-name">${c.name}</div>
-        <div class="card-code">${c.code} ・ Warren推奨 ${c.added_date || ''}</div>
+        <div class="cand-name">${c.name}</div>
+        <div class="cand-meta">${c.code} ・ Warren推奨 ${c.added_date || ''}</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <div class="status-badge ${status}">${statusLabel(status)}</div>
-        <button class="remove-btn" onclick="removeCard(${idx})">削除</button>
+      <div class="cand-price-block">
+        <div class="cand-price">¥${fmtF(c.price)}</div>
+        <div class="cand-chg ${isPos ? 'pos' : 'neg'}">${isPos ? '+' : ''}${c.change_pct}%</div>
       </div>
     </div>
 
-    <div class="card-reason">
-      <div class="reason-label">Warren の見立て</div>
-      <div class="reason-text">${c.reason || ''}</div>
-      ${c.catalyst ? `<div class="catalyst-text">⚡ ${c.catalyst}</div>` : ''}
+    <div class="memo-box">
+      <div class="memo-label">⚡ Warren の見立て</div>
+      <div class="memo-reason">${c.reason || '—'}</div>
+      ${c.catalyst ? `<div class="memo-catalyst">🎯 ${c.catalyst}</div>` : ''}
+      ${c.risk     ? `<div class="memo-risk">⚠️ ${c.risk}</div>`        : ''}
+      ${c.hold_period ? `<div class="memo-period">⏱ 想定保有期間: ${c.hold_period}</div>` : ''}
     </div>
 
     ${buildEntryBar(c)}
+    ${buildChips(c)}
 
-    <div class="numbers-grid">
-      ${curPriceHtml}
-      <div class="number-box">
-        <div class="number-label">↑ 目標 +${c.target_pct || '—'}%</div>
-        <div class="number-val green">¥${c.target_price ? fmt(c.target_price) : '—'}</div>
+    <div class="nums" style="margin-top:10px">
+      <div class="num-box">
+        <div class="num-label">↑ 目標 +${c.target_pct || '—'}%</div>
+        <div class="num-val g">¥${c.target_price ? fmt(c.target_price) : '—'}</div>
       </div>
-      <div class="number-box">
-        <div class="number-label">↓ 損切 ${c.stop_pct || '—'}%</div>
-        <div class="number-val red">¥${c.stop_price ? fmt(c.stop_price) : '—'}</div>
+      <div class="num-box">
+        <div class="num-label">↓ 損切 ${c.stop_pct || '—'}%</div>
+        <div class="num-val r">¥${c.stop_price ? fmt(c.stop_price) : '—'}</div>
+      </div>
+      <div class="num-box">
+        <div class="num-label">スコア</div>
+        <div class="num-val w">${c.score || '—'}<span style="font-size:11px;color:#6b7280">点</span></div>
+        <div class="num-sub">80銘柄中</div>
       </div>
     </div>
 
-    <div class="number-box" style="padding:10px 14px">
-      <div class="number-label" style="margin-bottom:6px">リスク・リワード比 (RR = ${rrRatio})</div>
+    <div class="rr-box">
+      <div class="rr-label">リスク・リワード比 (RR = ${rrRatio})</div>
       <div class="rr-bar">
-        <div class="rr-gain" style="width:${gainPct}%"></div>
-        <div class="rr-loss" style="width:${100 - gainPct}%"></div>
+        <div class="rr-g" style="width:${gPct}%"></div>
+        <div class="rr-r" style="width:${100-gPct}%"></div>
       </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:5px">
-        <span style="color:#4ade80">利益 +${rrGain}%</span>
-        <span style="color:#f87171">損失 ${c.stop_pct || -8}%</span>
+      <div class="rr-nums">
+        <span style="color:#4ade80">利益目標 +${rrGain}%</span>
+        <span style="color:#f87171">損切ライン ${c.stop_pct || -8}%</span>
       </div>
     </div>
+
   </div>
 </div>`;
 }
 
-let allData = null;
-
-function removeCard(idx) {
-  if (!allData) return;
-  allData.candidates.splice(idx, 1);
-  render(allData);
+function buildStatusRow(candidates) {
+  const ready = candidates.filter(c => c.status === 'ready').length;
+  const near  = candidates.filter(c => c.status === 'near').length;
+  const watch = candidates.filter(c => c.status === 'watch').length;
+  let html = '';
+  if (ready) html += `<div class="status-pill ready"><div class="dot ready"></div>今すぐ買える ${ready}件</div>`;
+  if (near)  html += `<div class="status-pill near"><div class="dot near"></div>接近中 ${near}件</div>`;
+  if (watch) html += `<div class="status-pill watch"><div class="dot watch"></div>待機中 ${watch}件</div>`;
+  return `<div class="status-row">${html}</div>`;
 }
 
-function render(data) {
-  allData = data;
-  const candidates = data.candidates || [];
-
-  document.getElementById('content').innerHTML = candidates.length === 0
-    ? `<div class="empty">
-        <div class="empty-icon">📭</div>
-        <div class="empty-title">候補なし</div>
-        <div class="empty-desc">毎朝のWarrenレポートで<br>自動的に候補が追加されます。<br>次の更新をお待ちください。</div>
-      </div>`
-    : `<div class="updated-info">Warren更新: ${data.updated || '—'}</div>
-       ${buildStatusBar(candidates)}
-       ${candidates.map((c, i) => buildCard(c, i)).join('')}
-       <div class="footer">⚡ Warren — Powered by Claude<br>本情報は投資助言ではありません。売買は自己責任で行ってください。</div>`;
-
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('content').style.display = 'block';
+async function loadRadar() {
+  try {
+    const r = await fetch('theme_radar.json?t=' + Date.now());
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
 }
 
 async function load() {
   try {
-    const res = await fetch('watchlist.json?t=' + Date.now());
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    render(await res.json());
+    const [wlRes, radarData] = await Promise.all([
+      fetch('watchlist.json?t=' + Date.now()),
+      loadRadar(),
+    ]);
+    if (!wlRes.ok) throw new Error('HTTP ' + wlRes.status);
+    const wl = await wlRes.json();
+    const candidates = wl.candidates || [];
+
+    let html = '';
+
+    if (radarData && radarData.themes && radarData.themes.length > 0) {
+      html += buildRadar(radarData.themes);
+    }
+
+    html += `<div class="updated">Warren更新: ${wl.updated || '—'}</div>`;
+
+    if (candidates.length === 0) {
+      html += `
+<div class="empty">
+  <div class="empty-icon">📭</div>
+  <div class="empty-title">候補なし</div>
+  <div class="empty-desc">毎朝8:30のスクリーナーで自動更新されます。<br>手動実行はGitHub Actions → Warren Screener → Run workflow。</div>
+</div>`;
+    } else {
+      html += `<div class="section-head" style="margin-bottom:12px">買い候補 ${candidates.length}件</div>`;
+      html += buildStatusRow(candidates);
+      html += candidates.map(buildCard).join('');
+    }
+
+    html += `<div class="footer">⚡ Warren — Powered by Claude<br>本情報は投資助言ではありません。売買は自己責任で行ってください。</div>`;
+
+    document.getElementById('content').innerHTML = html;
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
   } catch (e) {
     document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">⚠️</div>
-        <div class="empty-title">読み込みエラー</div>
-        <div class="empty-desc">${e.message}</div>
-      </div>`;
+    document.getElementById('content').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">読み込みエラー</div><div class="empty-desc">${e.message}</div></div>`;
     document.getElementById('content').style.display = 'block';
   }
 }
