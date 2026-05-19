@@ -5,26 +5,26 @@
       "id": "fintech",
       "name": "フィンテック・金融DX",
       "icon": "💳",
-      "avg_week": 4.76,
-      "avg_day": 2.8,
+      "avg_week": 4.85,
+      "avg_day": 2.9,
       "momentum": "rising",
       "stock_count": 8
-    },
-    {
-      "id": "healthcare",
-      "name": "ヘルスケア・バイオ",
-      "icon": "🏥",
-      "avg_week": 4.46,
-      "avg_day": 0.05,
-      "momentum": "rising",
-      "stock_count": 10
     },
     {
       "id": "green",
       "name": "グリーン・EV・エネルギー",
       "icon": "🌿",
-      "avg_week": 3.55,
-      "avg_day": 0.3,
+      "avg_week": 4.81,
+      "avg_day": 1.49,
+      "momentum": "rising",
+      "stock_count": 10
+    },
+    {
+      "id": "healthcare",
+      "name": "ヘルスケア・バイオ",
+      "icon": "🏥",
+      "avg_week": 4.26,
+      "avg_day": -0.14,
       "momentum": "rising",
       "stock_count": 10
     },
@@ -32,8 +32,8 @@
       "id": "inbound",
       "name": "インバウンド・消費",
       "icon": "🏨",
-      "avg_week": 1.58,
-      "avg_day": 1.6,
+      "avg_week": 1.89,
+      "avg_day": 1.93,
       "momentum": "rising",
       "stock_count": 10
     },
@@ -41,8 +41,8 @@
       "id": "game",
       "name": "ゲーム・エンタメ",
       "icon": "🎮",
-      "avg_week": -0.31,
-      "avg_day": 3.17,
+      "avg_week": 0.69,
+      "avg_day": 4.23,
       "momentum": "neutral",
       "stock_count": 7
     },
@@ -50,8 +50,8 @@
       "id": "space",
       "name": "宇宙・防衛",
       "icon": "🚀",
-      "avg_week": -0.51,
-      "avg_day": 3.68,
+      "avg_week": -0.4,
+      "avg_day": 3.83,
       "momentum": "neutral",
       "stock_count": 8
     },
@@ -59,8 +59,8 @@
       "id": "ai_dx",
       "name": "AI・DX",
       "icon": "🤖",
-      "avg_week": -0.69,
-      "avg_day": 1.65,
+      "avg_week": -0.53,
+      "avg_day": 1.82,
       "momentum": "neutral",
       "stock_count": 12
     },
@@ -68,8 +68,8 @@
       "id": "semiconductor",
       "name": "半導体・電子部品",
       "icon": "💾",
-      "avg_week": -6.7,
-      "avg_day": -1.99,
+      "avg_week": -7.13,
+      "avg_day": -2.46,
       "momentum": "cold",
       "stock_count": 11
     }
