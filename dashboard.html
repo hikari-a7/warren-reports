@@ -6,249 +6,397 @@
 <title>Warren Dashboard</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+    background: #0a0a0f;
+    color: #e8ecf0;
+    min-height: 100vh;
+    font-size: 15px;
+  }
 
-  .header { background: #161b22; border-bottom: 1px solid #30363d; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
-  .header h1 { font-size: 18px; font-weight: 700; color: #f0f6fc; letter-spacing: 0.5px; }
-  .header h1 span { color: #3fb950; }
-  .last-updated { font-size: 11px; color: #8b949e; }
+  /* ヘッダー */
+  .header {
+    background: #111118;
+    border-bottom: 1px solid #1e2028;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+  .header-title span { color: #4ade80; }
+  .header-meta { font-size: 13px; color: #6b7280; }
 
-  .container { max-width: 680px; margin: 0 auto; padding: 16px; }
+  .container { max-width: 720px; margin: 0 auto; padding: 20px 16px 40px; }
 
-  /* 月次進捗 */
-  .monthly-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-  .monthly-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-  .monthly-title { font-size: 12px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; }
-  .monthly-amount { font-size: 24px; font-weight: 700; color: #3fb950; }
-  .monthly-amount.negative { color: #f85149; }
-  .monthly-target-row { display: flex; justify-content: space-between; font-size: 11px; color: #8b949e; margin-bottom: 8px; }
-  .progress-bar { height: 6px; background: #21262d; border-radius: 3px; overflow: hidden; }
-  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
-  .progress-fill.positive { background: linear-gradient(90deg, #238636, #3fb950); }
-  .progress-fill.negative { background: #b62324; }
-  .monthly-breakdown { display: flex; gap: 12px; margin-top: 10px; font-size: 11px; }
-  .breakdown-item { color: #8b949e; }
-  .breakdown-item span { color: #e6edf3; font-weight: 600; }
-  .breakdown-item span.pos { color: #3fb950; }
-  .breakdown-item span.neg { color: #f85149; }
+  /* 月次カード */
+  .monthly-card {
+    background: linear-gradient(135deg, #111118 0%, #16161f 100%);
+    border: 1px solid #1e2028;
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+  }
+  .monthly-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .monthly-label { font-size: 13px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .monthly-pnl { font-size: 34px; font-weight: 800; line-height: 1; }
+  .monthly-pnl.pos { color: #4ade80; }
+  .monthly-pnl.neg { color: #f87171; }
+  .monthly-target-info { text-align: right; }
+  .monthly-target-label { font-size: 13px; color: #6b7280; margin-bottom: 4px; }
+  .monthly-target-val { font-size: 20px; font-weight: 700; color: #9ca3af; }
+  .monthly-pct-badge {
+    display: inline-block;
+    background: #4ade8022;
+    color: #4ade80;
+    border: 1px solid #4ade8044;
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  .monthly-pct-badge.neg { background: #f8717122; color: #f87171; border-color: #f8717144; }
 
-  /* セクションヘッダー */
-  .section-label { font-size: 11px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.8px; margin: 20px 0 10px; padding-left: 2px; }
+  .progress-wrap { margin-bottom: 16px; }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 6px; }
+  .progress-bar { height: 8px; background: #1e2028; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .progress-fill.pos { background: linear-gradient(90deg, #16a34a, #4ade80); }
+  .progress-fill.neg { background: #dc2626; }
+
+  .monthly-breakdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .breakdown-item {
+    background: #0a0a0f;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #1e2028;
+  }
+  .breakdown-label { font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .breakdown-val { font-size: 17px; font-weight: 700; }
+  .breakdown-val.pos { color: #4ade80; }
+  .breakdown-val.neg { color: #f87171; }
+  .breakdown-val.neutral { color: #e8ecf0; }
+
+  /* セクション見出し */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 24px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: #1e2028; }
 
   /* ポジションカード */
-  .position-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; position: relative; overflow: hidden; }
-  .position-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
-  .position-card.profit::before { background: #3fb950; }
-  .position-card.loss::before { background: #f85149; }
-  .position-card.alert::before { background: #d29922; animation: pulse 1.5s ease-in-out infinite; }
+  .pos-card {
+    background: #111118;
+    border: 1px solid #1e2028;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .pos-card-accent {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 14px 0 0 14px;
+  }
+  .pos-card-accent.profit { background: #4ade80; }
+  .pos-card-accent.loss { background: #f87171; }
+  .pos-card-accent.alert { background: #fbbf24; box-shadow: 0 0 12px #fbbf2466; }
 
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .pos-inner { padding: 18px 20px 18px 24px; }
 
-  .pos-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .pos-name { font-size: 14px; font-weight: 700; color: #f0f6fc; }
-  .pos-code { font-size: 11px; color: #8b949e; margin-top: 2px; }
+  .pos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .pos-name { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+  .pos-sub { font-size: 13px; color: #6b7280; }
   .pos-price-block { text-align: right; }
-  .pos-price { font-size: 20px; font-weight: 700; color: #f0f6fc; }
-  .pos-change { font-size: 12px; font-weight: 600; margin-top: 2px; }
-  .pos-change.up { color: #3fb950; }
-  .pos-change.down { color: #f85149; }
+  .pos-price { font-size: 26px; font-weight: 800; color: #fff; }
+  .pos-change { font-size: 15px; font-weight: 700; margin-top: 3px; }
+  .pos-change.up { color: #4ade80; }
+  .pos-change.down { color: #f87171; }
 
-  .pos-metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-  .metric { background: #0d1117; border-radius: 6px; padding: 7px 10px; }
-  .metric-label { font-size: 10px; color: #8b949e; margin-bottom: 3px; }
-  .metric-value { font-size: 13px; font-weight: 600; color: #e6edf3; }
-  .metric-value.pos { color: #3fb950; }
-  .metric-value.neg { color: #f85149; }
+  .pos-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .metric-box {
+    background: #0a0a0f;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #1e2028;
+  }
+  .metric-label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+  .metric-val { font-size: 16px; font-weight: 700; color: #e8ecf0; }
+  .metric-val.pos { color: #4ade80; }
+  .metric-val.neg { color: #f87171; }
 
-  .pos-levels { display: flex; gap: 8px; margin-bottom: 8px; }
-  .level-chip { flex: 1; border-radius: 6px; padding: 6px 10px; font-size: 11px; text-align: center; }
-  .level-chip.target { background: #0d419d22; border: 1px solid #1f6feb; color: #58a6ff; }
-  .level-chip.stop { background: #b6212144; border: 1px solid #f85149; color: #f85149; }
-  .level-chip .chip-label { font-size: 10px; opacity: 0.8; margin-bottom: 2px; }
-  .level-chip .chip-value { font-weight: 700; }
-  .level-chip .chip-dist { font-size: 10px; opacity: 0.7; }
+  .pos-levels { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .level-box {
+    border-radius: 10px;
+    padding: 10px 14px;
+    border: 1px solid;
+  }
+  .level-box.target { background: #1e3a5f22; border-color: #3b82f644; }
+  .level-box.stop   { background: #7f1d1d22; border-color: #ef444444; }
+  .level-label { font-size: 12px; margin-bottom: 4px; font-weight: 600; }
+  .level-box.target .level-label { color: #60a5fa; }
+  .level-box.stop   .level-label { color: #f87171; }
+  .level-price { font-size: 18px; font-weight: 800; }
+  .level-box.target .level-price { color: #93c5fd; }
+  .level-box.stop   .level-price { color: #fca5a5; }
+  .level-dist { font-size: 12px; margin-top: 3px; }
+  .level-box.target .level-dist { color: #60a5fa99; }
+  .level-box.stop   .level-dist { color: #f8717199; }
 
-  .pos-note { font-size: 11px; color: #d29922; background: #d2992215; border: 1px solid #d2992230; border-radius: 5px; padding: 5px 9px; }
+  .pos-note {
+    font-size: 13px;
+    font-weight: 600;
+    background: #fbbf2415;
+    border: 1px solid #fbbf2430;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #fbbf24;
+    line-height: 1.5;
+  }
 
-  /* 損益サマリー（合計） */
-  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .summary-item { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 14px; }
-  .summary-item-label { font-size: 10px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .summary-item-value { font-size: 18px; font-weight: 700; }
-  .summary-item-value.pos { color: #3fb950; }
-  .summary-item-value.neg { color: #f85149; }
-  .summary-item-sub { font-size: 10px; color: #8b949e; margin-top: 2px; }
+  /* 評価サマリー */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .summary-box {
+    background: #111118;
+    border: 1px solid #1e2028;
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .summary-label { font-size: 12px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .summary-val { font-size: 22px; font-weight: 800; }
+  .summary-val.pos { color: #4ade80; }
+  .summary-val.neg { color: #f87171; }
+  .summary-sub { font-size: 13px; color: #6b7280; margin-top: 4px; }
 
-  /* クローズドトレード */
-  .closed-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #161b22; border: 1px solid #30363d; border-radius: 8px; margin-bottom: 8px; }
-  .closed-info { }
-  .closed-name { font-size: 13px; font-weight: 600; color: #e6edf3; }
-  .closed-meta { font-size: 11px; color: #8b949e; margin-top: 2px; }
-  .closed-pnl { text-align: right; }
-  .closed-pnl-val { font-size: 15px; font-weight: 700; }
-  .closed-pnl-val.pos { color: #3fb950; }
-  .closed-pnl-val.neg { color: #f85149; }
-  .closed-date { font-size: 10px; color: #8b949e; margin-top: 2px; }
+  /* 確定トレード */
+  .closed-card {
+    background: #111118;
+    border: 1px solid #1e2028;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .closed-name { font-size: 16px; font-weight: 700; color: #e8ecf0; margin-bottom: 4px; }
+  .closed-meta { font-size: 13px; color: #6b7280; }
+  .closed-pnl { font-size: 22px; font-weight: 800; text-align: right; }
+  .closed-pnl.pos { color: #4ade80; }
+  .closed-pnl.neg { color: #f87171; }
+  .closed-date { font-size: 12px; color: #6b7280; text-align: right; margin-top: 4px; }
 
-  /* 注意書き */
-  .disclaimer { font-size: 10px; color: #6e7681; text-align: center; padding: 12px 0 24px; line-height: 1.6; }
-
-  /* エラー */
-  .error-msg { text-align: center; color: #8b949e; padding: 40px 20px; font-size: 14px; }
+  /* フッター */
+  .footer {
+    font-size: 12px;
+    color: #374151;
+    text-align: center;
+    padding: 20px 0 0;
+    line-height: 1.8;
+  }
 
   /* ローディング */
-  .loading { text-align: center; padding: 60px 20px; }
-  .loading-dot { display: inline-block; width: 8px; height: 8px; background: #3fb950; border-radius: 50%; animation: bounce 1.2s ease-in-out infinite; margin: 0 3px; }
-  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
-  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; gap: 16px; }
+  .loading-text { font-size: 14px; color: #6b7280; }
+  .spinner { width: 32px; height: 32px; border: 3px solid #1e2028; border-top-color: #4ade80; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error { text-align: center; padding: 60px 20px; color: #6b7280; font-size: 15px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>⚡ <span>Warren</span> Dashboard</h1>
-  <div class="last-updated" id="lastUpdated">読み込み中...</div>
+  <div class="header-title">⚡ <span>Warren</span> Dashboard</div>
+  <div class="header-meta" id="lastUpdated">読み込み中...</div>
 </div>
 
 <div class="container">
   <div class="loading" id="loading">
-    <div class="loading-dot"></div>
-    <div class="loading-dot"></div>
-    <div class="loading-dot"></div>
+    <div class="spinner"></div>
+    <div class="loading-text">データを取得中...</div>
   </div>
   <div id="content" style="display:none"></div>
 </div>
 
 <script>
-function fmt(n) { return Math.abs(n).toLocaleString('ja-JP'); }
-function fmtSigned(n) { return (n >= 0 ? '+¥' : '-¥') + fmt(n); }
-function fmtPct(p) { return (p >= 0 ? '+' : '') + p.toFixed(2) + '%'; }
+const fmt = n => Math.abs(n).toLocaleString('ja-JP');
+const fmtSigned = n => (n >= 0 ? '+¥' : '−¥') + fmt(n);
+const fmtPct = p => (p >= 0 ? '+' : '') + p.toFixed(2) + '%';
+const fmtMan = n => (Math.abs(n) / 10000).toFixed(1) + '万';
 
 function buildMonthly(data) {
   const positions = data.positions || [];
   const closed = data.closed_trades || [];
   const target = data.monthly_target || 1500000;
-
-  const unrealizedTotal = positions.reduce((s, p) => s + (p.pnl_total || 0), 0);
-  const realizedTotal = closed.reduce((s, c) => s + (c.pnl || 0), 0);
-  const totalPnl = unrealizedTotal + realizedTotal;
-  const pct = Math.min(Math.max((totalPnl / target) * 100, 0), 100);
-  const isPos = totalPnl >= 0;
+  const unrealized = positions.reduce((s, p) => s + (p.pnl_total || 0), 0);
+  const realized   = closed.reduce((s, c) => s + (c.pnl || 0), 0);
+  const total = unrealized + realized;
+  const pct = Math.min(Math.max(total / target * 100, 0), 100);
+  const isPos = total >= 0;
+  const achievePct = (total / target * 100).toFixed(1);
 
   return `
 <div class="monthly-card">
-  <div class="monthly-header">
-    <span class="monthly-title">${data.month || ''} 月次損益</span>
-    <span class="monthly-amount ${isPos ? '' : 'negative'}">${fmtSigned(totalPnl)}</span>
+  <div class="monthly-top">
+    <div>
+      <div class="monthly-label">${data.month || ''} 月次損益</div>
+      <div class="monthly-pnl ${isPos ? 'pos' : 'neg'}">${fmtSigned(total)}</div>
+    </div>
+    <div class="monthly-target-info">
+      <div class="monthly-target-label">月次目標</div>
+      <div class="monthly-target-val">¥${fmtMan(target)}</div>
+      <div class="monthly-pct-badge ${isPos ? '' : 'neg'}">${achievePct}%</div>
+    </div>
   </div>
-  <div class="monthly-target-row">
-    <span>月次目標: ¥${(target/10000).toFixed(0)}万円</span>
-    <span>${isPos ? pct.toFixed(1) + '%' : '—'}</span>
+
+  <div class="progress-wrap">
+    <div class="progress-labels">
+      <span>進捗</span>
+      <span>${isPos ? pct.toFixed(1) + '%' : '0%'}</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill ${isPos ? 'pos' : 'neg'}" style="width:${pct}%"></div>
+    </div>
   </div>
-  <div class="progress-bar">
-    <div class="progress-fill ${isPos ? 'positive' : 'negative'}" style="width:${pct}%"></div>
-  </div>
+
   <div class="monthly-breakdown">
-    <div class="breakdown-item">含み損益 <span class="${unrealizedTotal >= 0 ? 'pos' : 'neg'}">${fmtSigned(unrealizedTotal)}</span></div>
-    <div class="breakdown-item">確定損益 <span class="${realizedTotal >= 0 ? 'pos' : 'neg'}">${fmtSigned(realizedTotal)}</span></div>
-    <div class="breakdown-item">銘柄数 <span>${positions.length}件</span></div>
+    <div class="breakdown-item">
+      <div class="breakdown-label">含み損益</div>
+      <div class="breakdown-val ${unrealized >= 0 ? 'pos' : 'neg'}">${fmtSigned(unrealized)}</div>
+    </div>
+    <div class="breakdown-item">
+      <div class="breakdown-label">確定損益</div>
+      <div class="breakdown-val ${realized >= 0 ? 'pos' : 'neg'}">${fmtSigned(realized)}</div>
+    </div>
+    <div class="breakdown-item">
+      <div class="breakdown-label">保有銘柄</div>
+      <div class="breakdown-val neutral">${positions.length}銘柄</div>
+    </div>
   </div>
 </div>`;
 }
 
 function buildPositions(positions) {
-  if (!positions || positions.length === 0) return '<p class="error-msg">アクティブポジションなし</p>';
-
+  if (!positions || positions.length === 0) return '<p class="error">アクティブポジションなし</p>';
   return positions.map(p => {
     const isProfit = p.pnl_total >= 0;
-    const isAlert = p.note && p.note.startsWith('🎯');
-    const cardClass = isAlert ? 'alert' : (isProfit ? 'profit' : 'loss');
-
+    const isAlert  = p.note && (p.note.startsWith('🎯') || p.note.startsWith('🚀'));
+    const accentClass = isAlert ? 'alert' : (isProfit ? 'profit' : 'loss');
     const targetDist = p.target_price ? ((p.target_price - p.current_price) / p.current_price * 100).toFixed(1) : null;
-    const stopDist = p.stop_price ? ((p.stop_price - p.current_price) / p.current_price * 100).toFixed(1) : null;
-
+    const stopDist   = p.stop_price   ? ((p.stop_price   - p.current_price) / p.current_price * 100).toFixed(1) : null;
     const noteHtml = p.note ? `<div class="pos-note">${p.note}</div>` : '';
-
     return `
-<div class="position-card ${cardClass}">
-  <div class="pos-top">
-    <div>
-      <div class="pos-name">${p.name}</div>
-      <div class="pos-code">${p.code} ・ ${p.shares.toLocaleString()}株</div>
+<div class="pos-card">
+  <div class="pos-card-accent ${accentClass}"></div>
+  <div class="pos-inner">
+    <div class="pos-header">
+      <div>
+        <div class="pos-name">${p.name}</div>
+        <div class="pos-sub">${p.code} ・ ${p.shares.toLocaleString()}株 ・ 取得¥${p.entry_price.toLocaleString()}</div>
+      </div>
+      <div class="pos-price-block">
+        <div class="pos-price">¥${p.current_price.toLocaleString()}</div>
+        <div class="pos-change ${isProfit ? 'up' : 'down'}">${fmtSigned(p.pnl_per)} (${fmtPct(p.pnl_pct)})</div>
+      </div>
     </div>
-    <div class="pos-price-block">
-      <div class="pos-price">¥${p.current_price.toLocaleString()}</div>
-      <div class="pos-change ${isProfit ? 'up' : 'down'}">${fmtSigned(p.pnl_per)} (${fmtPct(p.pnl_pct)})</div>
-    </div>
-  </div>
 
-  <div class="pos-metrics">
-    <div class="metric">
-      <div class="metric-label">取得単価</div>
-      <div class="metric-value">¥${p.entry_price.toLocaleString()}</div>
+    <div class="pos-metrics">
+      <div class="metric-box">
+        <div class="metric-label">評価額</div>
+        <div class="metric-val">¥${fmtMan(p.current_value)}</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">含み損益</div>
+        <div class="metric-val ${isProfit ? 'pos' : 'neg'}">${fmtSigned(p.pnl_total)}</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">損益率</div>
+        <div class="metric-val ${isProfit ? 'pos' : 'neg'}">${fmtPct(p.pnl_pct)}</div>
+      </div>
     </div>
-    <div class="metric">
-      <div class="metric-label">評価額</div>
-      <div class="metric-value">¥${(p.current_value / 10000).toFixed(1)}万</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">含み損益</div>
-      <div class="metric-value ${isProfit ? 'pos' : 'neg'}">${fmtSigned(p.pnl_total)}</div>
-    </div>
-  </div>
 
-  <div class="pos-levels">
-    <div class="level-chip target">
-      <div class="chip-label">↑ 目標 +${p.target_pct}%</div>
-      <div class="chip-value">¥${p.target_price.toLocaleString()}</div>
-      ${targetDist !== null ? `<div class="chip-dist">あと ${targetDist > 0 ? '+' : ''}${targetDist}%</div>` : ''}
+    <div class="pos-levels">
+      <div class="level-box target">
+        <div class="level-label">↑ 目標 +${p.target_pct}%</div>
+        <div class="level-price">¥${p.target_price.toLocaleString()}</div>
+        ${targetDist !== null ? `<div class="level-dist">現在値からあと ${targetDist > 0 ? '+' : ''}${targetDist}%</div>` : ''}
+      </div>
+      <div class="level-box stop">
+        <div class="level-label">↓ 損切 +${p.stop_pct}%</div>
+        <div class="level-price">¥${p.stop_price.toLocaleString()}</div>
+        ${stopDist !== null ? `<div class="level-dist">現在値から ${stopDist}%</div>` : ''}
+      </div>
     </div>
-    <div class="level-chip stop">
-      <div class="chip-label">↓ 損切 ${p.stop_pct}%</div>
-      <div class="chip-value">¥${p.stop_price.toLocaleString()}</div>
-      ${stopDist !== null ? `<div class="chip-dist">まで ${stopDist}%</div>` : ''}
-    </div>
+    ${noteHtml}
   </div>
-  ${noteHtml}
 </div>`;
   }).join('');
 }
 
 function buildSummary(positions) {
   const totalValue = positions.reduce((s, p) => s + (p.current_value || 0), 0);
-  const totalCost = positions.reduce((s, p) => s + (p.entry_price * p.shares || 0), 0);
-  const totalPnl = positions.reduce((s, p) => s + (p.pnl_total || 0), 0);
-  const totalPct = totalCost > 0 ? (totalPnl / totalCost * 100) : 0;
-
+  const totalCost  = positions.reduce((s, p) => s + (p.entry_price * p.shares || 0), 0);
+  const totalPnl   = positions.reduce((s, p) => s + (p.pnl_total || 0), 0);
+  const pct = totalCost > 0 ? totalPnl / totalCost * 100 : 0;
   return `
 <div class="summary-grid">
-  <div class="summary-item">
-    <div class="summary-item-label">評価額合計</div>
-    <div class="summary-item-value">¥${(totalValue / 10000).toFixed(1)}万</div>
-    <div class="summary-item-sub">取得 ¥${(totalCost / 10000).toFixed(1)}万</div>
+  <div class="summary-box">
+    <div class="summary-label">評価額合計</div>
+    <div class="summary-val">¥${fmtMan(totalValue)}</div>
+    <div class="summary-sub">取得額 ¥${fmtMan(totalCost)}</div>
   </div>
-  <div class="summary-item">
-    <div class="summary-item-label">含み損益合計</div>
-    <div class="summary-item-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${fmtSigned(totalPnl)}</div>
-    <div class="summary-item-sub">${fmtPct(totalPct)}</div>
+  <div class="summary-box">
+    <div class="summary-label">含み損益合計</div>
+    <div class="summary-val ${totalPnl >= 0 ? 'pos' : 'neg'}">${fmtSigned(totalPnl)}</div>
+    <div class="summary-sub">${fmtPct(pct)}</div>
   </div>
 </div>`;
 }
 
 function buildClosed(closed) {
-  if (!closed || closed.length === 0) return '<p style="color:#8b949e;font-size:12px;text-align:center;padding:12px">なし</p>';
-
+  if (!closed || closed.length === 0) return '<p style="color:#6b7280;font-size:14px;text-align:center;padding:12px">なし</p>';
   return closed.map(c => {
-    const isProfit = c.pnl >= 0;
+    const isPos = c.pnl >= 0;
     return `
-<div class="closed-row">
-  <div class="closed-info">
+<div class="closed-card">
+  <div>
     <div class="closed-name">${c.name}</div>
     <div class="closed-meta">${c.code} ・ ${c.shares.toLocaleString()}株 ・ ${c.note || ''}</div>
   </div>
-  <div class="closed-pnl">
-    <div class="closed-pnl-val ${isProfit ? 'pos' : 'neg'}">${fmtSigned(c.pnl)}</div>
+  <div>
+    <div class="closed-pnl ${isPos ? 'pos' : 'neg'}">${fmtSigned(c.pnl)}</div>
     <div class="closed-date">${c.close_date || ''}</div>
   </div>
 </div>`;
@@ -256,49 +404,45 @@ function buildClosed(closed) {
 }
 
 function render(data) {
+  document.getElementById('lastUpdated').textContent = data.last_updated ? `更新: ${data.last_updated}` : '—';
   const positions = data.positions || [];
-  const closed = data.closed_trades || [];
+  const closed    = data.closed_trades || [];
 
-  document.getElementById('lastUpdated').textContent = data.last_updated ? `更新: ${data.last_updated}` : '';
-
-  const html = `
+  document.getElementById('content').innerHTML = `
 ${buildMonthly(data)}
 
-<div class="section-label">アクティブポジション (${positions.length}件)</div>
+<div class="section-title">アクティブポジション (${positions.length}件)</div>
 ${buildPositions(positions)}
 
-<div class="section-label">評価サマリー</div>
+<div class="section-title">評価サマリー ※参考値</div>
 ${buildSummary(positions)}
 
-<div class="section-label">確定済みトレード (${data.month || ''})</div>
+<div class="section-title">確定済みトレード (${data.month || ''})</div>
 ${buildClosed(closed)}
 
-<div class="disclaimer">
-  ※ 評価額・株価はyfinance取得値（最大15分遅延）。SBI証券のリアルタイム価格とは差が出る場合があります。<br>
+<div class="footer">
+  ※ 株価はyfinance取得値（最大15分遅延）。SBI証券のリアルタイム価格とは差が出る場合があります。<br>
   ⚡ Warren — Powered by Claude
 </div>`;
 
-  document.getElementById('content').innerHTML = html;
   document.getElementById('loading').style.display = 'none';
   document.getElementById('content').style.display = 'block';
 }
 
-async function loadData() {
+async function load() {
   try {
     const res = await fetch('positions.json?t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    render(data);
+    render(await res.json());
   } catch (e) {
     document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').innerHTML = `<p class="error-msg">データ読み込みエラー: ${e.message}</p>`;
+    document.getElementById('content').innerHTML = `<p class="error">読み込みエラー: ${e.message}</p>`;
     document.getElementById('content').style.display = 'block';
   }
 }
 
-loadData();
-// 5分ごとに自動リフレッシュ
-setInterval(loadData, 5 * 60 * 1000);
+load();
+setInterval(load, 5 * 60 * 1000);
 </script>
 </body>
 </html>

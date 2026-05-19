@@ -30,12 +30,12 @@
       "pnl_per": 620,
       "pnl_pct": 20.74,
       "pnl_total": 310000,
-      "target_pct": 20,
-      "target_price": 3588,
-      "stop_pct": -8,
-      "stop_price": 2751,
+      "target_pct": 100,
+      "target_price": 5980,
+      "stop_pct": 10,
+      "stop_price": 3289,
       "status": "holding",
-      "note": "🎯 目標+20%超過。利確を検討"
+      "note": "🚀 目標+100%（¥5,980）に引き上げ。損切+10%（¥3,289）で含み益を保護"
     },
     {
       "code": "6232",
