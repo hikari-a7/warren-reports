@@ -199,6 +199,37 @@
   .empty { text-align: center; padding: 80px 20px; color: var(--text3); font-size: 15px; }
 
   .footer { font-size: 12px; color: var(--text3); text-align: center; padding: 20px 0 0; line-height: 1.9; border-top: 1px solid var(--border); }
+
+  /* モバイル対応 */
+  .mobile-nav { display: none; }
+  @media (max-width: 767px) {
+    .sidebar { display: none; }
+    .main-wrap { margin-left: 0; }
+    .header { padding: 12px 16px; }
+    .header-title { font-size: 18px; }
+    .header-sub { display: none; }
+    .capital-bar { padding: 12px 16px; }
+    .capital-presets { flex-wrap: wrap; gap: 4px; }
+    .container { padding: 16px 12px 80px; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .summary-val { font-size: 20px; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .pf-nums { grid-template-columns: repeat(2, 1fr); }
+    .pf-name { font-size: 17px; }
+    .pf-alloc-val { font-size: 18px; }
+    .mobile-nav {
+      display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+      height: 60px; background: var(--surf1); border-top: 1px solid var(--border); z-index: 200;
+    }
+    .mobile-nav a {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 2px; text-decoration: none;
+      color: var(--text3); font-size: 10px; font-weight: 600;
+    }
+    .mobile-nav a.active { color: var(--up); }
+    .mobile-nav .mnav-icon { font-size: 20px; line-height: 1; }
+  }
 </style>
 </head>
 <body>
@@ -416,5 +447,11 @@ async function load() {
 document.getElementById('capitalInput').addEventListener('input', () => renderPortfolio());
 load();
 </script>
+<nav class="mobile-nav">
+  <a href="dashboard.html"><span class="mnav-icon">📊</span>ポジション</a>
+  <a href="watchlist.html"><span class="mnav-icon">🎯</span>次の一手</a>
+  <a href="ranking.html"><span class="mnav-icon">📈</span>ランキング</a>
+  <a href="portfolio.html" class="active"><span class="mnav-icon">💼</span>ポートフォリオ</a>
+</nav>
 </body>
 </html>
