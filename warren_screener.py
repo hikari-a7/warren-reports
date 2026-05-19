@@ -415,6 +415,121 @@ def save_results(candidates_with_memos, theme_radar, date_id, all_scored=None):
         print(f"ranking.json 保存: {len(ranking_stocks)}銘柄")
 
 
+# ── ポジション自動更新 ─────────────────────────────────────────────
+
+def update_positions():
+    """holdings.jsonから現在株価を取得しpositions.jsonを自動更新"""
+    import yfinance as yf
+
+    print("\nポジション更新中...")
+
+    try:
+        with open("holdings.json", encoding="utf-8") as f:
+            holdings_data = json.load(f)
+    except FileNotFoundError:
+        print("  holdings.json が見つかりません。スキップします。")
+        return
+
+    holdings = holdings_data.get("holdings", [])
+    if not holdings:
+        print("  保有銘柄なし。スキップします。")
+        return
+
+    # 既存positions.jsonからclosed_trades・monthly_target・month・noteを引き継ぐ
+    existing_notes = {}
+    closed_trades  = []
+    monthly_target = 1500000
+    month = datetime.now(JST).strftime("%Y-%m")
+
+    try:
+        with open("positions.json", encoding="utf-8") as f:
+            existing = json.load(f)
+        closed_trades  = existing.get("closed_trades", [])
+        monthly_target = existing.get("monthly_target", monthly_target)
+        month          = existing.get("month", month)
+        for p in existing.get("positions", []):
+            existing_notes[p["code"]] = p.get("note", "")
+    except Exception:
+        pass
+
+    # yfinanceで現在株価を取得（最新営業日終値）
+    codes   = [h["code"] for h in holdings]
+    tickers = [f"{c}.T" for c in codes]
+    prices  = {}
+
+    try:
+        raw = yf.download(
+            tickers, period="5d", group_by="ticker",
+            auto_adjust=True, progress=False, threads=True
+        )
+        for code, ticker in zip(codes, tickers):
+            try:
+                closes = raw[ticker]["Close"].dropna() if len(tickers) > 1 else raw["Close"].dropna()
+                if len(closes) > 0:
+                    prices[code] = float(closes.iloc[-1])
+                    print(f"  {code}: ¥{prices[code]:,.0f}")
+            except Exception as e:
+                print(f"  {code} 株価取得失敗: {e}")
+    except Exception as e:
+        print(f"  株価取得エラー: {e}")
+
+    # positions.jsonを生成
+    now_str   = datetime.now(JST).strftime("%Y-%m-%d %H:%M JST")
+    positions = []
+
+    for h in holdings:
+        code      = h["code"]
+        cost      = h["cost"]
+        shares    = h["shares"]
+        target    = h.get("target")
+        stop_loss = h.get("stop_loss")
+        note      = h.get("note", existing_notes.get(code, ""))
+
+        current_price = prices.get(code)
+        if current_price is None:
+            print(f"  ⚠ {code} 株価取得できず。スキップ。")
+            continue
+
+        current_value = round(current_price * shares)
+        pnl_per   = round(current_price - cost, 1)
+        pnl_pct   = round((current_price - cost) / cost * 100, 2)
+        pnl_total = round(pnl_per * shares)
+        target_pct = round((target    - cost) / cost * 100, 1) if target    else 20
+        stop_pct   = round((stop_loss - cost) / cost * 100, 1) if stop_loss else -8
+
+        positions.append({
+            "code":          code,
+            "name":          h["name"],
+            "shares":        shares,
+            "entry_price":   cost,
+            "current_price": round(current_price, 1),
+            "current_value": current_value,
+            "pnl_per":       pnl_per,
+            "pnl_pct":       pnl_pct,
+            "pnl_total":     pnl_total,
+            "target_pct":    target_pct,
+            "target_price":  target,
+            "stop_pct":      stop_pct,
+            "stop_price":    stop_loss,
+            "status":        "holding",
+            "note":          note,
+        })
+
+    result = {
+        "month":          month,
+        "monthly_target": monthly_target,
+        "last_updated":   now_str,
+        "positions":      positions,
+        "closed_trades":  closed_trades,
+        "watchlist":      [],
+    }
+
+    with open("positions.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
+
+    print(f"positions.json 更新完了: {len(positions)}銘柄 ({now_str})")
+
+
 # ── LINE通知 ────────────────────────────────────────────────────────
 
 def send_line_summary(candidates, theme_radar, date_id):
@@ -518,4 +633,5 @@ if __name__ == "__main__":
 
     save_results(candidates_with_memos, theme_radar, today_str, all_scored)
     send_line_summary(candidates_with_memos, theme_radar, today_str)
+    update_positions()
     print("完了")

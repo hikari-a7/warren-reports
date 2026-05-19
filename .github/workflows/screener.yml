@@ -32,7 +32,7 @@ jobs:
         run: |
           git config user.name "Warren"
           git config user.email "warren@claude.local"
-          git add watchlist.json theme_radar.json ranking.json
+          git add watchlist.json theme_radar.json ranking.json positions.json
           git diff --staged --quiet || git commit -m "screener: $(date +%Y-%m-%d)"
           git push
 

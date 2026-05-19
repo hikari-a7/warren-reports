@@ -1,7 +1,31 @@
 {
   "holdings": [
-    {"code": "1436", "name": "グリーンエナジー&カンパニー", "cost": 1788, "shares": 1200, "target": 2146, "stop_loss": 1645},
-    {"code": "464A", "name": "QPSホールディングス",          "cost": 2990, "shares": 500,  "target": 3588, "stop_loss": 2751},
-    {"code": "6232", "name": "ACSL",                        "cost": 4040, "shares": 1300, "target": 4848, "stop_loss": 3717}
+    {
+      "code": "1436",
+      "name": "グリーンエナジー&カンパニー",
+      "cost": 1788,
+      "shares": 1200,
+      "target": 2146,
+      "stop_loss": 1645,
+      "note": ""
+    },
+    {
+      "code": "464A",
+      "name": "QPSホールディングス",
+      "cost": 2990,
+      "shares": 500,
+      "target": 5980,
+      "stop_loss": 3289,
+      "note": "🚀 目標+100%（¥5,980）に引き上げ。損切+10%（¥3,289）で含み益を保護"
+    },
+    {
+      "code": "6232",
+      "name": "ACSL",
+      "cost": 4040,
+      "shares": 1300,
+      "target": 4848,
+      "stop_loss": 3717,
+      "note": "⏳ 暴落玉。取得単価¥4,040回復まで保有（-8%ルール適用外）"
+    }
   ]
 }
