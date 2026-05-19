@@ -18,8 +18,11 @@ LINE_USER_ID = os.environ.get("LINE_USER_ID", "")
 PAGES_URL = "https://hikari-a7.github.io/warren-reports"
 
 JPX_URL = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls"
-TARGET_MARKETS = {"プライム市場", "スタンダード市場", "グロース市場"}
-MARKET_LABEL = {"プライム市場": "プライム", "スタンダード市場": "スタンダード", "グロース市場": "グロース"}
+TARGET_MARKETS = {
+    "プライム（内国株式）":    "プライム",
+    "スタンダード（内国株式）": "スタンダード",
+    "グロース（内国株式）":    "グロース",
+}
 
 
 # ── データ取得 ──────────────────────────────────────────────────────
@@ -31,32 +34,28 @@ def load_universe():
 
 def fetch_jpx_stocks():
     """JPX公開Excelから全上場株式を取得（約3,800銘柄）"""
+    import requests
+    import pandas as pd
+
     print("  JPX上場銘柄一覧をダウンロード中...")
     try:
-        req = urllib.request.Request(JPX_URL, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = resp.read()
-        import xlrd
-        wb = xlrd.open_workbook(file_contents=data)
-        ws = wb.sheet_by_index(0)
+        r = requests.get(JPX_URL, timeout=30)
+        r.raise_for_status()
+        df = pd.read_excel(io.BytesIO(r.content), engine="xlrd")
+        df = df[df["市場・商品区分"].isin(TARGET_MARKETS.keys())]
+
         stocks = []
-        for i in range(1, ws.nrows):
-            row = ws.row_values(i)
-            market = str(row[1]).strip() if row[1] else ""
-            if market not in TARGET_MARKETS:
-                continue
-            raw_code = row[2]
-            name = str(row[3]).strip() if row[3] else ""
-            industry = str(row[5]).strip() if len(row) > 5 and row[5] else ""
-            if not raw_code or not name:
-                continue
-            code = str(int(float(raw_code)))
-            stocks.append({
-                "code": code,
-                "name": name,
-                "market_section": MARKET_LABEL.get(market, market),
-                "industry": industry,
-            })
+        for _, row in df.iterrows():
+            try:
+                code = str(int(row["コード"]))
+                name = str(row["銘柄名"]).strip()
+                market = TARGET_MARKETS[row["市場・商品区分"]]
+                industry = str(row["33業種区分"]).strip() if pd.notna(row.get("33業種区分")) else ""
+                if code and name:
+                    stocks.append({"code": code, "name": name, "market_section": market, "industry": industry})
+            except Exception:
+                pass
+
         print(f"  JPX取得完了: {len(stocks)}銘柄")
         return stocks
     except Exception as e:
