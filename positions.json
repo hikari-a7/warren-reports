@@ -1,0 +1,83 @@
+{
+  "month": "2026-05",
+  "monthly_target": 1500000,
+  "last_updated": "—",
+  "positions": [
+    {
+      "code": "1436",
+      "name": "グリーンエナジー",
+      "shares": 1200,
+      "entry_price": 1788,
+      "current_price": 1900,
+      "current_value": 2280000,
+      "pnl_per": 112,
+      "pnl_pct": 6.26,
+      "pnl_total": 134400,
+      "target_pct": 20,
+      "target_price": 2146,
+      "stop_pct": -8,
+      "stop_price": 1645,
+      "status": "holding",
+      "note": ""
+    },
+    {
+      "code": "464A",
+      "name": "QPSHD",
+      "shares": 500,
+      "entry_price": 2990,
+      "current_price": 3610,
+      "current_value": 1805000,
+      "pnl_per": 620,
+      "pnl_pct": 20.74,
+      "pnl_total": 310000,
+      "target_pct": 20,
+      "target_price": 3588,
+      "stop_pct": -8,
+      "stop_price": 2751,
+      "status": "holding",
+      "note": "🎯 目標+20%超過。利確を検討"
+    },
+    {
+      "code": "6232",
+      "name": "ACSL",
+      "shares": 1300,
+      "entry_price": 4040,
+      "current_price": 3445,
+      "current_value": 4478500,
+      "pnl_per": -595,
+      "pnl_pct": -14.73,
+      "pnl_total": -773500,
+      "target_pct": 20,
+      "target_price": 4848,
+      "stop_pct": -8,
+      "stop_price": 3717,
+      "status": "holding",
+      "note": "⏳ 暴落玉。取得単価¥4,040回復まで保有（-8%ルール適用外）"
+    }
+  ],
+  "closed_trades": [
+    {
+      "code": "6613",
+      "name": "QDレーザ",
+      "shares": 500,
+      "entry_price": 1811,
+      "exit_price": null,
+      "pnl": 90000,
+      "close_date": "2026-05-19",
+      "status": "profit",
+      "note": "利確"
+    },
+    {
+      "code": "186A",
+      "name": "アストロスケールHD",
+      "shares": 600,
+      "entry_price": 1784,
+      "exit_price": null,
+      "pnl": 90000,
+      "close_date": "2026-05-19",
+      "status": "profit",
+      "note": "利確"
+    }
+  ],
+  "watchlist": []
+}

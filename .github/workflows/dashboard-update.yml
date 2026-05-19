@@ -1,0 +1,50 @@
+name: Warren Dashboard Update
+
+on:
+  schedule:
+    # 取引時間中 30分ごと (JST 9:00-15:30 = UTC 0:00-6:30)
+    - cron: '0,30 0,1,2,3,4,5,6 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance
+
+      - name: Check trading hours
+        id: trading_hours
+        run: |
+          HOUR=$(date -u +%H)
+          MIN=$(date -u +%M)
+          TOTAL_MIN=$((HOUR * 60 + MIN))
+          # UTC 0:00-6:30 = 取引時間内 (JST 9:00-15:30)
+          if [ "$TOTAL_MIN" -ge 0 ] && [ "$TOTAL_MIN" -le 390 ]; then
+            echo "skip=false" >> $GITHUB_OUTPUT
+          else
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "取引時間外のためスキップ (UTC ${HOUR}:${MIN})"
+          fi
+
+      - name: Update positions
+        if: steps.trading_hours.outputs.skip == 'false'
+        run: python update_positions.py
+
+      - name: Commit updated positions
+        if: steps.trading_hours.outputs.skip == 'false'
+        run: |
+          git config user.name "Warren"
+          git config user.email "warren@claude.local"
+          git add positions.json
+          git diff --staged --quiet || git commit -m "positions: $(date +%Y-%m-%d-%H%M)"
+          git push
