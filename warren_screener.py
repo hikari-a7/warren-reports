@@ -199,7 +199,7 @@ def pick_candidates(stocks, stock_data, top_n=5):
         scored.append({**s, **d, "score": sc})
 
     scored.sort(key=lambda x: x["score"], reverse=True)
-    return scored[:top_n]
+    return scored[:top_n], scored
 
 
 # ── 投資メモ生成 ────────────────────────────────────────────────────
@@ -278,7 +278,7 @@ JSONのみ。"""
 
 # ── watchlist保存 ───────────────────────────────────────────────────
 
-def save_results(candidates_with_memos, theme_radar, date_id):
+def save_results(candidates_with_memos, theme_radar, date_id, all_scored=None):
     # watchlist.json
     watchlist = {
         "updated": date_id,
@@ -293,6 +293,28 @@ def save_results(candidates_with_memos, theme_radar, date_id):
     with open("theme_radar.json", "w", encoding="utf-8") as f:
         json.dump(radar, f, ensure_ascii=False, indent=2)
     print(f"theme_radar.json 保存: {len(theme_radar)}テーマ")
+
+    # ranking.json — 全銘柄スコアランキング
+    if all_scored:
+        ranking_stocks = [{
+            "rank":       i + 1,
+            "code":       s["code"],
+            "name":       s["name"],
+            "theme_id":   s.get("theme_id", ""),
+            "theme_name": s.get("theme_name", ""),
+            "score":      s["score"],
+            "price":      s.get("price"),
+            "change_pct": s.get("change_pct"),
+            "week_pct":   s.get("week_pct"),
+            "rsi":        s.get("rsi"),
+            "vol_ratio":  s.get("vol_ratio"),
+            "vs_ma25":    s.get("vs_ma25"),
+            "vs_high_52w":s.get("vs_high_52w"),
+        } for i, s in enumerate(all_scored)]
+        ranking = {"updated": date_id, "stocks": ranking_stocks}
+        with open("ranking.json", "w", encoding="utf-8") as f:
+            json.dump(ranking, f, ensure_ascii=False, indent=2)
+        print(f"ranking.json 保存: {len(ranking_stocks)}銘柄")
 
 
 # ── LINE通知 ────────────────────────────────────────────────────────
@@ -354,8 +376,8 @@ if __name__ == "__main__":
         print(f"  {t['icon']} {t['name']}: 週間{t['avg_week']:+.1f}% [{t['momentum']}]")
 
     print("候補抽出中...")
-    top_candidates = pick_candidates(stocks, stock_data, top_n=5)
-    print(f"  上位{len(top_candidates)}件抽出")
+    top_candidates, all_scored = pick_candidates(stocks, stock_data, top_n=5)
+    print(f"  上位{len(top_candidates)}件抽出 / 全{len(all_scored)}銘柄スコア済")
     for c in top_candidates:
         print(f"  [{c['score']}点] {c['code']} {c['name']} RSI={c['rsi']} vol={c['vol_ratio']}x")
 
@@ -394,6 +416,6 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"  ✗ {c['code']} メモ生成エラー: {e}")
 
-    save_results(candidates_with_memos, theme_radar, today_str)
+    save_results(candidates_with_memos, theme_radar, today_str, all_scored)
     send_line_summary(candidates_with_memos, theme_radar, today_str)
     print("完了")

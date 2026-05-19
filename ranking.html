@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — 全銘柄ランキング</title>
+<style>
+  :root {
+    --bg:       #07090d;
+    --surf1:    #0d1018;
+    --surf2:    #111620;
+    --surf3:    #161d2a;
+    --border:   #1c2535;
+    --border2:  #243044;
+    --text1:    #dce4f0;
+    --text2:    #8a9ab8;
+    --text3:    #4e5f78;
+    --up:       #4a9e7a;
+    --up-dim:   #4a9e7a22;
+    --up-mid:   #4a9e7a44;
+    --dn:       #a85858;
+    --dn-dim:   #a8585820;
+    --dn-mid:   #a8585840;
+    --hot:      #c49040;
+    --hot-dim:  #c4904022;
+    --hot-mid:  #c4904044;
+    --cool:     #4a7eb8;
+    --slate:    #3a4d66;
+    --slate-dim:#3a4d6622;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text1);
+    min-height: 100vh;
+  }
+
+  /* サイドバー */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--surf1);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .sidebar-brand {
+    padding: 22px 20px 18px;
+    font-size: 20px; font-weight: 800; color: #fff;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.5px;
+  }
+  .sidebar-brand span { color: var(--up); }
+  .sidebar-nav { padding: 14px 10px; flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 12px; border-radius: 9px;
+    color: var(--text2); text-decoration: none;
+    font-size: 14px; font-weight: 600;
+    transition: all .15s;
+  }
+  .nav-item:hover { background: var(--surf3); color: var(--text1); }
+  .nav-item.active { background: var(--surf3); color: var(--up); }
+  .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+  .sidebar-footer { padding: 14px 20px; font-size: 11px; color: var(--text3); border-top: 1px solid var(--border); }
+  .main-wrap { flex: 1; margin-left: 220px; min-width: 0; }
+
+  /* ヘッダー */
+  .header {
+    background: var(--surf1); border-bottom: 1px solid var(--border);
+    padding: 16px 32px; display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .header-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .header-sub { font-size: 13px; color: var(--text3); margin-top: 3px; }
+
+  /* フィルターバー */
+  .filter-bar {
+    background: var(--surf2); border-bottom: 1px solid var(--border);
+    padding: 12px 32px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .filter-label { font-size: 13px; color: var(--text2); font-weight: 600; }
+  .theme-btn {
+    background: var(--surf3); border: 1px solid var(--border);
+    border-radius: 20px; color: var(--text2);
+    font-size: 13px; font-weight: 600; padding: 5px 14px;
+    cursor: pointer; transition: all .15s; font-family: inherit;
+  }
+  .theme-btn:hover { border-color: var(--border2); color: var(--text1); }
+  .theme-btn.active { background: var(--up-dim); border-color: var(--up-mid); color: var(--up); }
+  .updated-label { margin-left: auto; font-size: 12px; color: var(--text3); }
+
+  .container { padding: 24px 32px 56px; }
+
+  /* テーブル */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead th {
+    background: var(--surf2); color: var(--text3);
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  thead th:hover { color: var(--text2); }
+  thead th.sort-asc::after  { content: ' ↑'; color: var(--up); }
+  thead th.sort-desc::after { content: ' ↓'; color: var(--up); }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .1s;
+  }
+  tbody tr:hover { background: var(--surf2); }
+  tbody tr.top5 { background: var(--up-dim); }
+  tbody tr.top5:hover { background: var(--up-mid); }
+  td { padding: 12px 14px; white-space: nowrap; }
+
+  .rank-num {
+    font-size: 16px; font-weight: 800; color: var(--text3);
+    width: 40px; text-align: center;
+  }
+  .rank-num.gold   { color: #d4a840; }
+  .rank-num.silver { color: #8a9ab8; }
+  .rank-num.bronze { color: #a06040; }
+
+  .stock-name { font-size: 15px; font-weight: 700; color: var(--text1); }
+  .stock-code { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .theme-tag {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 5px;
+    background: var(--slate-dim); border: 1px solid var(--slate);
+    color: var(--text2);
+  }
+
+  .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .score-bar-bg { width: 80px; height: 6px; background: var(--surf3); border-radius: 3px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 3px; background: var(--up); }
+  .score-num { font-size: 15px; font-weight: 800; color: var(--text1); min-width: 28px; }
+
+  .val-up   { color: var(--up);  font-weight: 700; }
+  .val-dn   { color: var(--dn);  font-weight: 700; }
+  .val-neut { color: var(--text2); }
+
+  .rsi-ok  { color: var(--up); }
+  .rsi-hot { color: var(--dn); }
+  .rsi-low { color: var(--cool); }
+
+  .candidate-badge {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px;
+    background: var(--up-dim); border: 1px solid var(--up-mid); color: var(--up);
+  }
+
+  /* ローディング */
+  .loading { display: flex; flex-direction: column; align-items: center; padding: 100px 20px; gap: 16px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--up); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 15px; color: var(--text3); }
+  .empty { text-align: center; padding: 80px 20px; color: var(--text3); font-size: 15px; }
+
+  .footer { font-size: 12px; color: var(--text3); text-align: center; padding: 20px 0 0; line-height: 1.9; border-top: 1px solid var(--border); margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<div class="sidebar">
+  <div class="sidebar-brand">⚡ <span>Warren</span></div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">📊</span>ポジション
+    </a>
+    <a href="watchlist.html" class="nav-item">
+      <span class="nav-icon">🎯</span>次の一手
+    </a>
+    <a href="ranking.html" class="nav-item active">
+      <span class="nav-icon">📈</span>全銘柄ランキング
+    </a>
+    <a href="portfolio.html" class="nav-item">
+      <span class="nav-icon">💼</span>推奨ポートフォリオ
+    </a>
+  </nav>
+  <div class="sidebar-footer">Powered by Claude</div>
+</div>
+
+<div class="main-wrap">
+<div class="header">
+  <div>
+    <div class="header-title">📈 全銘柄ランキング</div>
+    <div class="header-sub">スクリーニングスコア順 — 全ユニバース</div>
+  </div>
+</div>
+
+<div class="filter-bar" id="filterBar">
+  <span class="filter-label">テーマ</span>
+  <button class="theme-btn active" onclick="setTheme('all', this)">すべて</button>
+  <span class="updated-label" id="updatedLabel">—</span>
+</div>
+
+<div class="container">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Warren がランキングを集計中...</div>
+  </div>
+  <div id="content" style="display:none"></div>
+</div>
+</div><!-- /main-wrap -->
+</div><!-- /layout -->
+
+<script>
+let allStocks = [];
+let currentTheme = 'all';
+let sortCol = 'rank';
+let sortDir = 'asc';
+
+function setTheme(theme, btn) {
+  currentTheme = theme;
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function setSort(col) {
+  if (sortCol === col) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortCol = col;
+    sortDir = col === 'rank' ? 'asc' : 'desc';
+  }
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.dataset.col === col) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+  });
+  renderTable();
+}
+
+const candidateCodes = new Set();
+
+function rsiClass(rsi) {
+  if (rsi === null || rsi === undefined) return 'val-neut';
+  if (rsi < 30) return 'rsi-low';
+  if (rsi > 70) return 'rsi-hot';
+  return 'rsi-ok';
+}
+
+function renderTable() {
+  let stocks = currentTheme === 'all'
+    ? [...allStocks]
+    : allStocks.filter(s => s.theme_id === currentTheme);
+
+  // ソート
+  stocks.sort((a, b) => {
+    let va = a[sortCol] ?? -999;
+    let vb = b[sortCol] ?? -999;
+    return sortDir === 'asc' ? va - vb : vb - va;
+  });
+
+  const maxScore = Math.max(...allStocks.map(s => s.score || 0));
+
+  const rows = stocks.map((s, i) => {
+    const isCandidate = candidateCodes.has(s.code);
+    const rankDisplay = s.rank;
+    const rankClass = rankDisplay === 1 ? 'gold' : rankDisplay === 2 ? 'silver' : rankDisplay === 3 ? 'bronze' : '';
+    const isTop5 = rankDisplay <= 5 && currentTheme === 'all';
+
+    const chg  = s.change_pct;
+    const week = s.week_pct;
+    const ma25 = s.vs_ma25;
+
+    const scoreW = maxScore > 0 ? (s.score / maxScore * 100).toFixed(0) : 0;
+
+    return `<tr class="${isTop5 ? 'top5' : ''}">
+  <td><div class="rank-num ${rankClass}">${rankDisplay}</div></td>
+  <td>
+    <div class="stock-name">${s.name}</div>
+    <div class="stock-code">${s.code}</div>
+  </td>
+  <td><span class="theme-tag">${s.theme_name || ''}</span></td>
+  <td>
+    <div class="score-bar-wrap">
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:${scoreW}%"></div></div>
+      <span class="score-num">${s.score}</span>
+    </div>
+  </td>
+  <td class="${s.price ? 'val-neut' : ''}">¥${s.price ? s.price.toLocaleString('ja-JP') : '—'}</td>
+  <td class="${chg >= 0 ? 'val-up' : 'val-dn'}">${chg != null ? (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' : '—'}</td>
+  <td class="${week >= 0 ? 'val-up' : 'val-dn'}">${week != null ? (week >= 0 ? '+' : '') + week.toFixed(1) + '%' : '—'}</td>
+  <td class="${rsiClass(s.rsi)}">${s.rsi != null ? s.rsi.toFixed(0) : '—'}</td>
+  <td class="${s.vol_ratio >= 2 ? 'val-up' : 'val-neut'}">${s.vol_ratio != null ? s.vol_ratio.toFixed(1) + 'x' : '—'}</td>
+  <td class="${ma25 != null ? (ma25 >= 0 ? 'val-up' : 'val-dn') : ''}">${ma25 != null ? (ma25 >= 0 ? '+' : '') + ma25.toFixed(1) + '%' : '—'}</td>
+  <td>${isCandidate ? '<span class="candidate-badge">🎯 候補入り</span>' : ''}</td>
+</tr>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th data-col="rank" onclick="setSort('rank')" class="sort-asc">順位</th>
+      <th data-col="name">銘柄</th>
+      <th data-col="theme_id" onclick="setSort('theme_id')">テーマ</th>
+      <th data-col="score" onclick="setSort('score')">スコア</th>
+      <th data-col="price">株価</th>
+      <th data-col="change_pct" onclick="setSort('change_pct')">前日比</th>
+      <th data-col="week_pct" onclick="setSort('week_pct')">週間</th>
+      <th data-col="rsi" onclick="setSort('rsi')">RSI</th>
+      <th data-col="vol_ratio" onclick="setSort('vol_ratio')">出来高比</th>
+      <th data-col="vs_ma25" onclick="setSort('vs_ma25')">MA25比</th>
+      <th>ステータス</th>
+    </tr>
+  </thead>
+  <tbody>${rows}</tbody>
+</table>
+</div>
+<div class="footer">📈 全銘柄ランキング ・ 更新: <span id="footerDate">—</span><br>⚡ Warren — Powered by Claude ・ スコアはWarrenのスイング向け独自指標</div>`;
+
+  document.getElementById('footerDate').textContent = document.getElementById('updatedLabel').textContent.replace('更新: ', '');
+}
+
+async function load() {
+  try {
+    const [rankRes, wlRes] = await Promise.all([
+      fetch('ranking.json?t=' + Date.now()),
+      fetch('watchlist.json?t=' + Date.now()),
+    ]);
+
+    if (!rankRes.ok) throw new Error('ranking.json が見つかりません。スクリーナーを実行してください。');
+    const rankData = await rankRes.json();
+    allStocks = rankData.stocks || [];
+    document.getElementById('updatedLabel').textContent = '更新: ' + (rankData.updated || '—');
+
+    // 候補銘柄コードを取得
+    if (wlRes.ok) {
+      const wl = await wlRes.json();
+      (wl.candidates || []).forEach(c => candidateCodes.add(c.code));
+    }
+
+    // テーマフィルターボタンを動的生成
+    const themes = [...new Map(allStocks.map(s => [s.theme_id, s])).values()];
+    const filterBar = document.getElementById('filterBar');
+    const updatedSpan = document.getElementById('updatedLabel');
+    themes.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'theme-btn';
+      btn.textContent = t.theme_name;
+      btn.onclick = () => setTheme(t.theme_id, btn);
+      filterBar.insertBefore(btn, updatedSpan);
+    });
+
+    renderTable();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  } catch (e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').innerHTML = `<div class="empty">⚠️ ${e.message}</div>`;
+    document.getElementById('content').style.display = 'block';
+  }
+}
+
+load();
+setInterval(load, 5 * 60 * 1000);
+</script>
+</body>
+</html>
