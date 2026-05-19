@@ -73,7 +73,7 @@
   }
   .section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .radar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .radar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
   .radar-card {
     background: var(--surf2);
     border: 1px solid var(--border);
@@ -239,18 +239,67 @@
 
   .updated { font-size: 13px; color: var(--text3); text-align: right; margin-bottom: 16px; }
   .footer { font-size: 12px; color: var(--text3); text-align: center; padding: 20px 0 0; line-height: 1.9; border-top: 1px solid var(--border); margin-top: 8px; }
+
+  /* サイドバー */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--surf1);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .sidebar-brand {
+    padding: 22px 20px 18px;
+    font-size: 20px; font-weight: 800; color: #fff;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.5px;
+  }
+  .sidebar-brand span { color: var(--up); }
+  .sidebar-nav { padding: 14px 10px; flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 12px; border-radius: 9px;
+    color: var(--text2); text-decoration: none;
+    font-size: 14px; font-weight: 600;
+    transition: all .15s;
+  }
+  .nav-item:hover { background: var(--surf3); color: var(--text1); }
+  .nav-item.active { background: var(--surf3); color: var(--up); }
+  .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+  .sidebar-footer {
+    padding: 14px 20px;
+    font-size: 11px; color: var(--text3);
+    border-top: 1px solid var(--border);
+  }
+  .main-wrap { flex: 1; margin-left: 220px; min-width: 0; }
 </style>
 </head>
 <body>
+<div class="layout">
 
+<div class="sidebar">
+  <div class="sidebar-brand">⚡ <span>Warren</span></div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">📊</span>ポジション
+    </a>
+    <a href="watchlist.html" class="nav-item active">
+      <span class="nav-icon">🎯</span>次の一手
+    </a>
+    <a href="portfolio.html" class="nav-item">
+      <span class="nav-icon">💼</span>推奨ポートフォリオ
+    </a>
+  </nav>
+  <div class="sidebar-footer">Powered by Claude</div>
+</div>
+
+<div class="main-wrap">
 <div class="header">
   <div>
-    <div class="header-title">⚡ <span>Warren</span> 次の一手</div>
+    <div class="header-title">🎯 次の一手</div>
     <div class="header-sub">スクリーニング × 投資メモ × テーマレーダー</div>
-  </div>
-  <div class="nav">
-    <a href="dashboard.html">ポジション</a>
-    <a href="watchlist.html" class="active">次の一手</a>
   </div>
 </div>
 
@@ -261,6 +310,8 @@
   </div>
   <div id="content" style="display:none"></div>
 </div>
+</div><!-- /main-wrap -->
+</div><!-- /layout -->
 
 <script>
 const fmt = n => Math.abs(Math.round(n)).toLocaleString('ja-JP');

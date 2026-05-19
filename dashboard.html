@@ -233,12 +233,65 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .error { text-align: center; padding: 60px 20px; color: #6b7280; font-size: 15px; }
+
+  /* サイドバー */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: #0d1018;
+    border-right: 1px solid #1c2535;
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .sidebar-brand {
+    padding: 22px 20px 18px;
+    font-size: 20px; font-weight: 800; color: #fff;
+    border-bottom: 1px solid #1c2535;
+    letter-spacing: -0.5px;
+  }
+  .sidebar-brand span { color: #4a9e7a; }
+  .sidebar-nav { padding: 14px 10px; flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 12px; border-radius: 9px;
+    color: #8a9ab8; text-decoration: none;
+    font-size: 14px; font-weight: 600;
+    transition: all .15s;
+  }
+  .nav-item:hover { background: #161d2a; color: #dce4f0; }
+  .nav-item.active { background: #161d2a; color: #4a9e7a; }
+  .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+  .sidebar-footer {
+    padding: 14px 20px;
+    font-size: 11px; color: #4e5f78;
+    border-top: 1px solid #1c2535;
+  }
+  .main-wrap { flex: 1; margin-left: 220px; min-width: 0; }
 </style>
 </head>
 <body>
+<div class="layout">
 
+<div class="sidebar">
+  <div class="sidebar-brand">⚡ <span>Warren</span></div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item active">
+      <span class="nav-icon">📊</span>ポジション
+    </a>
+    <a href="watchlist.html" class="nav-item">
+      <span class="nav-icon">🎯</span>次の一手
+    </a>
+    <a href="portfolio.html" class="nav-item">
+      <span class="nav-icon">💼</span>推奨ポートフォリオ
+    </a>
+  </nav>
+  <div class="sidebar-footer">Powered by Claude</div>
+</div>
+
+<div class="main-wrap">
 <div class="header">
-  <div class="header-title">⚡ <span>Warren</span> Dashboard</div>
+  <div class="header-title">📊 ポジション</div>
   <div class="header-meta" id="lastUpdated">読み込み中...</div>
 </div>
 
@@ -249,6 +302,8 @@
   </div>
   <div id="content" style="display:none"></div>
 </div>
+</div><!-- /main-wrap -->
+</div><!-- /layout -->
 
 <script>
 const fmt = n => Math.abs(n).toLocaleString('ja-JP');
