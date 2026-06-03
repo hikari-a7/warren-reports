@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-02",
+  "updated": "2026-06-03",
   "candidates": [
     {
       "code": "4372",
@@ -125,6 +125,62 @@
       "stop_price": 328,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "AI・半導体テーマの中核銘柄として米国半導体株高の恩恵を直接受けやすく、国内半導体関連の中で最も注目度が高い。本日の米国市場でのAI株高を受けた連動上昇が期待される。",
+      "catalyst": "米国AI・半導体株の続伸を背景に外国人買いの流入継続が見込まれ、日経平均高値更新への寄与も期待。",
+      "entry_low": 22000,
+      "entry_high": 23500,
+      "target_price": 27000,
+      "target_pct": 18,
+      "stop_price": 20500,
+      "stop_pct": -7,
+      "added_date": "2026-06-03",
+      "status": "watch"
+    },
+    {
+      "code": "9984",
+      "name": "ソフトバンクグループ",
+      "reason": "AI投資テーマの象徴銘柄として日経高値更新局面で上値追いが期待されるほか、ARM株連動でAIバリュエーション評価が高まりやすい地合い。",
+      "catalyst": "米国NVIDIAなどAI関連株の高値更新がARMの株価を押し上げ、SBGの純資産価値（NAV）拡大期待を後押し。",
+      "entry_low": 10500,
+      "entry_high": 11200,
+      "target_price": 13000,
+      "target_pct": 20,
+      "stop_price": 9800,
+      "stop_pct": -8,
+      "added_date": "2026-06-03",
+      "status": "watch"
+    },
+    {
+      "code": "7735",
+      "name": "SCREENホールディングス",
+      "reason": "半導体洗浄装置の世界シェアトップ級で、AI・HBM関連の設備投資増加による受注拡大期待が根強く、足元の半導体株高の波に乗りやすい。",
+      "catalyst": "国内外の半導体工場建設加速（TSMC熊本・ラピダス）に伴う装置受注増が業績上振れ余地を提供する見通し。",
+      "entry_low": 10800,
+      "entry_high": 11500,
+      "target_price": 13500,
+      "target_pct": 22,
+      "stop_price": 10000,
+      "stop_pct": -8,
+      "added_date": "2026-06-03",
+      "status": "watch"
+    },
+    {
+      "code": "2345",
+      "name": "クシム",
+      "reason": "再生可能エネルギー・蓄電池テーマが本日グリーンエナジー&カンパニーの受注発表で改めて注目される中、同テーマで出遅れ感のある銘柄として逆張り妙味がある。",
+      "catalyst": "政府のグリーントランスフォーメーション（GX）政策と系統用蓄電池の普及加速がセクター全体の追い風となる。",
+      "entry_low": 480,
+      "entry_high": 530,
+      "target_price": 650,
+      "target_pct": 25,
+      "stop_price": 440,
+      "stop_pct": -9,
+      "added_date": "2026-06-03",
+      "status": "watch"
     }
   ]
 }
