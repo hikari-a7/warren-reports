@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-03",
+  "updated": "2026-06-04",
   "candidates": [
     {
       "code": "4429",
@@ -125,6 +125,62 @@
       "stop_price": 432,
       "stop_pct": -8,
       "hold_period": "3〜6週間"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "AI・半導体関連の主力牽引株として相場上昇局面で高βパフォーマンスが期待される。日経最高値更新局面では半導体製造装置セクターへの資金流入が加速しやすい。",
+      "catalyst": "日経平均68,000円台突破に伴うAI・半導体関連株への継続的な機関投資家の買いフロー。",
+      "entry_low": 23000,
+      "entry_high": 24500,
+      "target_price": 29000,
+      "target_pct": 20,
+      "stop_price": 21500,
+      "stop_pct": -7,
+      "added_date": "2026-06-04",
+      "status": "watch"
+    },
+    {
+      "code": "6857",
+      "name": "アドバンテスト",
+      "reason": "半導体テスタ世界トップで米AI向け需要拡大が続き、業績上方修正余地が大きい。RSI・テクニカル面でも押し目形成後の反発局面に入りやすいタイミング。",
+      "catalyst": "米エヌビディア向けHBMテスト需要拡大と野村証券等アナリストの目標株価引き上げ観測。",
+      "entry_low": 8500,
+      "entry_high": 9200,
+      "target_price": 11000,
+      "target_pct": 22,
+      "stop_price": 7900,
+      "stop_pct": -8,
+      "added_date": "2026-06-04",
+      "status": "watch"
+    },
+    {
+      "code": "6367",
+      "name": "ダイキン工業",
+      "reason": "物色の裾野拡大局面でグローバル空調・熱マネジメント需要増が再評価されやすく、半導体以外の内需・グローバル消費テーマとして資金が向かいやすい。",
+      "catalyst": "データセンター冷却需要増加とインド・東南アジア向け空調市場拡大による中長期業績成長期待。",
+      "entry_low": 19500,
+      "entry_high": 20500,
+      "target_price": 24000,
+      "target_pct": 18,
+      "stop_price": 18500,
+      "stop_pct": -7,
+      "added_date": "2026-06-04",
+      "status": "watch"
+    },
+    {
+      "code": "9613",
+      "name": "NTTデータグループ",
+      "reason": "AI・DX投資拡大局面で国内IT大手として政府・企業向け受注増が見込まれ、相場全体上昇時の出遅れ修正期待が高い。バリュエーション面での割安感も魅力。",
+      "catalyst": "政府のデジタル庁関連予算拡大と国内企業のAI導入加速による大型案件受注期待。",
+      "entry_low": 2300,
+      "entry_high": 2500,
+      "target_price": 3000,
+      "target_pct": 23,
+      "stop_price": 2150,
+      "stop_pct": -8,
+      "added_date": "2026-06-04",
+      "status": "watch"
     }
   ]
 }
