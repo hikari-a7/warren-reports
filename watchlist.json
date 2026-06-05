@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-04",
+  "updated": "2026-06-05",
   "candidates": [
     {
       "code": "5078",
@@ -125,6 +125,62 @@
       "stop_price": 972,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "AIドリブンの半導体需要拡大を背景に国内半導体装置最大手として再評価局面が継続、TOPIX史上最高値更新の相場環境で機関投資家の買いが入りやすい。",
+      "catalyst": "AI・EUV露光装置の需要増期待、日米半導体サプライチェーン強化の政策追い風が持続。",
+      "entry_low": 28000,
+      "entry_high": 29500,
+      "target_price": 35000,
+      "target_pct": 20,
+      "stop_price": 26500,
+      "stop_pct": -8,
+      "added_date": "2026-06-05",
+      "status": "watch"
+    },
+    {
+      "code": "9984",
+      "name": "ソフトバンクグループ",
+      "reason": "AI関連投資ポートフォリオへの期待から上昇トレンドが継続、超速AI相場の恩恵を最も享受しやすい銘柄として国内外機関投資家の注目度が高い。",
+      "catalyst": "ARM株高・AI投資ファンド（SVF）のポートフォリオ評価額上昇が純資産価値（NAV）を押し上げるカタリストとして機能。",
+      "entry_low": 11800,
+      "entry_high": 12500,
+      "target_price": 15000,
+      "target_pct": 25,
+      "stop_price": 10800,
+      "stop_pct": -9,
+      "added_date": "2026-06-05",
+      "status": "watch"
+    },
+    {
+      "code": "2330",
+      "name": "フォーサイド",
+      "reason": "小型AI・コンテンツDX銘柄として個人投資家の物色テーマに合致、テーマ相場での循環物色で急動意しやすい需給環境にある。",
+      "catalyst": "AI活用コンテンツ配信・DX支援事業の拡大期待と小型株特有の需給妙味がカタリスト。",
+      "entry_low": 200,
+      "entry_high": 230,
+      "target_price": 300,
+      "target_pct": 33,
+      "stop_price": 185,
+      "stop_pct": -10,
+      "added_date": "2026-06-05",
+      "status": "watch"
+    },
+    {
+      "code": "5301",
+      "name": "東海カーボン",
+      "reason": "データセンター向け電力インフラ・蓄電・素材需要の増加を背景に、グリーンエネルギー・蓄電池テーマの波及先として中期注目度が上昇中。",
+      "catalyst": "国内大規模系統用蓄電池案件の増加トレンドと再エネ拡張政策が素材需要押し上げのカタリストとして機能。",
+      "entry_low": 1050,
+      "entry_high": 1120,
+      "target_price": 1380,
+      "target_pct": 27,
+      "stop_price": 970,
+      "stop_pct": -8,
+      "added_date": "2026-06-05",
+      "status": "watch"
     }
   ]
 }
