@@ -1,66 +1,66 @@
 {
-  "updated": "2026-06-04",
+  "updated": "2026-06-05",
   "themes": [
-    {
-      "id": "semiconductor",
-      "name": "半導体・電子部品",
-      "icon": "💾",
-      "avg_week": 6.56,
-      "avg_day": -0.93,
-      "momentum": "hot",
-      "stock_count": 11
-    },
     {
       "id": "fintech",
       "name": "フィンテック・金融DX",
       "icon": "💳",
-      "avg_week": 2.22,
-      "avg_day": -1.34,
+      "avg_week": 2.25,
+      "avg_day": 1.38,
       "momentum": "rising",
       "stock_count": 8
-    },
-    {
-      "id": "ai_dx",
-      "name": "AI・DX",
-      "icon": "🤖",
-      "avg_week": 1.95,
-      "avg_day": -1.9,
-      "momentum": "rising",
-      "stock_count": 12
-    },
-    {
-      "id": "inbound",
-      "name": "インバウンド・消費",
-      "icon": "🏨",
-      "avg_week": 0.58,
-      "avg_day": -0.13,
-      "momentum": "neutral",
-      "stock_count": 10
     },
     {
       "id": "game",
       "name": "ゲーム・エンタメ",
       "icon": "🎮",
-      "avg_week": -0.23,
-      "avg_day": -1.89,
-      "momentum": "neutral",
+      "avg_week": 1.2,
+      "avg_day": 2.77,
+      "momentum": "rising",
       "stock_count": 7
+    },
+    {
+      "id": "inbound",
+      "name": "インバウンド・消費",
+      "icon": "🏨",
+      "avg_week": 0.77,
+      "avg_day": 1.71,
+      "momentum": "neutral",
+      "stock_count": 10
+    },
+    {
+      "id": "ai_dx",
+      "name": "AI・DX",
+      "icon": "🤖",
+      "avg_week": -0.36,
+      "avg_day": 1.6,
+      "momentum": "neutral",
+      "stock_count": 12
     },
     {
       "id": "healthcare",
       "name": "ヘルスケア・バイオ",
       "icon": "🏥",
-      "avg_week": -2.87,
-      "avg_day": -0.44,
+      "avg_week": -2.79,
+      "avg_day": 1.56,
       "momentum": "cooling",
       "stock_count": 10
+    },
+    {
+      "id": "semiconductor",
+      "name": "半導体・電子部品",
+      "icon": "💾",
+      "avg_week": -2.96,
+      "avg_day": -4.76,
+      "momentum": "cooling",
+      "stock_count": 11
     },
     {
       "id": "green",
       "name": "グリーン・EV・エネルギー",
       "icon": "🌿",
-      "avg_week": -3.29,
-      "avg_day": -1.12,
+      "avg_week": -3.58,
+      "avg_day": -0.7,
       "momentum": "cooling",
       "stock_count": 10
     },
@@ -68,8 +68,8 @@
       "id": "space",
       "name": "宇宙・防衛",
       "icon": "🚀",
-      "avg_week": -7.83,
-      "avg_day": 0.31,
+      "avg_week": -5.05,
+      "avg_day": 2.93,
       "momentum": "cold",
       "stock_count": 6
     }
