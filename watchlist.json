@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-05",
+  "updated": "2026-06-08",
   "candidates": [
     {
       "code": "6898",
@@ -125,6 +125,62 @@
       "stop_price": 1191,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "7270",
+      "name": "SUBARU",
+      "reason": "AI・半導体調整局面での内需・製造業への資金シフト先として浮上。北米販売好調で業績堅調、バリュー面での割安感も強い。",
+      "catalyst": "総選挙後の内需振興策期待と円安メリット銘柄としての再評価が進む局面。",
+      "entry_low": 2800,
+      "entry_high": 2950,
+      "target_price": 3400,
+      "target_pct": 18,
+      "stop_price": 2650,
+      "stop_pct": -8,
+      "added_date": "2026-06-08",
+      "status": "watch"
+    },
+    {
+      "code": "9432",
+      "name": "NTT",
+      "reason": "市場全体のリスクオフ局面で高配当・ディフェンシブ銘柄として資金流入が期待される。総選挙後の政策支援も追い風。",
+      "catalyst": "AI・データセンター向けインフラ需要拡大とIOWN構想の商用展開加速が近中期カタリスト。",
+      "entry_low": 155,
+      "entry_high": 165,
+      "target_price": 195,
+      "target_pct": 22,
+      "stop_price": 148,
+      "stop_pct": -8,
+      "added_date": "2026-06-08",
+      "status": "watch"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "半導体調整により急落が想定されるが、RSI売られすぎ水準への接近で逆張り短期エントリー機会を探る局面。中長期成長力は不変。",
+      "catalyst": "EUV関連受注動向と次世代半導体製造装置の引き合い増加が再評価トリガー。",
+      "entry_low": 19000,
+      "entry_high": 20500,
+      "target_price": 25000,
+      "target_pct": 25,
+      "stop_price": 18000,
+      "stop_pct": -9,
+      "added_date": "2026-06-08",
+      "status": "watch"
+    },
+    {
+      "code": "2413",
+      "name": "エムスリー",
+      "reason": "ヘルスケアDXは市場調整局面でも相対的に底堅く、内需系小型好業績銘柄への資金シフトの恩恵を受けやすい。",
+      "catalyst": "医療DX推進の政策追い風と海外展開加速による業績回復トレンドが継続見込み。",
+      "entry_low": 1650,
+      "entry_high": 1750,
+      "target_price": 2100,
+      "target_pct": 24,
+      "stop_price": 1560,
+      "stop_pct": -8,
+      "added_date": "2026-06-08",
+      "status": "watch"
     }
   ]
 }
