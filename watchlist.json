@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-08",
+  "updated": "2026-06-09",
   "candidates": [
     {
       "code": "2477",
@@ -125,6 +125,62 @@
       "stop_price": 1270,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "6232",
+      "name": "ACSL",
+      "reason": "RSI18.6と極度の売られすぎ水準に突入、MA25比-22.4%と短期的な売られすぎ乖離が拡大しており自律反発の可能性が高い。防衛・ドローン政策の国策テーマ銘柄として中長期的な成長期待は健在。",
+      "catalyst": "防衛省・自衛隊向けドローン需要拡大と政府の防衛費増額方針が引き続き業績押し上げ要因。",
+      "entry_low": 1950,
+      "entry_high": 2050,
+      "target_price": 2500,
+      "target_pct": 23,
+      "stop_price": 1850,
+      "stop_pct": -9,
+      "added_date": "2026-06-09",
+      "status": "watch"
+    },
+    {
+      "code": "464A",
+      "name": "QPSホールディングス",
+      "reason": "RSI39.6とやや売られすぎに近づきつつあり、MA25比-12.7%と下方乖離が拡大。宇宙・SAR衛星という希少テーマ性が高く、相場反転時の戻り幅に期待できる水準。",
+      "catalyst": "小型SAR衛星コンステレーション拡充計画と宇宙関連政府予算増加がトリガーとなる見込み。",
+      "entry_low": 2800,
+      "entry_high": 2900,
+      "target_price": 3400,
+      "target_pct": 17,
+      "stop_price": 2650,
+      "stop_pct": -8,
+      "added_date": "2026-06-09",
+      "status": "watch"
+    },
+    {
+      "code": "1436",
+      "name": "グリーンエナジー&カンパニー",
+      "reason": "RSI36.3と売られすぎに近い水準で、MA25比-1.9%と乖離は限定的。再生可能エネルギーの固定価格買取制度（FIT）関連の安定収益モデルが下値を支える。",
+      "catalyst": "政府のGX（グリーントランスフォーメーション）推進政策と再エネ拡大方針が中長期の業績下支え。",
+      "entry_low": 1680,
+      "entry_high": 1730,
+      "target_price": 1950,
+      "target_pct": 14,
+      "stop_price": 1600,
+      "stop_pct": -7,
+      "added_date": "2026-06-09",
+      "status": "watch"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "半導体株急落局面で過度に売られており、本日の米半導体株切り返しを受けた反発局面での短期押し目買い妙味が高い。EUV関連の国内最重要銘柄として機関投資家の注目度が高い。",
+      "catalyst": "米半導体株（SOX指数）の反発と、TSMCの設備投資計画維持が需要回復期待を後押し。",
+      "entry_low": 17000,
+      "entry_high": 17800,
+      "target_price": 21000,
+      "target_pct": 20,
+      "stop_price": 15800,
+      "stop_pct": -9,
+      "added_date": "2026-06-09",
+      "status": "watch"
     }
   ]
 }
