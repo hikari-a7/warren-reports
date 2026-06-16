@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-15",
+  "updated": "2026-06-16",
   "candidates": [
     {
       "code": "8225",
@@ -125,6 +125,62 @@
       "stop_price": 648,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "6232",
+      "name": "ACSL",
+      "reason": "RSI33.9と売られすぎ圏に近く、本日+7.58%の急反発で底打ち兆候。MA25比-22.0%と大幅乖離は修正余地大きく、防衛・ドローン国産化テーマの恩恵が期待できる水準。",
+      "catalyst": "防衛予算拡大・ドローン国産化政策推進を背景に機関投資家の関心再燃が見込まれる。",
+      "entry_low": 1800,
+      "entry_high": 1950,
+      "target_price": 2600,
+      "target_pct": 39,
+      "stop_price": 1650,
+      "stop_pct": -11,
+      "added_date": "2026-06-16",
+      "status": "watch"
+    },
+    {
+      "code": "464A",
+      "name": "QPSホールディングス",
+      "reason": "RSI20.2と極端な売られすぎ水準にあり、テクニカルリバウンドの蓋然性が高い。MA25比-28.0%の大幅割れは過剰売りであり、宇宙・SAR衛星テーマはAI・防衛相場と親和性が高い。",
+      "catalyst": "スペースX好発進報道で宇宙関連セクターへの注目が再点灯、国内SAR衛星需要増が直接の恩恵材料。",
+      "entry_low": 2250,
+      "entry_high": 2400,
+      "target_price": 3200,
+      "target_pct": 37,
+      "stop_price": 2050,
+      "stop_pct": -9,
+      "added_date": "2026-06-16",
+      "status": "watch"
+    },
+    {
+      "code": "2303",
+      "name": "ドーン",
+      "reason": "AI・防衛・宇宙関連ソフトウェア企業として、日経平均65,000円台突破の恩恵を受けやすいグロース小型株。相場のすそ野拡大局面でテーマ買いが波及しやすい位置にある。",
+      "catalyst": "日経平均史上最高値更新によるリスクオン継続と防衛DX関連予算拡大がカタリスト。",
+      "entry_low": 1200,
+      "entry_high": 1350,
+      "target_price": 1800,
+      "target_pct": 33,
+      "stop_price": 1100,
+      "stop_pct": -9,
+      "added_date": "2026-06-16",
+      "status": "watch"
+    },
+    {
+      "code": "7013",
+      "name": "IHI",
+      "reason": "米・イラン和平合意期待で地政学リスク後退とともに防衛・航空エンジン需要は底堅く、AI相場拡大局面での大型株シフトにも合致する安定成長銘柄。",
+      "catalyst": "防衛費増額・航空機エンジン需要回復に加え、TOPIX最高値更新で機関投資家のリバランス買いが期待される。",
+      "entry_low": 8200,
+      "entry_high": 8700,
+      "target_price": 11000,
+      "target_pct": 30,
+      "stop_price": 7600,
+      "stop_pct": -8,
+      "added_date": "2026-06-16",
+      "status": "watch"
     }
   ]
 }
