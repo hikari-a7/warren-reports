@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-16",
+  "updated": "2026-06-17",
   "candidates": [
     {
       "code": "5580",
@@ -125,6 +125,62 @@
       "stop_price": 3404,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "4337",
+      "name": "ぴあ",
+      "reason": "エンタメ・イベント需要の回復とインバウンド拡大を背景に業績改善期待が高まっている。市場全体がリスクオンであり、内需消費関連への資金シフトが見込まれる。",
+      "catalyst": "外国人観光客増加によるチケット需要の急拡大と夏季イベントシーズン到来が株価の刺激材料。",
+      "entry_low": 3200,
+      "entry_high": 3450,
+      "target_price": 4200,
+      "target_pct": 22,
+      "stop_price": 2950,
+      "stop_pct": -8,
+      "added_date": "2026-06-17",
+      "status": "watch"
+    },
+    {
+      "code": "6526",
+      "name": "ソシオネクスト",
+      "reason": "AI・半導体テーマの中核銘柄として日経7万円相場の恩恵を最も受けやすいポジションにあり、パーフェクトオーダー形成の可能性が高い。カスタムSoC需要が拡大継続中。",
+      "catalyst": "データセンター向けAIチップ需要の拡大と国内AI投資加速が受注増の直接的なカタリストとなる。",
+      "entry_low": 4800,
+      "entry_high": 5200,
+      "target_price": 6800,
+      "target_pct": 31,
+      "stop_price": 4400,
+      "stop_pct": -8,
+      "added_date": "2026-06-17",
+      "status": "watch"
+    },
+    {
+      "code": "9984",
+      "name": "ソフトバンクグループ",
+      "reason": "AI相場の拡大とArmホールディングスの好調を背景に、NAV（純資産価値）の上昇が継続。日経7万円相場において指数構成比の高い同社は上昇余地が大きい。",
+      "catalyst": "ARM株の高値更新とAIファンド投資先の評価益拡大が次回決算での大幅増益期待を後押し。",
+      "entry_low": 12500,
+      "entry_high": 13200,
+      "target_price": 16500,
+      "target_pct": 25,
+      "stop_price": 11500,
+      "stop_pct": -8,
+      "added_date": "2026-06-17",
+      "status": "watch"
+    },
+    {
+      "code": "5023",
+      "name": "TOKAI Holdings",
+      "reason": "再生可能エネルギー・ガス・通信の安定収益基盤を持ちながら割安水準に放置されており、グリーンエネルギーテーマとの親和性も高い。高配当利回りが下値を支える。",
+      "catalyst": "エネルギー価格安定化と政府のグリーン政策推進が追い風となり、配当利回り4%超が資金流入を促す。",
+      "entry_low": 1050,
+      "entry_high": 1120,
+      "target_price": 1400,
+      "target_pct": 25,
+      "stop_price": 970,
+      "stop_pct": -8,
+      "added_date": "2026-06-17",
+      "status": "watch"
     }
   ]
 }
