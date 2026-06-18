@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-17",
+  "updated": "2026-06-18",
   "candidates": [
     {
       "code": "6776",
@@ -125,6 +125,62 @@
       "stop_price": 1810,
       "stop_pct": -8,
       "hold_period": "3〜6週間"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "蘭ASMLの生産増報道を受け株価が初の5万円超えを達成し強いモメンタムを維持。AI半導体製造の川上に位置し中長期的な需要拡大が見込まれる。",
+      "catalyst": "ASML増産計画による露光装置需要増、次世代EUV向け検査装置の受注拡大期待。",
+      "entry_low": 49000,
+      "entry_high": 51500,
+      "target_price": 62000,
+      "target_pct": 22,
+      "stop_price": 46000,
+      "stop_pct": -8,
+      "added_date": "2026-06-18",
+      "status": "watch"
+    },
+    {
+      "code": "6857",
+      "name": "アドバンテスト",
+      "reason": "AI半導体向けテスト装置需要が急増しており、日経7万円相場の主役銘柄として継続的な資金流入が見込まれる。AI一極集中相場の恩恵を直接享受できるポジションにある。",
+      "catalyst": "HBM・次世代GPU向けテスト装置の受注加速、国内外AIデータセンター投資の拡大。",
+      "entry_low": 8200,
+      "entry_high": 8800,
+      "target_price": 11000,
+      "target_pct": 28,
+      "stop_price": 7600,
+      "stop_pct": -8,
+      "added_date": "2026-06-18",
+      "status": "watch"
+    },
+    {
+      "code": "9434",
+      "name": "ソフトバンク",
+      "reason": "スペースX関連・宇宙通信テーマへの関心高まりを受け、スターリンク提携企業として注目度が上昇。ディフェンシブ性と成長テーマの両面を兼ね備えた中間的ポジション。",
+      "catalyst": "スペースXとのスターリンク展開加速、国内通信インフラへのAI統合によるARPU向上期待。",
+      "entry_low": 2050,
+      "entry_high": 2200,
+      "target_price": 2700,
+      "target_pct": 25,
+      "stop_price": 1900,
+      "stop_pct": -8,
+      "added_date": "2026-06-18",
+      "status": "watch"
+    },
+    {
+      "code": "5595",
+      "name": "QPS研究所",
+      "reason": "宇宙・SAR衛星テーマは中長期成長期待が大きく、現在の過売られ水準からの反発局面を狙える可能性がある。スペースX関連で宇宙テーマへの関心再燃が追い風になりうる。",
+      "catalyst": "政府の宇宙戦略基金活用・防衛省向け衛星データ活用拡大、宇宙テーマへの市場関心再燃。",
+      "entry_low": 680,
+      "entry_high": 750,
+      "target_price": 980,
+      "target_pct": 34,
+      "stop_price": 620,
+      "stop_pct": -10,
+      "added_date": "2026-06-18",
+      "status": "watch"
     }
   ]
 }
