@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-18",
+  "updated": "2026-06-19",
   "candidates": [
     {
       "code": "6267",
@@ -125,6 +125,62 @@
       "stop_price": 847,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "日経平均7万円台突破を牽引するAI・半導体テーマの中核銘柄であり、米国半導体株高の連想買いが直撃しやすい。シカゴ先物の大幅高を受けて本日の寄り付きからモメンタム継続が期待される。",
+      "catalyst": "米インテル株高・AI設備投資拡大期待による半導体前工程装置需要増、EUV関連受注の拡大見通し。",
+      "entry_low": 42000,
+      "entry_high": 44000,
+      "target_price": 52000,
+      "target_pct": 20,
+      "stop_price": 39500,
+      "stop_pct": -6,
+      "added_date": "2026-06-19",
+      "status": "watch"
+    },
+    {
+      "code": "4613",
+      "name": "関西ペイント",
+      "reason": "日経平均最高値更新局面で出遅れた内需・バリュー株として物色対象になりやすく、TOPIXが一時4000超えとなる中で広範な買いが期待できる。配当利回りの水準感からも下値は限定的。",
+      "catalyst": "TOPIX構成銘柄への指数連動買い・配当利回り魅力による長期資金流入継続。",
+      "entry_low": 1780,
+      "entry_high": 1850,
+      "target_price": 2150,
+      "target_pct": 18,
+      "stop_price": 1680,
+      "stop_pct": -7,
+      "added_date": "2026-06-19",
+      "status": "watch"
+    },
+    {
+      "code": "2307",
+      "name": "クロスキャット",
+      "reason": "AI・DX関連テーマのすそ野拡大局面で小型IT株への物色が広がっており、低PBR是正の流れも追い風。グロース市場全体の騰勢強化により需給改善が見込まれる。",
+      "catalyst": "AI活用DX案件の受注拡大と東証低PBR改善要請への対応策公表期待。",
+      "entry_low": 1200,
+      "entry_high": 1280,
+      "target_price": 1550,
+      "target_pct": 25,
+      "stop_price": 1120,
+      "stop_pct": -8,
+      "added_date": "2026-06-19",
+      "status": "watch"
+    },
+    {
+      "code": "5020",
+      "name": "ENEOSホールディングス",
+      "reason": "日経平均最高値更新・リスクオン地合いの中で高配当・資源株への資金流入が期待され、原油価格動向と円安が追い風になりやすい内需型エネルギー大手。TOPIXリバランス需要も下支え要因。",
+      "catalyst": "原油価格の高止まりと自社株買い継続・高配当方針による需給改善。",
+      "entry_low": 780,
+      "entry_high": 820,
+      "target_price": 980,
+      "target_pct": 22,
+      "stop_price": 730,
+      "stop_pct": -7,
+      "added_date": "2026-06-19",
+      "status": "watch"
     }
   ]
 }
