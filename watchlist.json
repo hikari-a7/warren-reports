@@ -125,6 +125,62 @@
       "stop_price": 1160,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "4078",
+      "name": "堺化学工業",
+      "reason": "バッテリー材料・EV関連のリバウンド候補として中期的に注目。RSIが適正水準で過熱感なく、MA25近辺での押し目形成が期待できる。",
+      "catalyst": "EV・蓄電池需要の構造成長テーマに加え、国内設備投資拡大による業績上振れ余地がある。",
+      "entry_low": 1800,
+      "entry_high": 1900,
+      "target_price": 2300,
+      "target_pct": 25,
+      "stop_price": 1650,
+      "stop_pct": -8,
+      "added_date": "2026-06-23",
+      "status": "watch"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "半導体検査装置の最高峰として構造成長が続くが、本日の半導体株安で押し目形成の可能性。RSI50以下まで調整すれば中期買い好機。",
+      "catalyst": "TSMC・サムスンのEUV投資継続とAI半導体需要増が継続的な受注カタリストとなる。",
+      "entry_low": 27000,
+      "entry_high": 29000,
+      "target_price": 36000,
+      "target_pct": 28,
+      "stop_price": 25000,
+      "stop_pct": -9,
+      "added_date": "2026-06-23",
+      "status": "watch"
+    },
+    {
+      "code": "7011",
+      "name": "三菱重工業",
+      "reason": "防衛・エネルギー分野の恩恵を受ける内需型ディフェンシブ銘柄として、地政学リスク高まりの局面で相対的優位性が高い。",
+      "catalyst": "日本の防衛費増額と次世代戦闘機GCAP開発参画が中長期の業績押し上げ要因として機能する見通し。",
+      "entry_low": 2800,
+      "entry_high": 2980,
+      "target_price": 3600,
+      "target_pct": 22,
+      "stop_price": 2580,
+      "stop_pct": -8,
+      "added_date": "2026-06-23",
+      "status": "watch"
+    },
+    {
+      "code": "9432",
+      "name": "NTT",
+      "reason": "IOWN・AI通信インフラ関連として注目度が再浮上しており、大幅下落相場でのディフェンシブシフト先として需給面でも安定感がある。",
+      "catalyst": "国内AI基盤整備・データセンター投資の受益企業として、マクロ不透明局面でも安定した業績成長が期待される。",
+      "entry_low": 155,
+      "entry_high": 163,
+      "target_price": 200,
+      "target_pct": 23,
+      "stop_price": 143,
+      "stop_pct": -8,
+      "added_date": "2026-06-23",
+      "status": "watch"
     }
   ]
 }
