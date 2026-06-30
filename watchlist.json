@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-29",
+  "updated": "2026-06-30",
   "candidates": [
     {
       "code": "9087",
@@ -125,6 +125,62 @@
       "stop_price": 3910,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "6701",
+      "name": "NEC",
+      "reason": "SaaS事業の成長性が市場に再評価され大幅続伸。金利上昇局面でも安定収益基盤を持つ内需型DX銘柄として資金シフトの受け皿になりやすい。",
+      "catalyst": "SaaSセグメントの高成長率と政府DX需要の継続が次の決算でも確認される見込み。",
+      "entry_low": 14800,
+      "entry_high": 15500,
+      "target_price": 18000,
+      "target_pct": 18,
+      "stop_price": 13800,
+      "stop_pct": -7,
+      "added_date": "2026-06-30",
+      "status": "watch"
+    },
+    {
+      "code": "6857",
+      "name": "アドバンテスト",
+      "reason": "半導体株に売りの洗礼が入り短期的に押し目形成の可能性。AI半導体テスト需要の中長期トレンドは不変で、RSI過売り水準まで売られれば逆張り好機。",
+      "catalyst": "AI向けHBMテスト需要増加と次期決算での上方修正期待が下値を支えるカタリストとなる。",
+      "entry_low": 8200,
+      "entry_high": 8800,
+      "target_price": 11000,
+      "target_pct": 27,
+      "stop_price": 7600,
+      "stop_pct": -8,
+      "added_date": "2026-06-30",
+      "status": "watch"
+    },
+    {
+      "code": "9984",
+      "name": "ソフトバンクグループ",
+      "reason": "乱高下相場でAI投資ポートフォリオへの再評価局面が続いており、高値圏からの大幅調整時は中長期の押し目買い候補。下半期のAIテーマ継続で上値余地あり。",
+      "catalyst": "ARM株の株価上昇と国内AI投資加速が次のIR材料として注目されている。",
+      "entry_low": 11500,
+      "entry_high": 12200,
+      "target_price": 15000,
+      "target_pct": 25,
+      "stop_price": 10700,
+      "stop_pct": -8,
+      "added_date": "2026-06-30",
+      "status": "watch"
+    },
+    {
+      "code": "7011",
+      "name": "三菱重工業",
+      "reason": "防衛・エネルギーインフラ銘柄として金利上昇・供給制約時代に評価が高まる業種。半導体売りによるマーケット混乱時も相対的に底堅い動きが期待できる。",
+      "catalyst": "防衛費増額の継続と脱炭素インフラ受注拡大が下半期の業績上乗せ要因として機能する見込み。",
+      "entry_low": 9800,
+      "entry_high": 10400,
+      "target_price": 13000,
+      "target_pct": 28,
+      "stop_price": 9100,
+      "stop_pct": -8,
+      "added_date": "2026-06-30",
+      "status": "watch"
     }
   ]
 }
