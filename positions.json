@@ -1,18 +1,18 @@
 {
   "month": "2026-05",
   "monthly_target": 1500000,
-  "last_updated": "2026-07-01 10:42 JST",
+  "last_updated": "2026-07-01 11:11 JST",
   "positions": [
     {
       "code": "1436",
       "name": "グリーンエナジー&カンパニー",
       "shares": 1200,
       "entry_price": 1788,
-      "current_price": 1425.0,
-      "current_value": 1710000,
-      "pnl_per": -363.0,
-      "pnl_pct": -20.3,
-      "pnl_total": -435600,
+      "current_price": 1420.0,
+      "current_value": 1704000,
+      "pnl_per": -368.0,
+      "pnl_pct": -20.58,
+      "pnl_total": -441600,
       "target_pct": 20.0,
       "target_price": 2146,
       "stop_pct": -8.0,
@@ -36,23 +36,6 @@
       "stop_price": 3289,
       "status": "holding",
       "note": "🚀 目標+100%（¥5,980）に引き上げ。損切+10%（¥3,289）で含み益を保護"
-    },
-    {
-      "code": "6232",
-      "name": "ACSL",
-      "shares": 1300,
-      "entry_price": 4040,
-      "current_price": 1712.0,
-      "current_value": 2225600,
-      "pnl_per": -2328.0,
-      "pnl_pct": -57.62,
-      "pnl_total": -3026400,
-      "target_pct": 20.0,
-      "target_price": 4848,
-      "stop_pct": -8.0,
-      "stop_price": 3717,
-      "status": "holding",
-      "note": "⏳ 暴落玉。取得単価¥4,040回復まで保有（-8%ルール適用外）"
     }
   ],
   "closed_trades": [
