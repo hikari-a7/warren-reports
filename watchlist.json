@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-03",
+  "updated": "2026-07-06",
   "candidates": [
     {
       "code": "5922",
@@ -125,6 +125,62 @@
       "stop_price": 849,
       "stop_pct": -8,
       "hold_period": "3〜6週間"
+    },
+    {
+      "code": "6501",
+      "name": "日立製作所",
+      "reason": "AI・デジタルインフラ需要を背景に好業績継続、半導体関連以外への資金シフト先として機関投資家の注目が高まっている。RSI中立圏でエントリー妙味あり。",
+      "catalyst": "AI相場すそ野拡大と非半導体グロース株への資金シフト加速がカタリスト。",
+      "entry_low": 4200,
+      "entry_high": 4400,
+      "target_price": 5200,
+      "target_pct": 20,
+      "stop_price": 3900,
+      "stop_pct": -7,
+      "added_date": "2026-07-06",
+      "status": "watch"
+    },
+    {
+      "code": "6815",
+      "name": "ユニデン",
+      "reason": "供給制約・金利上昇局面でも収益安定性が高く、バリュー株物色の恩恵を受けやすい。出来高増加時の上抜けに注目。",
+      "catalyst": "金利1%到達局面での株式市場の物色転換と好業績バリュー株への資金流入が追い風。",
+      "entry_low": 680,
+      "entry_high": 720,
+      "target_price": 880,
+      "target_pct": 25,
+      "stop_price": 630,
+      "stop_pct": -8,
+      "added_date": "2026-07-06",
+      "status": "watch"
+    },
+    {
+      "code": "6141",
+      "name": "DMG森精機",
+      "reason": "利益成長が期待される10銘柄候補として取り上げられ、製造業DXと供給制約時代の設備投資需要を取り込む位置づけ。MA25近辺での押し目は買い好機。",
+      "catalyst": "設備投資サイクルの回復と日本株最高値更新局面での好業績銘柄への資金集中が期待される。",
+      "entry_low": 2300,
+      "entry_high": 2450,
+      "target_price": 3000,
+      "target_pct": 25,
+      "stop_price": 2150,
+      "stop_pct": -8,
+      "added_date": "2026-07-06",
+      "status": "watch"
+    },
+    {
+      "code": "4099",
+      "name": "四国化成工業",
+      "reason": "最高値相場で一服感が漂う中でも上値余地が見込める好業績銘柄として選別物色の対象。低PBR改善期待とインフラ需要が下支え。",
+      "catalyst": "東証の資本効率改善要求への対応と自社株買い・増配期待がバリュエーション修正のカタリスト。",
+      "entry_low": 1800,
+      "entry_high": 1900,
+      "target_price": 2300,
+      "target_pct": 22,
+      "stop_price": 1680,
+      "stop_pct": -8,
+      "added_date": "2026-07-06",
+      "status": "watch"
     }
   ]
 }
