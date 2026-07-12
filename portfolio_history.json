@@ -837,6 +837,29 @@
           "pnl_total": -3000400
         }
       }
+    },
+    {
+      "date": "2026-07-12",
+      "total_cost": 8892600,
+      "total_value": 4928600,
+      "total_pnl": -3964000,
+      "holdings": {
+        "1436": {
+          "price": 1427.0,
+          "pnl_pct": -20.19,
+          "pnl_total": -433200
+        },
+        "464A": {
+          "price": 1833.0,
+          "pnl_pct": -38.7,
+          "pnl_total": -578500
+        },
+        "6232": {
+          "price": 1769.0,
+          "pnl_pct": -56.21,
+          "pnl_total": -2952300
+        }
+      }
     }
   ]
 }
