@@ -125,6 +125,62 @@
       "stop_price": 2820,
       "stop_pct": -8,
       "hold_period": "4〜8週間"
+    },
+    {
+      "code": "6920",
+      "name": "レーザーテック",
+      "reason": "AI半導体需要の裾野拡大が続く中、EUV関連の中核銘柄として機関投資家の押し目買い需要が根強い。野村證券がAI相場継続を明言しており、調整局面は仕込み好機。",
+      "catalyst": "国内AI投資拡大と半導体装置需要増加が継続、次回決算での受注残高確認が株価上昇の起爆剤。",
+      "entry_low": 17800,
+      "entry_high": 18500,
+      "target_price": 22000,
+      "target_pct": 19,
+      "stop_price": 16900,
+      "stop_pct": -8,
+      "added_date": "2026-07-13",
+      "status": "watch"
+    },
+    {
+      "code": "2160",
+      "name": "ジーエヌアイグループ",
+      "reason": "バリュー株ローテーションの流れに乗れるヘルスケア小型株として注目。RSIが売られすぎ水準に近づいており、反発狙いの短期トレードが有効。",
+      "catalyst": "中国事業の回復期待と国内新薬承認スケジュールが短期カタリストとなり得る。",
+      "entry_low": 420,
+      "entry_high": 450,
+      "target_price": 560,
+      "target_pct": 24,
+      "stop_price": 395,
+      "stop_pct": -8,
+      "added_date": "2026-07-13",
+      "status": "watch"
+    },
+    {
+      "code": "9984",
+      "name": "ソフトバンクグループ",
+      "reason": "AI投資テーマの本命として日経平均65,000円突破の牽引役となった実績があり、市場調整局面での押し目が機会。ARM持分価値が株価の下支えとして機能している。",
+      "catalyst": "ARM関連AI半導体需要増・次回決算でのNAV（純資産価値）拡大確認が上値余地を示す。",
+      "entry_low": 10200,
+      "entry_high": 10800,
+      "target_price": 13000,
+      "target_pct": 20,
+      "stop_price": 9500,
+      "stop_pct": -9,
+      "added_date": "2026-07-13",
+      "status": "watch"
+    },
+    {
+      "code": "7342",
+      "name": "ウェルスナビ",
+      "reason": "バリュー株ローテーションが一服した後の反発期待が高いフィンテック銘柄で、RSI低下による売られすぎ水準からの反発シナリオが描きやすい。",
+      "catalyst": "NISA口座数の継続的増加と運用資産残高の拡大が中期成長の裏付けとなっており、業績上方修正の可能性がある。",
+      "entry_low": 870,
+      "entry_high": 920,
+      "target_price": 1150,
+      "target_pct": 25,
+      "stop_price": 810,
+      "stop_pct": -8,
+      "added_date": "2026-07-13",
+      "status": "watch"
     }
   ]
 }
