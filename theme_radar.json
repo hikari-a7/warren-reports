@@ -1,21 +1,39 @@
 {
-  "updated": "2026-07-27",
+  "updated": "2026-07-28",
   "themes": [
     {
-      "id": "space",
-      "name": "宇宙・防衛",
-      "icon": "🚀",
-      "avg_week": 4.88,
-      "avg_day": -1.02,
+      "id": "ai_dx",
+      "name": "AI・DX",
+      "icon": "🤖",
+      "avg_week": 5.39,
+      "avg_day": -1.95,
+      "momentum": "hot",
+      "stock_count": 12
+    },
+    {
+      "id": "game",
+      "name": "ゲーム・エンタメ",
+      "icon": "🎮",
+      "avg_week": 4.57,
+      "avg_day": 0.07,
       "momentum": "rising",
-      "stock_count": 6
+      "stock_count": 7
+    },
+    {
+      "id": "inbound",
+      "name": "インバウンド・消費",
+      "icon": "🏨",
+      "avg_week": 1.54,
+      "avg_day": 0.16,
+      "momentum": "rising",
+      "stock_count": 10
     },
     {
       "id": "green",
       "name": "グリーン・EV・エネルギー",
       "icon": "🌿",
-      "avg_week": 3.64,
-      "avg_day": 1.26,
+      "avg_week": 1.32,
+      "avg_day": -1.37,
       "momentum": "rising",
       "stock_count": 10
     },
@@ -23,55 +41,37 @@
       "id": "fintech",
       "name": "フィンテック・金融DX",
       "icon": "💳",
-      "avg_week": 3.59,
-      "avg_day": 1.26,
-      "momentum": "rising",
+      "avg_week": -0.1,
+      "avg_day": -1.75,
+      "momentum": "neutral",
       "stock_count": 8
-    },
-    {
-      "id": "ai_dx",
-      "name": "AI・DX",
-      "icon": "🤖",
-      "avg_week": 2.79,
-      "avg_day": 1.67,
-      "momentum": "rising",
-      "stock_count": 12
-    },
-    {
-      "id": "game",
-      "name": "ゲーム・エンタメ",
-      "icon": "🎮",
-      "avg_week": 2.26,
-      "avg_day": 3.74,
-      "momentum": "rising",
-      "stock_count": 7
-    },
-    {
-      "id": "semiconductor",
-      "name": "半導体・電子部品",
-      "icon": "💾",
-      "avg_week": 1.28,
-      "avg_day": -0.95,
-      "momentum": "rising",
-      "stock_count": 11
     },
     {
       "id": "healthcare",
       "name": "ヘルスケア・バイオ",
       "icon": "🏥",
-      "avg_week": 0.76,
-      "avg_day": 1.89,
+      "avg_week": -0.78,
+      "avg_day": -1.23,
       "momentum": "neutral",
       "stock_count": 10
     },
     {
-      "id": "inbound",
-      "name": "インバウンド・消費",
-      "icon": "🏨",
-      "avg_week": 0.55,
-      "avg_day": 1.73,
-      "momentum": "neutral",
-      "stock_count": 10
+      "id": "space",
+      "name": "宇宙・防衛",
+      "icon": "🚀",
+      "avg_week": -3.43,
+      "avg_day": -3.73,
+      "momentum": "cooling",
+      "stock_count": 6
+    },
+    {
+      "id": "semiconductor",
+      "name": "半導体・電子部品",
+      "icon": "💾",
+      "avg_week": -9.52,
+      "avg_day": -5.84,
+      "momentum": "cold",
+      "stock_count": 11
     }
   ]
 }
