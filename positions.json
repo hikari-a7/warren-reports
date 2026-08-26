@@ -1,8 +1,25 @@
 {
   "month": "2026-05",
   "monthly_target": 1500000,
-  "last_updated": "2026-08-26 14:55 JST",
+  "last_updated": "2026-08-26 15:29 JST",
   "positions": [
+    {
+      "code": "1436",
+      "name": "グリーンエナジー&カンパニー",
+      "shares": 1200,
+      "entry_price": 1788,
+      "current_price": 1573.0,
+      "current_value": 1887600,
+      "pnl_per": -215.0,
+      "pnl_pct": -12.02,
+      "pnl_total": -258000,
+      "target_pct": 20.0,
+      "target_price": 2146,
+      "stop_pct": -8.0,
+      "stop_price": 1645,
+      "status": "holding",
+      "note": ""
+    },
     {
       "code": "464A",
       "name": "QPSホールディングス",
