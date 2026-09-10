@@ -1,77 +1,77 @@
 {
-  "updated": "2026-09-09",
+  "updated": "2026-09-10",
   "themes": [
     {
       "id": "ai_dx",
       "name": "AI・DX",
       "icon": "🤖",
-      "avg_week": 2.07,
-      "avg_day": 0.27,
-      "momentum": "rising",
+      "avg_week": 0.95,
+      "avg_day": 1.78,
+      "momentum": "neutral",
       "stock_count": 12
     },
     {
       "id": "semiconductor",
       "name": "半導体・電子部品",
       "icon": "💾",
-      "avg_week": 1.55,
-      "avg_day": 1.46,
-      "momentum": "rising",
+      "avg_week": -0.12,
+      "avg_day": -1.15,
+      "momentum": "neutral",
       "stock_count": 11
     },
     {
       "id": "inbound",
       "name": "インバウンド・消費",
       "icon": "🏨",
-      "avg_week": 0.7,
-      "avg_day": -1.12,
+      "avg_week": -0.42,
+      "avg_day": 0.21,
       "momentum": "neutral",
       "stock_count": 10
-    },
-    {
-      "id": "space",
-      "name": "宇宙・防衛",
-      "icon": "🚀",
-      "avg_week": 0.21,
-      "avg_day": 1.68,
-      "momentum": "neutral",
-      "stock_count": 8
     },
     {
       "id": "fintech",
       "name": "フィンテック・金融DX",
       "icon": "💳",
-      "avg_week": -0.38,
-      "avg_day": -0.48,
+      "avg_week": -1.96,
+      "avg_day": 0.39,
       "momentum": "neutral",
       "stock_count": 8
-    },
-    {
-      "id": "healthcare",
-      "name": "ヘルスケア・バイオ",
-      "icon": "🏥",
-      "avg_week": -1.36,
-      "avg_day": -0.01,
-      "momentum": "neutral",
-      "stock_count": 10
-    },
-    {
-      "id": "green",
-      "name": "グリーン・EV・エネルギー",
-      "icon": "🌿",
-      "avg_week": -1.79,
-      "avg_day": 0.16,
-      "momentum": "neutral",
-      "stock_count": 10
     },
     {
       "id": "game",
       "name": "ゲーム・エンタメ",
       "icon": "🎮",
-      "avg_week": -1.83,
-      "avg_day": -0.99,
-      "momentum": "neutral",
+      "avg_week": -3.37,
+      "avg_day": -1.41,
+      "momentum": "cooling",
       "stock_count": 7
+    },
+    {
+      "id": "space",
+      "name": "宇宙・防衛",
+      "icon": "🚀",
+      "avg_week": -3.42,
+      "avg_day": -3.28,
+      "momentum": "cooling",
+      "stock_count": 8
+    },
+    {
+      "id": "green",
+      "name": "グリーン・EV・エネルギー",
+      "icon": "🌿",
+      "avg_week": -3.45,
+      "avg_day": -1.02,
+      "momentum": "cooling",
+      "stock_count": 10
+    },
+    {
+      "id": "healthcare",
+      "name": "ヘルスケア・バイオ",
+      "icon": "🏥",
+      "avg_week": -3.97,
+      "avg_day": -0.69,
+      "momentum": "cooling",
+      "stock_count": 10
     }
   ]
 }
